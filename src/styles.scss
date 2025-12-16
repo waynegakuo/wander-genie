@@ -1,1 +1,415 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles and Design System for Wander Genie */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+/* CSS Custom Properties / Design Tokens */
+:root {
+  /* Colors - Travel-inspired palette */
+  --color-primary: #2563eb; /* Deep blue - trust and adventure */
+  --color-primary-light: #60a5fa;
+  --color-primary-dark: #1d4ed8;
+  --color-secondary: #f59e0b; /* Warm amber - sun and exploration */
+  --color-secondary-light: #fbbf24;
+  --color-secondary-dark: #d97706;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Neutrals */
+  --color-white: #ffffff;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  /* Typography */
+  --font-brand: 'Ubuntu', system-ui, sans-serif;
+  --font-ui: 'DM Sans', system-ui, sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem;  /* 8px */
+  --spacing-md: 1rem;    /* 16px */
+  --spacing-lg: 1.5rem;  /* 24px */
+  --spacing-xl: 2rem;    /* 32px */
+  --spacing-2xl: 3rem;   /* 48px */
+  --spacing-3xl: 4rem;   /* 64px */
+
+  /* Border radius */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.5rem;   /* 8px */
+  --radius-lg: 0.75rem;  /* 12px */
+  --radius-xl: 1rem;     /* 16px */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-gray-800);
+  background-color: var(--color-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography utilities */
+.text-brand {
+  font-family: var(--font-brand);
+}
+
+.text-ui {
+  font-family: var(--font-ui);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.btn-primary {
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-md);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &.btn-secondary {
+    background: var(--color-white);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+  }
+
+  &.btn-large {
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    font-size: 1.125rem;
+    min-height: 56px;
+  }
+}
+
+/* Form styles */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-gray-800);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--color-gray-400);
+  }
+}
+
+select.form-control {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Card component */
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+
+  &.card-elevated {
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+.card-body {
+  padding: var(--spacing-2xl);
+}
+
+/* Container utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+
+  @media (min-width: 768px) {
+    padding: 0 var(--spacing-xl);
+  }
+}
+
+/* Layout utilities */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-4 {
+  gap: var(--spacing-md);
+}
+
+.gap-6 {
+  gap: var(--spacing-lg);
+}
+
+.gap-8 {
+  gap: var(--spacing-xl);
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-gray-100 {
+  color: var(--color-gray-100);
+}
+
+.text-gray-600 {
+  color: var(--color-gray-600);
+}
+
+.text-gray-300 {
+  color: var(--color-gray-300);
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Spacing utilities */
+.mt-4 {
+  margin-top: var(--spacing-md);
+}
+
+.mt-6 {
+  margin-top: var(--spacing-lg);
+}
+
+.mt-8 {
+  margin-top: var(--spacing-xl);
+}
+
+.mb-4 {
+  margin-bottom: var(--spacing-md);
+}
+
+.mb-6 {
+  margin-bottom: var(--spacing-lg);
+}
+
+.mb-8 {
+  margin-bottom: var(--spacing-xl);
+}
+
+.p-4 {
+  padding: var(--spacing-md);
+}
+
+.p-6 {
+  padding: var(--spacing-lg);
+}
+
+.p-8 {
+  padding: var(--spacing-xl);
+}
+
+/* Width utilities */
+.w-full {
+  width: 100%;
+}
+
+.max-w-md {
+  max-width: 28rem;
+}
+
+.max-w-lg {
+  max-width: 32rem;
+}
+
+.max-w-xl {
+  max-width: 36rem;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
+}
+
+/* Grid utilities */
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Responsive utilities */
+@media (max-width: 767px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .text-4xl {
+    font-size: 2rem;
+  }
+
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+}
