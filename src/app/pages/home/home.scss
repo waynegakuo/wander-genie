@@ -2,13 +2,17 @@
 /* Home Page Styles */
 
 .hero-section {
-  background: var(--gradient-hero);
-  min-height: 100vh;
+  background-color: var(--color-primary);
+  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   color: var(--color-white);
   position: relative;
   overflow: hidden;
+  text-align: center;
 
   &::before {
     content: '';
@@ -70,15 +74,24 @@
   .feature-card {
     background: var(--color-white);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    box-shadow: 0 10px 30px -15px rgba(0,0,0,0.1);
 
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-xl);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px -20px rgba(0,0,0,0.2);
     }
 
     .feature-icon {
+      background: rgba(37, 99, 235, 0.1);
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin: 0 auto var(--spacing-md);
       font-size: 2.5rem;
-      margin-bottom: var(--spacing-md);
     }
 
     .feature-title {
@@ -96,10 +109,7 @@
     margin: 0 auto;
 
     .form-title {
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--color-primary);
     }
   }
 }
@@ -112,7 +122,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: var(--color-primary-light);
+    border-color: var(--color-accent);
     background-color: var(--color-gray-50);
   }
 
@@ -120,7 +130,7 @@
     margin-right: var(--spacing-sm);
     width: 18px;
     height: 18px;
-    accent-color: var(--color-primary);
+    accent-color: var(--color-accent);
   }
 
   .interest-label {
@@ -129,11 +139,11 @@
   }
 
   &:has(.interest-checkbox:checked) {
-    border-color: var(--color-primary);
+    border-color: var(--color-accent);
     background-color: rgba(37, 99, 235, 0.05);
 
     .interest-label {
-      color: var(--color-primary);
+      color: var(--color-accent);
     }
   }
 }
@@ -173,10 +183,7 @@
     margin: 0 auto;
 
     .results-title {
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--color-primary);
     }
   }
 }
@@ -191,13 +198,22 @@
     font-family: var(--font-ui);
     line-height: 1.7;
     color: var(--color-gray-800);
-    white-space: pre-line;
     font-size: 0.95rem;
 
-    /* Style for the formatted text */
-    strong {
-      color: var(--color-primary);
-      font-weight: 600;
+    .border-accent {
+      border-color: var(--color-accent);
+    }
+
+    .text-accent {
+      color: var(--color-accent);
+    }
+
+    .space-y-3 > * + * {
+      margin-top: 0.75rem;
+    }
+
+    .space-y-8 > * + * {
+      margin-top: 2rem;
     }
   }
 }

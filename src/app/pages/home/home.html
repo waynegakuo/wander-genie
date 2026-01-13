@@ -5,11 +5,11 @@
       <h1 class="hero-title text-brand">
         Wander<span class="text-secondary">Genie</span>
       </h1>
-      <p class="hero-subtitle text-ui">
+      <p class="hero-subtitle text-ui text-white">
         Your AI-powered travel companion that creates personalized itineraries tailored to your dreams
       </p>
       <p class="hero-description text-gray-100">
-        From bustling cities to serene beaches, let our AI craft the perfect journey based on your preferences, budget, and travel style.
+        Stop spending hours planning. Let our AI craft the perfect journey based on your preferences, budget, and travel style.
       </p>
 
       @if (!showForm()) {
@@ -19,45 +19,38 @@
             class="btn btn-primary btn-large">
             ✨ Start Planning My Trip
           </button>
-          <p class="hero-note text-sm text-gray-300 mt-4">
+          <p class="hero-note text-sm text-gray-300 mt-4 text-note">
             Free • No sign-up required • Powered by Gemini AI
           </p>
         </div>
       }
     </div>
 
-    <!-- Feature highlights -->
-    <div class="features-grid grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-      <div class="feature-card card text-center">
-        <div class="card-body">
-          <div class="feature-icon">🎯</div>
-      <h3 class="feature-title text-ui font-semibold">Personalized</h3>
-      <p class="feature-description text-sm text-gray-600">
-          Tailored to your interests, budget, and travel style
-          </p>
-        </div>
-      </div>
+          <div class="features-grid grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+            <div class="feature-card card text-center p-6">
+              <div class="feature-icon text-4xl mb-4">🎯</div>
+              <h3 class="feature-title text-xl font-bold mb-2">Tailored for You</h3>
+              <p class="feature-description text-sm text-gray-600">
+                Itineraries customized to your interests, budget, and travel style.
+              </p>
+            </div>
 
-      <div class="feature-card card text-center">
-        <div class="card-body">
-          <div class="feature-icon">🤖</div>
-          <h3 class="feature-title text-ui font-semibold">AI-Powered</h3>
-          <p class="feature-description text-sm text-gray-600">
-            Advanced AI creates detailed day-by-day itineraries
-          </p>
-        </div>
-      </div>
+            <div class="feature-card card text-center p-6">
+              <div class="feature-icon text-4xl mb-4">🤖</div>
+              <h3 class="feature-title text-xl font-bold mb-2">AI Intelligence</h3>
+              <p class="feature-description text-sm text-gray-600">
+                Powered by Gemini AI to ensure the most up-to-date and relevant suggestions.
+              </p>
+            </div>
 
-      <div class="feature-card card text-center">
-        <div class="card-body">
-          <div class="feature-icon">⚡</div>
-          <h3 class="feature-title text-ui font-semibold">Instant</h3>
-          <p class="feature-description text-sm text-gray-600">
-            Get your complete travel plan in seconds
-          </p>
-        </div>
-      </div>
-    </div>
+            <div class="feature-card card text-center p-6">
+              <div class="feature-icon text-4xl mb-4">⚡</div>
+              <h3 class="feature-title text-xl font-bold mb-2">Instant Planning</h3>
+              <p class="feature-description text-sm text-gray-600">
+                Get a comprehensive multi-day travel plan in less than 30 seconds.
+              </p>
+            </div>
+          </div>
   </div>
 </section>
 
@@ -68,7 +61,7 @@
       <div class="form-container card card-elevated max-w-2xl">
         <div class="card-body">
           <div class="form-header text-center mb-8">
-            <h2 class="form-title text-ui text-3xl font-bold text-primary">
+            <h2 class="form-title text-ui text-3xl font-bold">
               Tell Us About Your Dream Trip
             </h2>
             <p class="form-subtitle text-gray-600 mt-4">
@@ -295,16 +288,16 @@
       <div class="results-container card card-elevated max-w-2xl">
         <div class="card-body">
           <div class="results-header text-center mb-8">
-            <h2 id="itinerary-heading" class="results-title text-ui text-3xl font-bold text-primary">
-              🌟 Your Personalized Itinerary
+            <h2 id="itinerary-heading" class="results-title text-ui text-3xl font-bold">
+              Your Personalized Journey
             </h2>
             <p class="results-subtitle text-gray-600 mt-4">
-              Here's your custom travel plan created by AI
+              A custom travel plan for <strong>{{ travelForm.get('destination')?.value }}</strong>
             </p>
           </div>
 
-          <div class="itinerary-content">
-            <div class="itinerary-text">{{ generatedItinerary() }}</div>
+          <div class="itinerary-content card-elevated">
+            <div class="itinerary-text" [innerHTML]="generatedItinerary()"></div>
           </div>
 
           <div class="results-actions flex gap-4 justify-center mt-8">

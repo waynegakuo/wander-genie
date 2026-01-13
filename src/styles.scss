@@ -1,13 +1,13 @@
 /* Global Styles and Design System for Wander Genie */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
 /* CSS Custom Properties / Design Tokens */
 :root {
   /* Colors - Travel-inspired palette */
-  --color-primary: #2563eb; /* Deep blue - trust and adventure */
-  --color-primary-light: #60a5fa;
-  --color-primary-dark: #1d4ed8;
+  --color-primary: #0f172a; /* Slate 900 - Sophisticated */
+  --color-accent: #2563eb;  /* Blue 600 - Action */
   --color-secondary: #f59e0b; /* Warm amber - sun and exploration */
+  --color-primary-light: #1e293b;
+  --color-primary-dark: #020617;
   --color-secondary-light: #fbbf24;
   --color-secondary-dark: #d97706;
 
@@ -32,9 +32,11 @@
   --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
-  /* Typography */
-  --font-brand: 'Ubuntu', system-ui, sans-serif;
-  --font-ui: 'DM Sans', system-ui, sans-serif;
+/* Typography */
+  --font-brand: 'Bangers', system-ui, sans-serif;
+  --font-ui: 'Roboto', system-ui, sans-serif;
+  --font-note: 'Architects Daughter', cursive;
+  --font-heading: 'Ubuntu', system-ui, sans-serif;
 
   /* Spacing */
   --spacing-xs: 0.25rem; /* 4px */
@@ -58,9 +60,9 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-/* Base styles */
-* {
-  box-sizing: border-box;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.25;
 }
 
 html, body {
@@ -83,10 +85,19 @@ body {
 /* Typography utilities */
 .text-brand {
   font-family: var(--font-brand);
+  letter-spacing: 0.05em;
 }
 
 .text-ui {
   font-family: var(--font-ui);
+}
+
+.text-note {
+  font-family: var(--font-note);
+}
+
+.text-heading {
+  font-family: var(--font-heading);
 }
 
 /* Button component */
@@ -112,11 +123,15 @@ body {
   }
 
   &.btn-primary {
-    background: var(--gradient-primary);
+    background: var(--color-accent);
     color: var(--color-white);
     box-shadow: var(--shadow-md);
+    font-family: var(--font-brand);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 
     &:hover:not(:disabled) {
+      background: var(--color-primary);
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
@@ -128,11 +143,14 @@ body {
 
   &.btn-secondary {
     background: var(--color-white);
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+    font-family: var(--font-brand);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 
     &:hover:not(:disabled) {
-      background: var(--color-primary);
+      background: var(--color-accent);
       color: var(--color-white);
     }
   }
@@ -157,6 +175,7 @@ body {
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-family: var(--font-brand);
 }
 
 .form-control {
