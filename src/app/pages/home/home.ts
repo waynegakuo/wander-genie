@@ -4,18 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-
-interface TravelPreferences {
-  destination: string;
-  startDate: string;
-  endDate: string;
-  budget: string;
-  travelStyle: string;
-  interests: string[];
-  groupSize: number;
-  accommodation: string;
-  transportation: string;
-}
+import {TravelPreferences} from '../../models/travel.model';
 
 @Component({
   selector: 'app-home',
