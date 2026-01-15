@@ -70,6 +70,11 @@ html, body {
   margin: 0;
   padding: 0;
   scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 body {
@@ -165,6 +170,10 @@ body {
 /* Form styles */
 .form-group {
   margin-bottom: var(--spacing-lg);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .form-label {
@@ -252,6 +261,20 @@ textarea.form-control {
   flex-direction: column;
 }
 
+.flex-row {
+  flex-direction: row;
+}
+
+.md\:flex-row {
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
 .items-center {
   align-items: center;
 }
@@ -274,6 +297,15 @@ textarea.form-control {
 
 .gap-8 {
   gap: var(--spacing-xl);
+}
+
+.gap-10 {
+  gap: var(--spacing-2xl);
+}
+
+.gap-12 {
+  gap: var(--spacing-3xl);
+
 }
 
 /* Text utilities */
@@ -342,6 +374,10 @@ textarea.form-control {
 }
 
 /* Spacing utilities */
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
 .mt-4 {
   margin-top: var(--spacing-md);
 }
