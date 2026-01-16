@@ -26,6 +26,7 @@ export class Home {
 
   // Form setup
   travelForm: FormGroup = this.fb.group({
+    departureLocation: ['', [Validators.required, Validators.minLength(2)]],
     destination: ['', [Validators.required, Validators.minLength(2)]],
     startDate: ['', Validators.required],
     endDate: ['', Validators.required],

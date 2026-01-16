@@ -71,6 +71,25 @@
 
 
           <form [formGroup]="travelForm" (ngSubmit)="generateItinerary()" novalidate>
+            <!-- Departure Location -->
+            <div class="form-group">
+              <label for="departureLocation" class="form-label">Where are you departing from?</label>
+              <input
+                type="text"
+                id="departureLocation"
+                formControlName="departureLocation"
+                class="form-control"
+                placeholder="e.g., London, SFO, Tokyo..."
+                required
+                [attr.aria-invalid]="travelForm.get('departureLocation')?.invalid && travelForm.get('departureLocation')?.touched"
+                aria-describedby="departure-error">
+              @if (travelForm.get('departureLocation')?.invalid && travelForm.get('departureLocation')?.touched) {
+                <div id="departure-error" class="form-error text-error text-sm mt-2" role="alert">
+                  Please enter a departure location
+                </div>
+              }
+            </div>
+
             <!-- Destination -->
             <div class="form-group">
               <label for="destination" class="form-label">Where do you want to go?</label>
@@ -297,6 +316,26 @@
           </div>
 
           <div class="itinerary-content card-elevated">
+            @if (generatedItinerary()?.flightOptions; as flights) {
+              @if (flights.length > 0) {
+                <div class="flight-options-container mb-8">
+                  <h3 class="text-ui text-xl font-bold mb-4 flex items-center gap-2">
+                    ✈️ Suggested Flight Options
+                  </h3>
+                  <div class="grid grid-cols-1 gap-4">
+                    @for (flight of flights; track flight.googleFlightsUrl) {
+                      <div class="flight-card p-4 border rounded-lg bg-gray-50">
+                        <h4 class="font-bold text-brand">{{ flight.title }}</h4>
+                        <p class="text-sm text-gray-600 mb-2">{{ flight.description }}</p>
+                        <a [href]="flight.googleFlightsUrl" target="_blank" rel="noopener" class="btn btn-secondary btn-sm inline-flex items-center gap-2">
+                          View on Google Flights ↗
+                        </a>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            }
             <div class="itinerary-text" [innerHTML]="generatedItinerary()?.htmlContent"></div>
           </div>
 

@@ -1,4 +1,5 @@
 export interface TravelPreferences {
+  departureLocation: string;
   destination: string;
   startDate: string;
   endDate: string;
@@ -12,6 +13,11 @@ export interface TravelPreferences {
 
 export interface Itinerary {
   tripSummary: string;
+  flightOptions?: {
+    title: string;
+    googleFlightsUrl: string;
+    description: string;
+  }[];
   days: {
     day: number;
     date: string;

@@ -216,6 +216,15 @@
       margin-top: 2rem;
     }
   }
+
+  .flight-options-container {
+    .flight-card {
+      transition: transform 0.2s ease;
+      &:hover {
+        transform: scale(1.01);
+      }
+    }
+  }
 }
 
 .footer {

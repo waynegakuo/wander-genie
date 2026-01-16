@@ -20,6 +20,7 @@ const ai = genkit({
 
 // Define schemas
 const TravelPreferencesSchema = z.object({
+  departureLocation: z.string().describe('The departure location of the trip'),
   destination: z.string().describe('The destination of the trip'),
   startDate: z.string().describe('The start date of the trip in YYYY-MM-DD format'),
   endDate: z.string().describe('The end date of the trip in YYYY-MM-DD format'),
@@ -33,6 +34,11 @@ const TravelPreferencesSchema = z.object({
 
 const ItinerarySchema = z.object({
   tripSummary: z.string().describe('A brief summary of the trip'),
+  flightOptions: z.array(z.object({
+    title: z.string().describe('A descriptive title for the flight option'),
+    googleFlightsUrl: z.string().describe('A URL to Google Flights search results for this flight option'),
+    description: z.string().describe('A brief description of why this flight option might be good (e.g., "Fastest option", "Cheapest option")'),
+  })).describe('Suggested flight search links on Google Flights').optional(),
   days: z.array(z.object({
     day: z.number().describe('The day number'),
     date: z.string().describe('The date of the day'),
