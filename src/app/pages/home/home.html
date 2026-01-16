@@ -54,7 +54,7 @@
   </div>
 </section>
 
-<!-- Travel Planning Form -->
+<!-- TravelService Planning Form -->
 @if (showForm()) {
   <section id="planning-form" class="planning-section">
     <div class="container">
@@ -149,7 +149,7 @@
               }
             </div>
 
-            <!-- Travel Style -->
+            <!-- TravelService Style -->
             <div class="form-group">
               <label for="travelStyle" class="form-label">What's your travel style?</label>
               <select
@@ -297,7 +297,7 @@
           </div>
 
           <div class="itinerary-content card-elevated">
-            <div class="itinerary-text" [innerHTML]="generatedItinerary()"></div>
+            <div class="itinerary-text" [innerHTML]="generatedItinerary()?.htmlContent"></div>
           </div>
 
           <div class="results-actions flex gap-4 justify-center mt-8">

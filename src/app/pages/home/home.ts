@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {TravelPreferences} from '../../models/travel.model';
+import { TravelPreferences, Itinerary } from '../../models/travel.model';
+import { TravelService } from '../../services/travel/travel.service';
 
 @Component({
   selector: 'app-home',
@@ -16,11 +17,12 @@ import {TravelPreferences} from '../../models/travel.model';
 export class Home {
   private fb = new FormBuilder();
   private platformId = inject(PLATFORM_ID);
+  private travelService = inject(TravelService);
 
   // Signals for state management
   isLoading = signal(false);
   showForm = signal(false);
-  generatedItinerary = signal<string | null>(null);
+  generatedItinerary = signal<Itinerary | null>(null);
 
   // Form setup
   travelForm: FormGroup = this.fb.group({
@@ -58,7 +60,7 @@ export class Home {
     { value: 'nightlife', label: 'Nightlife & Entertainment' },
     { value: 'family', label: 'Family Friendly' },
     { value: 'romantic', label: 'Romantic Getaway' },
-    { value: 'business', label: 'Business Travel' }
+    { value: 'business', label: 'Business TravelService' }
   ];
 
   readonly interestOptions = [
@@ -136,12 +138,10 @@ export class Home {
     try {
       const formData: TravelPreferences = this.travelForm.value;
 
-      // TODO: Replace with actual Gemini AI service call
-      await this.simulateAIResponse();
+      // Call the Genkit flow via TravelService
+      const itinerary = await this.travelService.planTrip(formData);
 
-      // Mock response for now
-      const mockItinerary = this.generateMockItinerary(formData);
-      this.generatedItinerary.set(mockItinerary);
+      this.generatedItinerary.set(itinerary);
 
       // Scroll to results
       if (isPlatformBrowser(this.platformId)) {
@@ -159,112 +159,6 @@ export class Home {
     }
   }
 
-  private async simulateAIResponse(): Promise<void> {
-    // Simulate API call delay
-    return new Promise(resolve => setTimeout(resolve, 2000));
-  }
-
-  private generateMockItinerary(preferences: TravelPreferences): string {
-    const days = this.calculateDays(preferences.startDate, preferences.endDate);
-    const budgetLabel = this.budgetRanges.find(b => b.value === preferences.budget)?.label;
-    const styleLabel = this.travelStyles.find(s => s.value === preferences.travelStyle)?.label;
-
-    return `
-      <div class="itinerary-header mb-6">
-        <h3 class="text-2xl font-bold mb-2">Trip Overview</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          <div class="info-item">
-            <span class="text-xs uppercase text-gray-500 font-semibold block">Duration</span>
-            <span class="font-medium">${days} days</span>
-          </div>
-          <div class="info-item">
-            <span class="text-xs uppercase text-gray-500 font-semibold block">Budget</span>
-            <span class="font-medium">${budgetLabel}</span>
-          </div>
-          <div class="info-item">
-            <span class="text-xs uppercase text-gray-500 font-semibold block">Style</span>
-            <span class="font-medium">${styleLabel}</span>
-          </div>
-          <div class="info-item">
-            <span class="text-xs uppercase text-gray-500 font-semibold block">Group</span>
-            <span class="font-medium">${preferences.groupSize} ${preferences.groupSize === 1 ? 'Person' : 'People'}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="itinerary-days space-y-8">
-        <div class="day-card border-l-4 border-accent pl-6 py-2">
-          <h4 class="text-xl font-bold text-accent mb-3">Day 1: Arrival & Exploration</h4>
-          <ul class="space-y-3">
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Morning:</strong> Arrive in ${preferences.destination} and check into your ${preferences.accommodation} accommodation. Take some time to settle in and freshen up.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Afternoon:</strong> Start your journey with a light walk around the neighborhood. Visit the nearest local market to get a feel for the local atmosphere.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Evening:</strong> Enjoy a welcome dinner at a highly-rated local restaurant, trying ${preferences.destination}'s signature dishes.</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="day-card border-l-4 border-accent pl-6 py-2">
-          <h4 class="text-xl font-bold text-accent mb-3">Day 2: Cultural Immersion</h4>
-          <ul class="space-y-3">
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Morning:</strong> Visit the city's most iconic historical landmark. We recommend arriving early to avoid the crowds.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Afternoon:</strong> Dive into your interests: ${preferences.interests.join(', ')}. Visit a specialized museum or gallery that focuses on these themes.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Evening:</strong> Attend a traditional performance or cultural show to see the heritage of ${preferences.destination} come to life.</span>
-            </li>
-          </ul>
-        </div>
-
-        ${days > 2 ? `
-        <div class="day-card border-l-4 border-accent pl-6 py-2">
-          <h4 class="text-xl font-bold text-accent mb-3">Day 3: Adventure & Vistas</h4>
-          <ul class="space-y-3">
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Morning:</strong> Head out for an outdoor activity or a short hike to a viewpoint overlooking the city or coastline.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Afternoon:</strong> ${this.generateAdditionalDayContent(preferences)}</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-accent mt-1">●</span>
-              <span><strong>Evening:</strong> Relax at a scenic rooftop bar or waterfront café as you watch the sunset.</span>
-            </li>
-          </ul>
-        </div>
-        ` : ''}
-      </div>
-
-      <div class="itinerary-footer mt-10 pt-6 border-t border-gray-100 text-sm text-gray-500 italic text-note">
-        This is a sample itinerary. The AI-powered version will provide exact locations, reservation links, and real-time travel tips!
-      </div>
-    `;
-  }
-
-  private generateAdditionalDayContent(preferences: TravelPreferences): string {
-    const activities = [
-      'Free day for personal exploration',
-      'Day trip to nearby attractions',
-      'Food tour and culinary experiences',
-      'Relaxation and leisure activities'
-    ];
-    return activities[Math.floor(Math.random() * activities.length)];
-  }
   private calculateDays(startDate: string, endDate: string): number {
     const start = new Date(startDate);
     const end = new Date(endDate);
