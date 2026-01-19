@@ -71,7 +71,7 @@ export class Home {
     effect(() => {
       const query = this.nlpQuery();
       if (query) {
-        const parsed = this.travelService.parseTravelQuery(query);
+        const parsed = this.travelService.extractPreferences(query);
         this.travelForm.patchValue(parsed, { emitEvent: false });
       }
     });
@@ -119,9 +119,10 @@ export class Home {
 
   selectSuggestion(suggestion: string): void {
     this.nlpQuery.set(suggestion);
-    // Explicitly trigger parsing
-    const parsed = this.travelService.parseTravelQuery(suggestion);
-    this.travelForm.patchValue(parsed, { emitEvent: false });
+    // Explicitly trigger parsing using AI for suggestions as they are well-formed but complex for regex
+    this.travelService.planTrip(suggestion).then(parsed => {
+      this.travelForm.patchValue(parsed, { emitEvent: false });
+    });
   }
 
   // Options for dropdowns
@@ -216,17 +217,20 @@ export class Home {
     this.isLoading.set(true);
 
     try {
+      // If we have an NLP query, let's parse it first using AI for better accuracy if it's long enough
+      if (this.nlpQuery().length > 10) {
+        const parsed = await this.travelService.planTrip(this.nlpQuery());
+        this.travelForm.patchValue(parsed, { emitEvent: false });
+      }
+
       // Create a preferences object from the form values
-      // The NLP query is already patched into the form via the effect
       const formData: TravelPreferences = {
         ...this.travelForm.value,
-        // Ensure the NLP query itself is included if the backend needs it
-        // or if we want to ensure it's part of the context
         nlpQuery: this.nlpQuery()
       };
 
       // Call the Genkit flow via TravelService
-      const itinerary = await this.travelService.planTrip(formData);
+      const itinerary = await this.travelService.generateItinerary(formData);
 
       this.generatedItinerary.set(itinerary);
 

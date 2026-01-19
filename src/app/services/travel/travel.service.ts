@@ -8,13 +8,19 @@ import { TravelPreferences, Itinerary } from '../../models/travel.model';
 export class TravelService {
   private readonly functions = inject(Functions);
 
-  async planTrip(preferences: TravelPreferences): Promise<Itinerary> {
-    const planTripFn = httpsCallable<TravelPreferences, Itinerary>(this.functions, 'planTripFlow');
+  async generateItinerary(preferences: TravelPreferences): Promise<Itinerary> {
+    const planTripFn = httpsCallable<TravelPreferences, Itinerary>(this.functions, 'generateItineraryFlow');
     const result = await planTripFn(preferences);
     return result.data;
   }
 
-  parseTravelQuery(text: string): Partial<TravelPreferences> {
+  async planTrip(text: string): Promise<Partial<TravelPreferences>> {
+    const parseFn = httpsCallable<string, Partial<TravelPreferences>>(this.functions, 'geniePlanTripFlow');
+    const result = await parseFn(text);
+    return result.data;
+  }
+
+  extractPreferences(text: string): Partial<TravelPreferences> {
     const preferences: Partial<TravelPreferences> = {};
 
     // Destination detection
