@@ -41,18 +41,47 @@
 .genie-bar-container {
   .departure-container {
     animation: fadeInDown 0.8s ease-out forwards;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .material-icons.flight-icon {
+      color: var(--color-secondary-light);
+      opacity: 1;
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+    }
+
+    .departure-label {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
 
     .departure-input-wrapper {
       display: inline-flex;
       align-items: center;
       position: relative;
       min-width: 100px;
+      margin-left: 0.5rem;
 
       .departure-mirror {
         visibility: hidden;
         white-space: pre;
         font-family: var(--font-body);
-        font-size: 0.95rem;
+        font-size: 1rem;
+        font-weight: 700;
         padding: 0 1.5rem 0 0;
         pointer-events: none;
         min-width: inherit;
@@ -66,22 +95,25 @@
         height: 100%;
         background: transparent;
         border: none;
-        border-bottom: 1.5px dotted rgba(255, 255, 255, 0.6);
+        border-bottom: 2px dotted rgba(255, 255, 255, 0.5);
         color: white;
         font-family: var(--font-body);
-        font-size: 0.95rem;
+        font-size: 1rem;
+        font-weight: 700;
         padding: 0 1.5rem 0 0;
-        transition: border-color 0.3s ease;
+        transition: all 0.3s ease;
         text-align: left;
         line-height: inherit;
 
         &::placeholder {
-          color: rgba(255, 255, 255, 0.5);
+          color: rgba(255, 255, 255, 0.6);
+          font-weight: 500;
         }
 
         &:focus {
           outline: none;
-          border-bottom-color: white;
+          border-bottom-color: var(--color-secondary-light);
+          border-bottom-style: solid;
         }
       }
 
@@ -89,9 +121,10 @@
         position: absolute;
         right: 0;
         font-size: 1rem;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--color-secondary-light);
+        opacity: 0.8;
         pointer-events: none;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
         margin-bottom: 2px;
       }
 
@@ -100,7 +133,8 @@
           border-bottom-color: white;
         }
         .edit-icon {
-          color: white;
+          opacity: 1;
+          transform: scale(1.1);
         }
       }
     }
