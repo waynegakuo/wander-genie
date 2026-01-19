@@ -98,8 +98,17 @@
 }
 
 .refinement-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem; /* gap-3 */
+  margin-top: 1.5rem; /* mt-6 */
   position: relative;
   z-index: 20;
+
+  .chip-container {
+    position: relative;
+  }
 }
 
 .chip {
@@ -140,9 +149,9 @@
 
 .dropdown-menu {
   position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 2px;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--color-white);
   border-radius: var(--radius-xl);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
@@ -178,8 +187,8 @@
 }
 
 @keyframes dropdownSlideIn {
-  from { opacity: 0; transform: translateY(-4px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateX(-50%) translateY(-4px) scale(0.95); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 }
 
 .suggestion-card {

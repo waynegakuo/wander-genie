@@ -34,9 +34,9 @@
           </button>
         </div>
 
-        <div class="refinement-chips flex flex-wrap justify-center gap-3 mt-6">
+        <div class="refinement-chips">
           <!-- Budget Chip -->
-          <div class="relative">
+          <div class="chip-container">
             <button (click)="toggleChip('budget')" class="chip" [class.active]="activeChip() === 'budget'">
               <span class="material-icons text-sm">payments</span>
               {{ travelForm.get('budget')?.value || 'Budget' }}
@@ -54,7 +54,7 @@
           </div>
 
           <!-- Passengers Chip -->
-          <div class="relative">
+          <div class="chip-container">
             <button (click)="toggleChip('passengers')" class="chip" [class.active]="activeChip() === 'passengers'">
               <span class="material-icons text-sm">person</span>
               {{ travelForm.get('groupSize')?.value }} Passengers
@@ -69,7 +69,7 @@
           </div>
 
           <!-- Class Chip -->
-          <div class="relative">
+          <div class="chip-container">
             <button (click)="toggleChip('class')" class="chip" [class.active]="activeChip() === 'class'">
               <span class="material-icons text-sm">flight_class</span>
               {{ travelForm.get('travelClass')?.value || 'Class' }}
@@ -87,7 +87,7 @@
           </div>
 
           <!-- Flexibility Chip -->
-          <div class="relative">
+          <div class="chip-container">
             <button (click)="toggleChip('flexibility')" class="chip" [class.active]="activeChip() === 'flexibility'">
               <span class="material-icons text-sm">event_repeat</span>
               {{ travelForm.get('flexibility')?.value || 'Flexibility' }}
