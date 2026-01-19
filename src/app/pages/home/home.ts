@@ -1,5 +1,5 @@
 
-import { Component, signal, computed, ChangeDetectionStrategy, inject, PLATFORM_ID, effect } from '@angular/core';
+import { Component, signal, computed, ChangeDetectionStrategy, inject, PLATFORM_ID, effect, viewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
@@ -18,12 +18,31 @@ export class Home {
   private fb = new FormBuilder();
   private platformId = inject(PLATFORM_ID);
   private travelService = inject(TravelService);
+  loadingSection = viewChild<ElementRef>('loadingSection');
 
   // Signals for state management
   isLoading = signal(false);
   showForm = signal(true); // NLP first, so show form area
   generatedItinerary = signal<Itinerary | null>(null);
   nlpQuery = signal('');
+  loadingMessage = signal('');
+  private loadingMessages = [
+    'Packing your virtual bags... 🧳',
+    'Consulting the travel oracles... 🔮',
+    'Finding the best hidden gems... 💎',
+    'Mapping out your adventure... 🗺️',
+    'Checking weather patterns... ☀️',
+    'Scouting local delicacies... 🍜',
+    'Securing the best views... 🏔️',
+    'Translating local phrases... 🗣️',
+    'Calculating the perfect route... 📍',
+    'Finding your home away from home... 🏠',
+    'Checking for passports... 🛂',
+    'Fueling the jet... ✈️',
+    'Browsing through souvenirs... 🎭',
+    'Booking window seats... 🪟',
+    'Checking into your destination... 🏨'
+  ];
 
   placeholders = [
     'Find me a romantic weekend in Paris...',
@@ -73,6 +92,30 @@ export class Home {
       if (query) {
         const parsed = this.travelService.extractPreferences(query);
         this.travelForm.patchValue(parsed, { emitEvent: false });
+      }
+    });
+
+    // Loading messages effect
+    effect(() => {
+      if (this.isLoading() && isPlatformBrowser(this.platformId)) {
+        this.loadingMessage.set(this.loadingMessages[0]);
+        const interval = setInterval(() => {
+          const currentIndex = this.loadingMessages.indexOf(this.loadingMessage());
+          const nextIndex = (currentIndex + 1) % this.loadingMessages.length;
+          this.loadingMessage.set(this.loadingMessages[nextIndex]);
+        }, 3000);
+        return () => clearInterval(interval);
+      }
+      return;
+    });
+
+    // Smooth scroll to loading section
+    effect(() => {
+      const section = this.loadingSection();
+      if (section && this.isLoading() && isPlatformBrowser(this.platformId)) {
+        setTimeout(() => {
+          section.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
     });
   }
