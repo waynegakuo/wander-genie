@@ -1,0 +1,43 @@
+.planning-section {
+  padding: var(--spacing-3xl) 0;
+  background: linear-gradient(to bottom, var(--color-gray-50), var(--color-white));
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+
+  .container {
+    width: 100%;
+  }
+
+  .form-container {
+    margin: 0 auto;
+
+    .form-title {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.interest-option {
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-gray-50);
+  }
+
+  .interest-checkbox {
+    margin-right: var(--spacing-sm);
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-accent);
+  }
+
+  .interest-label {
+    font-size: 0.875rem;
+  }
+}

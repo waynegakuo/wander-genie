@@ -1,0 +1,286 @@
+<section id="planning-form" class="planning-section">
+  <div class="container">
+    <div class="form-container card card-elevated max-w-2xl">
+      <div class="card-body">
+        <div class="form-header text-center mb-8">
+          <h2 class="form-title text-ui text-3xl font-bold">
+            Tell Us About Your Dream Trip
+          </h2>
+          <p class="form-subtitle text-body text-gray-600 mt-4">
+            The more details you share, the better we can personalize your itinerary
+          </p>
+        </div>
+
+        <form [formGroup]="travelForm()" (ngSubmit)="generateItinerary.emit()" novalidate>
+          <!-- Departure Location -->
+          <div class="form-group">
+            <label for="departureLocation" class="form-label">Where are you departing from?</label>
+            <input
+              type="text"
+              id="departureLocation"
+              formControlName="departureLocation"
+              class="form-control"
+              placeholder="e.g., London, SFO, Tokyo..."
+              required
+              [attr.aria-invalid]="
+                travelForm().get('departureLocation')?.invalid &&
+                travelForm().get('departureLocation')?.touched
+              "
+              aria-describedby="departure-error"
+            />
+            @if (
+              travelForm().get('departureLocation')?.invalid &&
+              travelForm().get('departureLocation')?.touched
+            ) {
+              <div id="departure-error" class="form-error text-error text-sm mt-2" role="alert">
+                Please enter a departure location
+              </div>
+            }
+          </div>
+
+          <!-- Destination -->
+          <div class="form-group">
+            <label for="destination" class="form-label">Where do you want to go?</label>
+            <input
+              type="text"
+              id="destination"
+              formControlName="destination"
+              class="form-control"
+              placeholder="e.g., Tokyo, Paris, New York..."
+              required
+              [attr.aria-invalid]="
+                travelForm().get('destination')?.invalid &&
+                travelForm().get('destination')?.touched
+              "
+              aria-describedby="destination-error"
+            />
+            @if (
+              travelForm().get('destination')?.invalid && travelForm().get('destination')?.touched
+            ) {
+              <div id="destination-error" class="form-error text-error text-sm mt-2" role="alert">
+                Please enter a destination
+              </div>
+            }
+          </div>
+
+          <!-- Dates -->
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="form-group flex-1">
+              <label for="startDate" class="form-label">Start Date</label>
+              <input
+                type="date"
+                id="startDate"
+                formControlName="startDate"
+                class="form-control"
+                required
+                [attr.aria-invalid]="
+                  travelForm().get('startDate')?.invalid && travelForm().get('startDate')?.touched
+                "
+                aria-describedby="startDate-error"
+              />
+              @if (travelForm().get('startDate')?.invalid && travelForm().get('startDate')?.touched) {
+                <div id="startDate-error" class="form-error text-error text-sm mt-2" role="alert">
+                  Please select a start date
+                </div>
+              }
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="endDate" class="form-label">End Date</label>
+              <input
+                type="date"
+                id="endDate"
+                formControlName="endDate"
+                class="form-control"
+                required
+                [attr.aria-invalid]="
+                  travelForm().get('endDate')?.invalid && travelForm().get('endDate')?.touched
+                "
+                aria-describedby="endDate-error"
+              />
+              @if (travelForm().get('endDate')?.invalid && travelForm().get('endDate')?.touched) {
+                <div id="endDate-error" class="form-error text-error text-sm mt-2" role="alert">
+                  Please select an end date
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Budget -->
+          <div class="form-group">
+            <label for="budget" class="form-label">What's your budget?</label>
+            <select
+              id="budget"
+              formControlName="budget"
+              class="form-control"
+              required
+              [attr.aria-invalid]="
+                travelForm().get('budget')?.invalid && travelForm().get('budget')?.touched
+              "
+              aria-describedby="budget-error"
+            >
+              <option value="">Select your budget range</option>
+              @for (budget of budgetRanges(); track budget.value) {
+                <option [value]="budget.value">{{ budget.label }}</option>
+              }
+            </select>
+            @if (travelForm().get('budget')?.invalid && travelForm().get('budget')?.touched) {
+              <div id="budget-error" class="form-error text-error text-sm mt-2" role="alert">
+                Please select a budget range
+              </div>
+            }
+          </div>
+
+          <!-- Travel Style -->
+          <div class="form-group">
+            <label for="travelStyle" class="form-label">What's your travel style?</label>
+            <select
+              id="travelStyle"
+              formControlName="travelStyle"
+              class="form-control"
+              required
+              [attr.aria-invalid]="
+                travelForm().get('travelStyle')?.invalid && travelForm().get('travelStyle')?.touched
+              "
+              aria-describedby="travelStyle-error"
+            >
+              <option value="">Choose your travel style</option>
+              @for (style of travelStyles(); track style.value) {
+                <option [value]="style.value">{{ style.label }}</option>
+              }
+            </select>
+            @if (travelForm().get('travelStyle')?.invalid && travelForm().get('travelStyle')?.touched) {
+              <div id="travelStyle-error" class="form-error text-error text-sm mt-2" role="alert">
+                Please select a travel style
+              </div>
+            }
+          </div>
+
+          <!-- Group Size -->
+          <div class="form-group">
+            <label for="groupSize" class="form-label">How many travelers?</label>
+            <input
+              type="number"
+              id="groupSize"
+              formControlName="groupSize"
+              class="form-control"
+              min="1"
+              max="20"
+              required
+              [attr.aria-invalid]="
+                travelForm().get('groupSize')?.invalid && travelForm().get('groupSize')?.touched
+              "
+              aria-describedby="groupSize-error"
+            />
+            @if (travelForm().get('groupSize')?.invalid && travelForm().get('groupSize')?.touched) {
+              <div id="groupSize-error" class="form-error text-error text-sm mt-2" role="alert">
+                Please enter a group size between 1 and 20
+              </div>
+            }
+          </div>
+
+          <!-- Interests -->
+          <div class="form-group">
+            <label class="form-label">What are you interested in? (Select all that apply)</label>
+            <div class="interests-grid grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              @for (interest of interestOptions(); track interest) {
+                <label class="interest-option flex items-center">
+                  <input
+                    type="checkbox"
+                    [checked]="isInterestSelected(interest)"
+                    (change)="interestChange.emit({ interest, event: $event })"
+                    class="interest-checkbox"
+                  />
+                  <span class="interest-label">{{ interest }}</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Accommodation -->
+          <div class="form-group">
+            <label for="accommodation" class="form-label">Preferred accommodation</label>
+            <select
+              id="accommodation"
+              formControlName="accommodation"
+              class="form-control"
+              required
+              [attr.aria-invalid]="
+                travelForm().get('accommodation')?.invalid &&
+                travelForm().get('accommodation')?.touched
+              "
+              aria-describedby="accommodation-error"
+            >
+              <option value="">Choose accommodation type</option>
+              @for (acc of accommodationTypes(); track acc.value) {
+                <option [value]="acc.value">{{ acc.label }}</option>
+              }
+            </select>
+            @if (
+              travelForm().get('accommodation')?.invalid &&
+              travelForm().get('accommodation')?.touched
+            ) {
+              <div id="accommodation-error" class="form-error text-error text-sm mt-2" role="alert">
+                Please choose an accommodation type
+              </div>
+            }
+          </div>
+
+          <!-- Transportation -->
+          <div class="form-group">
+            <label for="transportation" class="form-label">How do you prefer to travel?</label>
+            <select
+              id="transportation"
+              formControlName="transportation"
+              class="form-control"
+              required
+              [attr.aria-invalid]="
+                travelForm().get('transportation')?.invalid &&
+                travelForm().get('transportation')?.touched
+              "
+              aria-describedby="transportation-error"
+            >
+              <option value="">Select transportation</option>
+              @for (transport of transportationOptions(); track transport.value) {
+                <option [value]="transport.value">{{ transport.label }}</option>
+              }
+            </select>
+            @if (
+              travelForm().get('transportation')?.invalid &&
+              travelForm().get('transportation')?.touched
+            ) {
+              <div
+                id="transportation-error"
+                class="form-error text-error text-sm mt-2"
+                role="alert"
+              >
+                Please select a transportation option
+              </div>
+            }
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions flex gap-4 justify-center mt-8">
+            <button
+              type="button"
+              (click)="resetForm.emit()"
+              class="btn btn-secondary"
+              [disabled]="isLoading()"
+            >
+              Start Over
+            </button>
+
+            <button type="submit" class="btn btn-primary btn-large" [disabled]="!canSubmit()">
+              @if (isLoading()) {
+                <span class="loading-spinner"></span>
+                Creating Your Itinerary...
+              } @else {
+                🎭 Generate My Itinerary
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

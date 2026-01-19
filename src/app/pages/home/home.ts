@@ -1,26 +1,53 @@
 
-import { Component, signal, computed, ChangeDetectionStrategy, inject, PLATFORM_ID, effect, viewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+  inject,
+  PLATFORM_ID,
+  effect,
+  viewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TravelPreferences, Itinerary } from '../../models/travel.model';
 import { TravelService } from '../../services/travel/travel.service';
 import { LoadingMessageService } from '../../services/loading/loading-message.service';
+import { NavComponent } from '../../components/nav/nav';
+import { HeroComponent } from '../../components/hero/hero';
+import { SmartSuggestionsComponent } from '../../components/smart-suggestions/smart-suggestions';
+import { PlanningFormComponent } from '../../components/planning-form/planning-form';
+import { LoadingSectionComponent } from '../../components/loading-section/loading-section';
+import { ItineraryResultsComponent } from '../../components/itinerary-results/itinerary-results';
+import { FooterComponent } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TitleCasePipe,
+    NavComponent,
+    HeroComponent,
+    SmartSuggestionsComponent,
+    PlanningFormComponent,
+    LoadingSectionComponent,
+    ItineraryResultsComponent,
+    FooterComponent,
+  ],
   templateUrl: './home.html',
   styleUrl: './home.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
   private fb = new FormBuilder();
   private platformId = inject(PLATFORM_ID);
   private travelService = inject(TravelService);
   private loadingMessageService = inject(LoadingMessageService);
-  loadingSection = viewChild<ElementRef>('loadingSection');
+  loadingSection = viewChild(LoadingSectionComponent);
 
   // Signals for state management
   isLoading = signal(false);
@@ -91,7 +118,7 @@ export class Home {
 
     // Smooth scroll to loading section
     effect(() => {
-      const section = this.loadingSection();
+      const section = this.loadingSection()?.sectionRef();
       if (section && this.isLoading() && isPlatformBrowser(this.platformId)) {
         setTimeout(() => {
           section.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -149,14 +176,14 @@ export class Home {
   }
 
   // Options for dropdowns
-  readonly budgetRanges = [
+  budgetRanges = [
     { value: 'budget', label: '$0 - $1,000 (Budget)' },
     { value: 'mid-range', label: '$1,000 - $3,000 (Mid-range)' },
     { value: 'luxury', label: '$3,000 - $10,000 (Luxury)' },
-    { value: 'ultra-luxury', label: '$10,000+ (Ultra Luxury)' }
+    { value: 'ultra-luxury', label: '$10,000+ (Ultra Luxury)' },
   ];
 
-  readonly travelStyles = [
+  travelStyles = [
     { value: 'adventure', label: 'Adventure & Outdoor' },
     { value: 'cultural', label: 'Cultural & Historical' },
     { value: 'relaxation', label: 'Relaxation & Wellness' },
@@ -164,10 +191,10 @@ export class Home {
     { value: 'nightlife', label: 'Nightlife & Entertainment' },
     { value: 'family', label: 'Family Friendly' },
     { value: 'romantic', label: 'Romantic Getaway' },
-    { value: 'business', label: 'Business TravelService' }
+    { value: 'business', label: 'Business TravelService' },
   ];
 
-  readonly interestOptions = [
+  interestOptions = [
     'Museums & Art',
     'Historical Sites',
     'Nature & Parks',
@@ -181,25 +208,25 @@ export class Home {
     'Music & Festivals',
     'Beaches',
     'Mountains',
-    'Wildlife'
+    'Wildlife',
   ];
 
-  readonly accommodationTypes = [
+  accommodationTypes = [
     { value: 'hotel', label: 'Hotels' },
     { value: 'hostel', label: 'Hostels' },
     { value: 'airbnb', label: 'Vacation Rentals' },
     { value: 'resort', label: 'Resorts' },
     { value: 'boutique', label: 'Boutique Hotels' },
     { value: 'luxury', label: 'Luxury Hotels' },
-    { value: 'camping', label: 'Camping' }
+    { value: 'camping', label: 'Camping' },
   ];
 
-  readonly transportationOptions = [
+  transportationOptions = [
     { value: 'flight', label: 'Flight' },
     { value: 'car', label: 'Car/Road Trip' },
     { value: 'train', label: 'Train' },
     { value: 'bus', label: 'Bus' },
-    { value: 'mixed', label: 'Mixed Transportation' }
+    { value: 'mixed', label: 'Mixed Transportation' },
   ];
 
   // Methods
