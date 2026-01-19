@@ -107,6 +107,18 @@
   margin-top: 1.5rem; /* mt-6 */
   position: relative;
   z-index: 20;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 100px;
+  opacity: 1;
+
+  &.hidden-chips {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+    margin-top: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
 
   .chip-container {
     position: relative;
@@ -195,6 +207,21 @@
 }
 
 .smart-suggestions {
+  margin-top: 3rem; /* mt-12 */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 500px;
+  overflow: hidden;
+
+  &.hidden-suggestions {
+    opacity: 0;
+    transform: translateY(20px);
+    max-height: 0;
+    margin-top: 0;
+    pointer-events: none;
+  }
+
   h3 {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   }

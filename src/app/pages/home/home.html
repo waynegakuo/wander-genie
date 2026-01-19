@@ -34,7 +34,7 @@
           </button>
         </div>
 
-        <div class="refinement-chips">
+        <div class="refinement-chips" [class.hidden-chips]="nlpQuery()">
           <!-- Budget Chip -->
           <div class="chip-container">
             <button (click)="toggleChip('budget')" class="chip" [class.active]="activeChip() === 'budget'">
@@ -105,25 +105,23 @@
           </div>
         </div>
 
-        @if (!nlpQuery()) {
-          <div class="smart-suggestions mt-12">
-            <h3 class="text-white text-sm uppercase font-bold tracking-wider mb-6">Need inspiration?</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <button (click)="selectSuggestion('Hidden gems in Europe for a budget summer trip')" class="suggestion-card">
-                <span class="suggestion-icon">💎</span>
-                <span class="suggestion-text">Hidden Gems in Europe</span>
-              </button>
-              <button (click)="selectSuggestion('Cheap tropical getaways for 4 people in March')" class="suggestion-card">
-                <span class="suggestion-icon">🌴</span>
-                <span class="suggestion-text">Cheap Tropical Getaways</span>
-              </button>
-              <button (click)="selectSuggestion('Best adventure trips for solo travelers in Asia')" class="suggestion-card">
-                <span class="suggestion-icon">🏔️</span>
-                <span class="suggestion-text">Solo Adventure in Asia</span>
-              </button>
-            </div>
+        <div class="smart-suggestions" [class.hidden-suggestions]="nlpQuery()">
+          <h3 class="text-white text-sm uppercase font-bold tracking-wider mb-6">Need inspiration?</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <button (click)="selectSuggestion('Hidden gems in Europe for a budget summer trip')" class="suggestion-card">
+              <span class="suggestion-icon">💎</span>
+              <span class="suggestion-text">Hidden Gems in Europe</span>
+            </button>
+            <button (click)="selectSuggestion('Cheap tropical getaways for 4 people in March')" class="suggestion-card">
+              <span class="suggestion-icon">🌴</span>
+              <span class="suggestion-text">Cheap Tropical Getaways</span>
+            </button>
+            <button (click)="selectSuggestion('Best adventure trips for solo travelers in Asia')" class="suggestion-card">
+              <span class="suggestion-icon">🏔️</span>
+              <span class="suggestion-text">Solo Adventure in Asia</span>
+            </button>
           </div>
-        }
+        </div>
       </div>
     </div>
   </div>
