@@ -1,5 +1,5 @@
 
-import { Component, signal, computed, ChangeDetectionStrategy, inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, computed, ChangeDetectionStrategy, inject, PLATFORM_ID, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
@@ -21,29 +21,95 @@ export class Home {
 
   // Signals for state management
   isLoading = signal(false);
-  showForm = signal(false);
+  showForm = signal(true); // NLP first, so show form area
   generatedItinerary = signal<Itinerary | null>(null);
+  nlpQuery = signal('');
+
+  placeholders = [
+    'Find me a romantic weekend in Paris...',
+    'Budget beach trip for 5 friends in June...',
+    'Family of 4 to Tokyo for 10 days to see cherry blossoms...',
+    'Adventurous solo trip to Patagonia for hiking...'
+  ];
+  currentPlaceholder = signal(this.placeholders[0]);
 
   // Form setup
   travelForm: FormGroup = this.fb.group({
-    departureLocation: ['', [Validators.required, Validators.minLength(2)]],
-    destination: ['', [Validators.required, Validators.minLength(2)]],
-    startDate: ['', Validators.required],
-    endDate: ['', Validators.required],
-    budget: ['', Validators.required],
-    travelStyle: ['', Validators.required],
-    interests: [[], Validators.required],
-    groupSize: [1, [Validators.required, Validators.min(1), Validators.max(20)]],
-    accommodation: ['', Validators.required],
-    transportation: ['', Validators.required]
+    departureLocation: [''],
+    destination: ['', [Validators.required]],
+    startDate: [''],
+    endDate: [''],
+    budget: ['mid-range'],
+    travelStyle: ['adventure'],
+    interests: [[]],
+    groupSize: [1, [Validators.min(1), Validators.max(20)]],
+    accommodation: ['hotel'],
+    transportation: ['flight'],
+    travelClass: ['economy'],
+    flexibility: ['flexible']
   });
+
+  constructor() {
+    // Cycling placeholder effect
+    if (isPlatformBrowser(this.platformId)) {
+      let index = 0;
+      setInterval(() => {
+        index = (index + 1) % this.placeholders.length;
+        this.currentPlaceholder.set(this.placeholders[index]);
+      }, 4000);
+    }
+
+    // Effect to parse NLP query
+    effect(() => {
+      const query = this.nlpQuery();
+      if (query) {
+        const parsed = this.travelService.parseTravelQuery(query);
+        this.travelForm.patchValue(parsed, { emitEvent: false });
+      }
+    });
+  }
 
   // Computed properties
   private formStatus = toSignal(this.travelForm.statusChanges, { initialValue: this.travelForm.status });
   private formValid = computed(() => this.formStatus() === 'VALID');
-  canSubmit = computed(() => this.formValid() && !this.isLoading());
+  canSubmit = computed(() => (this.formValid() || this.nlpQuery().length > 10) && !this.isLoading());
+
+  // Options for chips
+  readonly travelClasses = [
+    { value: 'economy', label: 'Economy' },
+    { value: 'business', label: 'Business' },
+    { value: 'first', label: 'First' }
+  ];
+
+  readonly flexibilityOptions = [
+    { value: 'exact', label: 'Exact Dates' },
+    { value: 'flexible', label: 'Flexible' },
+    { value: 'anytime', label: 'Anytime' }
+  ];
 
 
+
+  activeChip = signal<string | null>(null);
+
+  toggleChip(chip: string): void {
+    if (this.activeChip() === chip) {
+      this.activeChip.set(null);
+    } else {
+      this.activeChip.set(chip);
+    }
+  }
+
+  updateQuery(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.nlpQuery.set(target.value);
+  }
+
+  selectSuggestion(suggestion: string): void {
+    this.nlpQuery.set(suggestion);
+    // Explicitly trigger parsing
+    const parsed = this.travelService.parseTravelQuery(suggestion);
+    this.travelForm.patchValue(parsed, { emitEvent: false });
+  }
 
   // Options for dropdowns
   readonly budgetRanges = [
@@ -137,7 +203,16 @@ export class Home {
     this.isLoading.set(true);
 
     try {
-      const formData: TravelPreferences = this.travelForm.value;
+      // Create a preferences object from the NLP query if available
+      let formData: TravelPreferences;
+
+      if (this.nlpQuery().length > 10) {
+        const parsed = this.travelService.parseTravelQuery(this.nlpQuery());
+        // Merge with existing form values
+        formData = { ...this.travelForm.value, ...parsed };
+      } else {
+        formData = this.travelForm.value;
+      }
 
       // Call the Genkit flow via TravelService
       const itinerary = await this.travelService.planTrip(formData);
@@ -148,7 +223,7 @@ export class Home {
       if (isPlatformBrowser(this.platformId)) {
         setTimeout(() => {
           const resultsElement = document.getElementById('itinerary-results');
-          resultsElement?.scrollIntoView({ behavior: 'smooth' });
+          resultsElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       }
 
@@ -176,12 +251,21 @@ export class Home {
   resetForm(): void {
     this.travelForm.reset({
       groupSize: 1,
-      interests: []
+      interests: [],
+      budget: 'mid-range',
+      travelStyle: 'adventure',
+      accommodation: 'hotel',
+      transportation: 'flight',
+      travelClass: 'economy',
+      flexibility: 'flexible'
     });
-    this.showForm.set(false);
+    this.nlpQuery.set('');
+    this.showForm.set(true);
     this.generatedItinerary.set(null);
 
     // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }

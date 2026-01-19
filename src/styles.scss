@@ -31,6 +31,12 @@
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+
+  --color-accent: #2563eb;
+  --color-secondary: #f59e0b;
+
+  --radius-full: 999px;
 
 /* Typography */
   --font-brand: 'Ubuntu', system-ui, sans-serif;
@@ -56,14 +62,17 @@
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 15px rgba(37, 99, 235, 0.3);
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   line-height: 1.25;
+  font-weight: 700;
+  color: var(--color-primary);
 }
 
 html, body {
@@ -471,4 +480,79 @@ textarea.form-control {
   .text-3xl {
     font-size: 1.5rem;
   }
+}
+
+.bg-gradient-to-r {
+  background: linear-gradient(to right, var(--color-accent), var(--color-secondary));
+}
+
+.from-accent {
+  --tw-gradient-from: var(--color-accent);
+}
+
+.to-secondary {
+  --tw-gradient-to: var(--color-secondary);
+}
+
+.rounded-full {
+  border-radius: var(--radius-full);
+}
+
+.pill-shadow {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.border-accent {
+  border-color: var(--color-accent);
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
+}
+
+.max-w-4xl {
+  max-width: 56rem;
+}
+
+.max-w-6xl {
+  max-width: 72rem;
+}
+
+.py-12 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.py-20 {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.bg-gray-50 {
+  background-color: var(--color-gray-50);
+}
+
+.bg-blue-50 {
+  background-color: #eff6ff;
+}
+
+.border-blue-100 {
+  border-color: #dbeafe;
+}
+
+.text-blue-900 {
+  color: #1e3a8a;
+}
+
+.text-blue-800 {
+  color: #1e40af;
+}
+
+.text-blue-600 {
+  color: #2563eb;
 }

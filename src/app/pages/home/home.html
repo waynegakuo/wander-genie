@@ -1,61 +1,141 @@
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="container">
+    <nav class="sub-nav flex justify-center gap-8 mb-12">
+      <a href="#" class="nav-item active">Flights</a>
+      <a href="#" class="nav-item">Hotels</a>
+      <a href="#" class="nav-item">Itineraries</a>
+    </nav>
+
     <div class="hero-content text-center">
-      <h1 class="hero-title text-brand">
+      <h1 class="hero-title text-brand text-white">
         Wander<span class="text-secondary">Genie</span>
       </h1>
-      <p class="hero-subtitle text-white">
-        Your AI-powered travel companion that creates personalized itineraries tailored to your dreams
-      </p>
-      <p class="hero-description text-body text-gray-100">
-        Stop spending hours planning. Let our AI craft the perfect journey based on your preferences, budget, and travel style.
-      </p>
+      <p class="hero-subtitle mb-8">Your AI-powered travel companion for effortless itineraries</p>
 
-      @if (!showForm()) {
-        <div class="hero-actions mt-8">
+      <div class="genie-bar-container max-w-4xl mx-auto mt-12 relative">
+        <div class="genie-bar flex items-center bg-white rounded-full p-3 transition-all shadow-xl">
+          <span class="sparkle-icon ml-4 text-2xl">✨</span>
+          <input
+            type="text"
+            class="nlp-input flex-1 bg-transparent border-none focus:outline-none px-4 py-3 text-xl leading-normal"
+            [placeholder]="currentPlaceholder()"
+            (input)="updateQuery($event)"
+            [value]="nlpQuery()">
           <button
-            (click)="showPlanningForm()"
-            class="btn btn-primary btn-large">
-            ✨ Start Planning My Trip
+            (click)="generateItinerary()"
+            [disabled]="!canSubmit()"
+            class="btn-search rounded-full bg-gradient-to-r from-accent to-secondary text-white transition-all flex items-center justify-center shrink-0">
+            @if (isLoading()) {
+              <span class="loading-spinner"></span>
+            } @else {
+              <span class="material-icons text-2xl">search</span>
+            }
           </button>
-          <p class="hero-note text-sm text-gray-300 mt-4 text-note">
-            Free • No sign-up required • Powered by Gemini AI
-          </p>
         </div>
-      }
-    </div>
 
-          <div class="features-grid grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div class="feature-card card text-center p-6">
-              <div class="feature-icon text-4xl mb-4">🎯</div>
-              <h3 class="feature-title text-ui text-xl font-bold mb-2">Tailored for You</h3>
-              <p class="feature-description text-body text-sm text-gray-600">
-                Itineraries customized to your interests, budget, and travel style.
-              </p>
-            </div>
-
-            <div class="feature-card card text-center p-6">
-              <div class="feature-icon text-4xl mb-4">🤖</div>
-              <h3 class="feature-title text-ui text-xl font-bold mb-2">AI Intelligence</h3>
-              <p class="feature-description text-body text-sm text-gray-600">
-                Powered by Gemini AI to ensure the most up-to-date and relevant suggestions.
-              </p>
-            </div>
-
-            <div class="feature-card card text-center p-6">
-              <div class="feature-icon text-4xl mb-4">⚡</div>
-              <h3 class="feature-title text-ui text-xl font-bold mb-2">Instant Planning</h3>
-              <p class="feature-description text-body text-sm text-gray-600">
-                Get a comprehensive multi-day travel plan in less than 30 seconds.
-              </p>
-            </div>
+        <div class="refinement-chips flex flex-wrap justify-center gap-3 mt-6">
+          <!-- Budget Chip -->
+          <div class="relative">
+            <button (click)="toggleChip('budget')" class="chip" [class.active]="activeChip() === 'budget'">
+              <span class="material-icons text-sm">payments</span>
+              {{ travelForm.get('budget')?.value || 'Budget' }}
+              <span class="material-icons text-sm">expand_more</span>
+            </button>
+            @if (activeChip() === 'budget') {
+              <div class="dropdown-menu">
+                @for (b of budgetRanges; track b.value) {
+                  <button (click)="travelForm.get('budget')?.setValue(b.value); activeChip.set(null)" class="dropdown-item">
+                    {{ b.label }}
+                  </button>
+                }
+              </div>
+            }
           </div>
+
+          <!-- Passengers Chip -->
+          <div class="relative">
+            <button (click)="toggleChip('passengers')" class="chip" [class.active]="activeChip() === 'passengers'">
+              <span class="material-icons text-sm">person</span>
+              {{ travelForm.get('groupSize')?.value }} Passengers
+              <span class="material-icons text-sm">expand_more</span>
+            </button>
+            @if (activeChip() === 'passengers') {
+              <div class="dropdown-menu p-4 w-48">
+                <label class="text-xs uppercase font-bold text-gray-500 mb-2 block">Number of Travelers</label>
+                <input type="number" formControlName="groupSize" class="form-control" min="1" max="20">
+              </div>
+            }
+          </div>
+
+          <!-- Class Chip -->
+          <div class="relative">
+            <button (click)="toggleChip('class')" class="chip" [class.active]="activeChip() === 'class'">
+              <span class="material-icons text-sm">flight_class</span>
+              {{ travelForm.get('travelClass')?.value || 'Class' }}
+              <span class="material-icons text-sm">expand_more</span>
+            </button>
+            @if (activeChip() === 'class') {
+              <div class="dropdown-menu">
+                @for (c of travelClasses; track c.value) {
+                  <button (click)="travelForm.get('travelClass')?.setValue(c.value); activeChip.set(null)" class="dropdown-item">
+                    {{ c.label }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Flexibility Chip -->
+          <div class="relative">
+            <button (click)="toggleChip('flexibility')" class="chip" [class.active]="activeChip() === 'flexibility'">
+              <span class="material-icons text-sm">event_repeat</span>
+              {{ travelForm.get('flexibility')?.value || 'Flexibility' }}
+              <span class="material-icons text-sm">expand_more</span>
+            </button>
+            @if (activeChip() === 'flexibility') {
+              <div class="dropdown-menu">
+                @for (f of flexibilityOptions; track f.value) {
+                  <button (click)="travelForm.get('flexibility')?.setValue(f.value); activeChip.set(null)" class="dropdown-item">
+                    {{ f.label }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (!nlpQuery()) {
+          <div class="smart-suggestions mt-12">
+            <h3 class="text-white text-sm uppercase font-bold tracking-wider mb-6">Need inspiration?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <button (click)="selectSuggestion('Hidden gems in Europe for a budget summer trip')" class="suggestion-card">
+                <span class="suggestion-icon">💎</span>
+                <span class="suggestion-text">Hidden Gems in Europe</span>
+              </button>
+              <button (click)="selectSuggestion('Cheap tropical getaways for 4 people in March')" class="suggestion-card">
+                <span class="suggestion-icon">🌴</span>
+                <span class="suggestion-text">Cheap Tropical Getaways</span>
+              </button>
+              <button (click)="selectSuggestion('Best adventure trips for solo travelers in Asia')" class="suggestion-card">
+                <span class="suggestion-icon">🏔️</span>
+                <span class="suggestion-text">Solo Adventure in Asia</span>
+              </button>
+            </div>
+
+            <a href="#" class="explore-anywhere mt-8 inline-flex items-center gap-2 text-white hover:text-secondary transition-colors">
+              <span class="material-icons">map</span>
+              Explore Destinations Anywhere
+            </a>
+          </div>
+        }
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- TravelService Planning Form -->
-@if (showForm()) {
+<!-- TravelService Planning Form (Hidden by default now, or used for fallback) -->
+@if (showForm() && nlpQuery().length > 0 && false) {
   <section id="planning-form" class="planning-section">
     <div class="container">
       <div class="form-container card card-elevated max-w-2xl">
@@ -301,57 +381,96 @@
 }
 
 <!-- Generated Itinerary Results -->
-@if (generatedItinerary()) {
-  <section id="itinerary-results" class="results-section" role="region" aria-labelledby="itinerary-heading" aria-live="polite">
-    <div class="container">
-      <div class="results-container card card-elevated max-w-2xl">
-        <div class="card-body">
-          <div class="results-header text-center mb-8">
-            <h2 id="itinerary-heading" class="results-title text-ui text-3xl font-bold">
-              Your Personalized Journey
+@if (isLoading()) {
+  <section class="loading-section py-20">
+    <div class="container max-w-4xl">
+      <div class="skeleton-loader bg-white rounded-2xl p-8 shadow-xl animate-pulse">
+        <div class="h-8 bg-gray-200 rounded w-1/3 mb-8"></div>
+        <div class="space-y-4">
+          <div class="h-4 bg-gray-200 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+          <div class="h-4 bg-gray-200 rounded w-4/6"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-8 mt-12">
+          <div class="h-40 bg-gray-200 rounded-xl"></div>
+          <div class="h-40 bg-gray-200 rounded-xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
+@if (generatedItinerary() && !isLoading()) {
+  <section id="itinerary-results" class="results-section py-20 bg-gray-50" role="region" aria-labelledby="itinerary-heading" aria-live="polite">
+    <div class="container max-w-6xl">
+      <div class="results-grid grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <!-- Left: Top Flight Deals -->
+        <div class="flight-deals-column lg:col-span-5">
+          <div class="column-header mb-8 flex items-center justify-between">
+            <h2 class="text-ui text-2xl font-bold flex items-center gap-3">
+              <span class="material-icons text-accent">flight_takeoff</span>
+              Top Flight Deals
             </h2>
-            <p class="results-subtitle text-body text-gray-600 mt-4">
-              A custom travel plan for <strong>{{ travelForm.get('destination')?.value }}</strong>
-            </p>
           </div>
 
-          <div class="itinerary-content card-elevated">
+          <div class="space-y-4">
             @if (generatedItinerary()?.flightOptions; as flights) {
-              @if (flights.length > 0) {
-                <div class="flight-options-container mb-8">
-                  <h3 class="text-ui text-xl font-bold mb-4 flex items-center gap-2">
-                    ✈️ Suggested Flight Options
-                  </h3>
-                  <div class="grid grid-cols-1 gap-4">
-                    @for (flight of flights; track flight.googleFlightsUrl) {
-                      <div class="flight-card p-4 border rounded-lg bg-gray-50">
-                        <h4 class="font-bold text-brand">{{ flight.title }}</h4>
-                        <p class="text-sm text-gray-600 mb-2">{{ flight.description }}</p>
-                        <a [href]="flight.googleFlightsUrl" target="_blank" rel="noopener" class="btn btn-secondary btn-sm inline-flex items-center gap-2">
-                          View on Google Flights ↗
-                        </a>
-                      </div>
-                    }
+              @for (flight of flights; track flight.googleFlightsUrl) {
+                <div class="flight-deal-card">
+                  <div class="flight-info">
+                    <div class="airline">{{ flight.title }}</div>
+                    <div class="route">{{ flight.description }}</div>
+                    <a [href]="flight.googleFlightsUrl" target="_blank" rel="noopener" class="text-accent text-sm font-semibold mt-4 inline-flex items-center gap-1 hover:underline">
+                      View on Google Flights <span class="material-icons text-xs">open_in_new</span>
+                    </a>
                   </div>
+                  <div class="flight-price">
+                    <span class="label">From</span>
+                    <span class="price">$1,240</span>
+                  </div>
+                </div>
+              } @empty {
+                <div class="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
+                  <span class="material-icons text-4xl text-gray-300">flight_takeoff</span>
+                  <p class="text-gray-500 mt-2 font-medium">No specific flight deals found.</p>
                 </div>
               }
             }
-            <div class="itinerary-text" [innerHTML]="generatedItinerary()?.htmlContent"></div>
           </div>
 
-          <div class="results-actions flex gap-4 justify-center mt-8">
-            <button
-              (click)="resetForm()"
-              class="btn btn-secondary">
-              Plan Another Trip
-            </button>
+          <div class="price-insights mt-8 bg-blue-50 p-6 rounded-2xl border border-blue-100 shadow-sm">
+            <h4 class="font-bold text-blue-900 flex items-center gap-2 mb-2">
+              <span class="material-icons text-blue-600">insights</span>
+              Price Insights
+            </h4>
+            <p class="text-sm text-blue-800 leading-relaxed">
+              Prices are currently low for {{ travelForm.get('destination')?.value }}. This is a great time to book! We recommend booking within the next 14 days for the best rates.
+            </p>
+          </div>
+        </div>
 
-            <button
-              type="button"
-              class="btn btn-primary"
-              (click)="printItinerary()">
-              📄 Save/Print Itinerary
-            </button>
+        <!-- Right: Genie's Suggested Itinerary -->
+        <div class="itinerary-column lg:col-span-7">
+          <div class="column-header mb-8">
+            <h2 class="text-ui text-2xl font-bold flex items-center gap-3">
+              <span class="material-icons text-secondary">auto_awesome</span>
+              Genie's Suggested Itinerary
+            </h2>
+          </div>
+
+          <div class="itinerary-container shadow-sm">
+            <div class="prose" [innerHTML]="generatedItinerary()?.htmlContent"></div>
+
+            <div class="itinerary-footer mt-10 pt-8 border-t border-gray-200 flex flex-wrap gap-4">
+              <button (click)="printItinerary()" class="btn btn-primary rounded-full">
+                <span class="material-icons">download</span>
+                Save Itinerary
+              </button>
+              <button class="btn btn-secondary rounded-full">
+                <span class="material-icons">share</span>
+                Share Trip
+              </button>
+            </div>
           </div>
         </div>
       </div>

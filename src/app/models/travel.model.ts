@@ -9,6 +9,8 @@ export interface TravelPreferences {
   groupSize: number;
   accommodation: string;
   transportation: string;
+  travelClass?: string;
+  flexibility?: string;
 }
 
 export interface Itinerary {
