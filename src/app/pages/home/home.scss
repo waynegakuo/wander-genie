@@ -57,11 +57,59 @@
       box-shadow: none;
       background: transparent;
       width: 100%;
+      position: relative;
+      z-index: 2;
+    }
 
-      &::placeholder {
-        color: var(--color-gray-400);
-        font-style: italic;
+    .placeholder-container {
+      position: absolute;
+      left: 4.5rem; /* After sparkle-icon */
+      right: 5rem; /* Before button */
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      height: 1.5rem;
+      overflow: hidden;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .placeholder-text {
+      position: absolute;
+      width: 100%;
+      color: var(--color-gray-400);
+      font-style: italic;
+      opacity: 0.7;
+      font-family: var(--font-body);
+      font-size: 1.15rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.5rem;
+
+      &.current {
+        transform: translateY(0);
         opacity: 0.7;
+        transition: none;
+
+        &.exit {
+          transform: translateY(-100%);
+          opacity: 0;
+          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      }
+
+      &.next {
+        transform: translateY(100%);
+        opacity: 0;
+        transition: none;
+
+        &.enter {
+          transform: translateY(0);
+          opacity: 0.7;
+          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
       }
     }
 

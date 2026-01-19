@@ -32,6 +32,8 @@ export class Home {
     'Adventurous solo trip to Patagonia for hiking...'
   ];
   currentPlaceholder = signal(this.placeholders[0]);
+  nextPlaceholder = signal(this.placeholders[1]);
+  isTransitioning = signal(false);
 
   // Form setup
   travelForm: FormGroup = this.fb.group({
@@ -54,8 +56,14 @@ export class Home {
     if (isPlatformBrowser(this.platformId)) {
       let index = 0;
       setInterval(() => {
-        index = (index + 1) % this.placeholders.length;
-        this.currentPlaceholder.set(this.placeholders[index]);
+        this.isTransitioning.set(true);
+
+        setTimeout(() => {
+          index = (index + 1) % this.placeholders.length;
+          this.currentPlaceholder.set(this.placeholders[index]);
+          this.nextPlaceholder.set(this.placeholders[(index + 1) % this.placeholders.length]);
+          this.isTransitioning.set(false);
+        }, 600); // Match SCSS transition time
       }, 4000);
     }
 

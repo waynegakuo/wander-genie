@@ -16,10 +16,19 @@
       <div class="genie-bar-container max-w-4xl mx-auto mt-12 relative">
         <div class="genie-bar flex items-center bg-white rounded-full p-3 transition-all shadow-xl">
           <span class="sparkle-icon ml-4 text-2xl">✨</span>
+          <div class="placeholder-container">
+            @if (!nlpQuery()) {
+              <span class="placeholder-text current" [class.exit]="isTransitioning()">
+                {{ currentPlaceholder() }}
+              </span>
+              <span class="placeholder-text next" [class.enter]="isTransitioning()">
+                {{ nextPlaceholder() }}
+              </span>
+            }
+          </div>
           <input
             type="text"
             class="nlp-input flex-1 bg-transparent border-none focus:outline-none px-4 py-3 text-xl leading-normal"
-            [placeholder]="currentPlaceholder()"
             (input)="updateQuery($event)"
             [value]="nlpQuery()">
           <button
