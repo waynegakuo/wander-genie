@@ -39,7 +39,7 @@
           <div class="chip-container">
             <button (click)="toggleChip('budget')" class="chip" [class.active]="activeChip() === 'budget'">
               <span class="material-icons text-sm">payments</span>
-              {{ travelForm.get('budget')?.value || 'Budget' }}
+              {{ (travelForm.get('budget')?.value | titlecase) || 'Budget' }}
               <span class="material-icons text-sm">expand_more</span>
             </button>
             @if (activeChip() === 'budget') {
@@ -72,7 +72,7 @@
           <div class="chip-container">
             <button (click)="toggleChip('class')" class="chip" [class.active]="activeChip() === 'class'">
               <span class="material-icons text-sm">flight_class</span>
-              {{ travelForm.get('travelClass')?.value || 'Class' }}
+              {{ (travelForm.get('travelClass')?.value | titlecase) || 'Class' }}
               <span class="material-icons text-sm">expand_more</span>
             </button>
             @if (activeChip() === 'class') {
@@ -90,7 +90,7 @@
           <div class="chip-container">
             <button (click)="toggleChip('flexibility')" class="chip" [class.active]="activeChip() === 'flexibility'">
               <span class="material-icons text-sm">event_repeat</span>
-              {{ travelForm.get('flexibility')?.value || 'Flexibility' }}
+              {{ (travelForm.get('flexibility')?.value | titlecase) || 'Flexibility' }}
               <span class="material-icons text-sm">expand_more</span>
             </button>
             @if (activeChip() === 'flexibility') {
