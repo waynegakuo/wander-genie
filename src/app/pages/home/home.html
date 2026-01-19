@@ -13,7 +13,22 @@
       </h1>
       <p class="hero-subtitle mb-8">Your AI-powered travel companion for effortless itineraries</p>
 
-      <div class="genie-bar-container max-w-4xl mx-auto mt-12 relative">
+      <div class="genie-bar-container max-w-4xl mx-auto mt-12 relative" [formGroup]="travelForm">
+        <div class="departure-container flex items-center justify-center mb-4">
+          <span class="material-icons text-white mr-2 text-sm opacity-80">flight_takeoff</span>
+          <span class="text-white text-sm opacity-80 mr-2">Departing from</span>
+          <div class="departure-input-wrapper relative">
+            <input
+              type="text"
+              formControlName="departureLocation"
+              placeholder="Your city"
+              class="departure-input"
+              #departureInput>
+            <span class="departure-mirror" aria-hidden="true">{{ travelForm.get('departureLocation')?.value || 'Your city' }}</span>
+            <span class="material-icons edit-icon">edit</span>
+          </div>
+        </div>
+
         <div class="genie-bar flex items-center bg-white rounded-full p-3 transition-all shadow-xl">
           <span class="sparkle-icon ml-4 text-2xl">✨</span>
           <div class="placeholder-container">

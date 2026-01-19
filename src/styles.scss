@@ -304,6 +304,14 @@ textarea.form-control {
   justify-content: space-between;
 }
 
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
 .gap-4 {
   gap: var(--spacing-md);
 }
@@ -407,6 +415,14 @@ textarea.form-control {
   margin-top: 0.5rem;
 }
 
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
 .mt-4 {
   margin-top: var(--spacing-md);
 }
@@ -431,8 +447,16 @@ textarea.form-control {
   margin-bottom: var(--spacing-xl);
 }
 
+.mt-12 {
+  margin-top: var(--spacing-3xl);
+}
+
 .p-4 {
   padding: var(--spacing-md);
+}
+
+.p-3 {
+  padding: 0.75rem;
 }
 
 .p-6 {
@@ -441,6 +465,16 @@ textarea.form-control {
 
 .p-8 {
   padding: var(--spacing-xl);
+}
+
+.px-4 {
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 /* Width utilities */
@@ -514,8 +548,28 @@ textarea.form-control {
   border-radius: var(--radius-full);
 }
 
+.rounded-xl {
+  border-radius: var(--radius-xl);
+}
+
+.rounded-2xl {
+  border-radius: 1.5rem;
+}
+
 .pill-shadow {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-xl {
+  box-shadow: var(--shadow-xl);
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.opacity-80 {
+  opacity: 0.8;
 }
 
 .border-accent {
@@ -555,6 +609,10 @@ textarea.form-control {
 
 .bg-blue-50 {
   background-color: #eff6ff;
+}
+
+.bg-white {
+  background-color: var(--color-white);
 }
 
 .border-blue-100 {

@@ -109,7 +109,12 @@ export class Home {
 
   updateQuery(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.nlpQuery.set(target.value);
+    const value = target.value;
+    this.nlpQuery.set(value);
+
+    // If "from [City]" is in the query, we don't want to override if user manually typed in departure
+    // Actually, the effect handles patching. If we want to allow manual override to stick,
+    // we might need more complex logic, but for now, simple patching is fine.
   }
 
   selectSuggestion(suggestion: string): void {
