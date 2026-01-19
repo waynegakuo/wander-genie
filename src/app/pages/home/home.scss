@@ -367,7 +367,7 @@
 }
 
 .smart-suggestions {
-  margin-top: 3rem; /* mt-12 */
+  margin-top: 2rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
   transform: translateY(0);
@@ -546,6 +546,7 @@
 /* Home Page Styles */
 
 .hero-section {
+  padding: var(--spacing-xl) 0;
   background-color: var(--color-primary);
   background-image: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop');
   background-size: cover;
