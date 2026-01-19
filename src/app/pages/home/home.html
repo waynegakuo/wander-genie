@@ -9,7 +9,7 @@
 
     <div class="hero-content text-center">
       <h1 class="hero-title text-brand text-white">
-        Wander<span class="text-secondary">Genie</span>
+        Wander<span class="text-secondary-light">Genie</span>
       </h1>
       <p class="hero-subtitle mb-8">Your AI-powered travel companion for effortless itineraries</p>
 
@@ -25,7 +25,7 @@
           <button
             (click)="generateItinerary()"
             [disabled]="!canSubmit()"
-            class="btn-search rounded-full bg-gradient-to-r from-accent to-secondary text-white transition-all flex items-center justify-center shrink-0">
+            class="btn-search rounded-full text-white transition-all flex items-center justify-center shrink-0">
             @if (isLoading()) {
               <span class="loading-spinner"></span>
             } @else {

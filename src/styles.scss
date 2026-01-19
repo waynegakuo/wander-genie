@@ -98,6 +98,10 @@ body {
 }
 
 /* Typography utilities */
+.text-white {
+  color: var(--color-white);
+}
+
 .text-brand {
   font-family: var(--font-brand);
 }
@@ -336,6 +340,18 @@ textarea.form-control {
 
 .text-secondary {
   color: var(--color-secondary);
+}
+
+.text-secondary-light {
+  color: var(--color-secondary-light);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-accent-light {
+  color: #60a5fa; /* Blue 400 */
 }
 
 .text-gray-100 {
