@@ -353,7 +353,7 @@
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   color: var(--color-white);
@@ -430,6 +430,13 @@
 .planning-section {
   padding: var(--spacing-3xl) 0;
   background: linear-gradient(to bottom, var(--color-gray-50), var(--color-white));
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+
+  .container {
+    width: 100%;
+  }
 
   .form-container {
     margin: 0 auto;
@@ -504,6 +511,13 @@
 .results-section {
   padding: var(--spacing-3xl) 0;
   background: var(--color-gray-50);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+
+  .container {
+    width: 100%;
+  }
 
   .results-container {
     margin: 0 auto;
@@ -550,6 +564,17 @@
         transform: scale(1.01);
       }
     }
+  }
+}
+
+.loading-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .container {
+    width: 100%;
   }
 }
 
@@ -613,17 +638,19 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 90vh;
+    min-height: 100vh;
+    padding: var(--spacing-xl) 0;
+  }
+
+  .planning-section,
+  .results-section,
+  .loading-section {
+    min-height: 100vh;
     padding: var(--spacing-xl) 0;
   }
 
   .features-grid {
     margin-top: var(--spacing-xl);
-  }
-
-  .planning-section,
-  .results-section {
-    padding: var(--spacing-xl) 0;
   }
 
   .form-actions {
