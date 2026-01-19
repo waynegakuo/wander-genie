@@ -6,6 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TravelPreferences, Itinerary } from '../../models/travel.model';
 import { TravelService } from '../../services/travel/travel.service';
+import { LoadingMessageService } from '../../services/loading/loading-message.service';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ export class Home {
   private fb = new FormBuilder();
   private platformId = inject(PLATFORM_ID);
   private travelService = inject(TravelService);
+  private loadingMessageService = inject(LoadingMessageService);
   loadingSection = viewChild<ElementRef>('loadingSection');
 
   // Signals for state management
@@ -25,24 +27,7 @@ export class Home {
   showForm = signal(true); // NLP first, so show form area
   generatedItinerary = signal<Itinerary | null>(null);
   nlpQuery = signal('');
-  loadingMessage = signal('');
-  private loadingMessages = [
-    'Packing your virtual bags... 🧳',
-    'Consulting the travel oracles... 🔮',
-    'Finding the best hidden gems... 💎',
-    'Mapping out your adventure... 🗺️',
-    'Checking weather patterns... ☀️',
-    'Scouting local delicacies... 🍜',
-    'Securing the best views... 🏔️',
-    'Translating local phrases... 🗣️',
-    'Calculating the perfect route... 📍',
-    'Finding your home away from home... 🏠',
-    'Checking for passports... 🛂',
-    'Fueling the jet... ✈️',
-    'Browsing through souvenirs... 🎭',
-    'Booking window seats... 🪟',
-    'Checking into your destination... 🏨'
-  ];
+  loadingMessage = this.loadingMessageService.currentMessage;
 
   placeholders = [
     'Find me a romantic weekend in Paris...',
@@ -97,16 +82,11 @@ export class Home {
 
     // Loading messages effect
     effect(() => {
-      if (this.isLoading() && isPlatformBrowser(this.platformId)) {
-        this.loadingMessage.set(this.loadingMessages[0]);
-        const interval = setInterval(() => {
-          const currentIndex = this.loadingMessages.indexOf(this.loadingMessage());
-          const nextIndex = (currentIndex + 1) % this.loadingMessages.length;
-          this.loadingMessage.set(this.loadingMessages[nextIndex]);
-        }, 3000);
-        return () => clearInterval(interval);
+      if (this.isLoading()) {
+        this.loadingMessageService.startCycling();
+      } else {
+        this.loadingMessageService.stopCycling();
       }
-      return;
     });
 
     // Smooth scroll to loading section
