@@ -30,6 +30,9 @@ const TravelPreferencesSchema = z.object({
   groupSize: z.number().describe('The number of people traveling'),
   accommodation: z.string().describe('The preferred type of accommodation'),
   transportation: z.string().describe('The preferred mode of transportation'),
+  travelClass: z.string().describe('The travel class (e.g., economy, business, first)').optional(),
+  flexibility: z.string().describe('Date flexibility').optional(),
+  nlpQuery: z.string().describe('The original natural language query from the user').optional(),
 });
 
 const ItinerarySchema = z.object({

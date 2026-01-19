@@ -13,6 +13,11 @@ export const SYSTEM_PROMPT = (input: TravelPreferences) => `
     - Group Size: ${input.groupSize}
     - Accommodation Preference: ${input.accommodation}
     - Transportation: ${input.transportation}
+    ${input.travelClass ? `- Travel Class: ${input.travelClass}` : ''}
+    ${input.flexibility ? `- Date Flexibility: ${input.flexibility}` : ''}
+    ${input.nlpQuery ? `- User's Natural Language Request: "${input.nlpQuery}"` : ''}
+
+    IMPORTANT: If there is a "User's Natural Language Request" provided, use it to refine the itinerary details while respecting the specific filters provided above. The natural query might contain specific destination requests, activities, or constraints not captured in the structured filters.
 
     The itinerary should include:
     - A header with a summary of the trip.

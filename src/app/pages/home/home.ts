@@ -211,16 +211,14 @@ export class Home {
     this.isLoading.set(true);
 
     try {
-      // Create a preferences object from the NLP query if available
-      let formData: TravelPreferences;
-
-      if (this.nlpQuery().length > 10) {
-        const parsed = this.travelService.parseTravelQuery(this.nlpQuery());
-        // Merge with existing form values
-        formData = { ...this.travelForm.value, ...parsed };
-      } else {
-        formData = this.travelForm.value;
-      }
+      // Create a preferences object from the form values
+      // The NLP query is already patched into the form via the effect
+      const formData: TravelPreferences = {
+        ...this.travelForm.value,
+        // Ensure the NLP query itself is included if the backend needs it
+        // or if we want to ensure it's part of the context
+        nlpQuery: this.nlpQuery()
+      };
 
       // Call the Genkit flow via TravelService
       const itinerary = await this.travelService.planTrip(formData);

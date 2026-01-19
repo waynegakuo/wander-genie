@@ -11,6 +11,7 @@ export interface TravelPreferences {
   transportation: string;
   travelClass?: string;
   flexibility?: string;
+  nlpQuery?: string;
 }
 
 export interface Itinerary {
