@@ -169,10 +169,9 @@ export class Home {
 
   selectSuggestion(suggestion: string): void {
     this.nlpQuery.set(suggestion);
-    // Explicitly trigger parsing using AI for suggestions as they are well-formed but complex for regex
-    this.travelService.planTrip(suggestion).then(parsed => {
-      this.travelForm.patchValue(parsed, { emitEvent: false });
-    });
+    // Explicitly trigger parsing using local extraction for suggestions
+    const parsed = this.travelService.extractPreferences(suggestion);
+    this.travelForm.patchValue(parsed, { emitEvent: false });
   }
 
   // Options for dropdowns

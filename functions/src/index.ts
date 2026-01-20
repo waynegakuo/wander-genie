@@ -5,7 +5,6 @@ import { googleAI } from '@genkit-ai/google-genai';
 import { genkit, z } from "genkit";
 
 import { SYSTEM_PROMPT, GENIE_SYSTEM_PROMPT } from './system-prompt';
-import { PARSE_PROMPT } from './parse-prompt';
 
 const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
 
@@ -81,29 +80,6 @@ export const _generateItineraryLogic = ai.defineFlow({
   return response.output;
 });
 
-export const _geniePlanTripLogic = ai.defineFlow({
-  name: 'geniePlanTripFlow',
-  inputSchema: z.string(),
-  outputSchema: TravelPreferencesSchema.partial(),
-},
-  async (input) => {
-    const today = new Date().toISOString().split('T')[0];
-    const response = await ai.generate({
-      prompt: `${PARSE_PROMPT(today)} \n\n User Query: ${input}`,
-      output: { schema: TravelPreferencesSchema.partial() },
-      config: {
-        temperature: 0.1,
-      },
-    });
-
-    if (!response.output) {
-      throw new Error('No output from AI');
-    }
-
-    return response.output;
-  }
-);
-
 export const _genieItineraryLogic = ai.defineFlow({
   name: 'genieItineraryFlow',
   inputSchema: z.object({
@@ -138,15 +114,6 @@ export const generateItineraryFlow = onCallGenkit(
     cors: true
   },
   _generateItineraryLogic
-)
-
-export const geniePlanTripFlow = onCallGenkit(
-  {
-    secrets: [GEMINI_API_KEY],
-    region: 'africa-south1',
-    cors: true
-  },
-  _geniePlanTripLogic
 )
 
 export const genieItineraryFlow = onCallGenkit(

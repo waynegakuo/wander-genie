@@ -14,12 +14,6 @@ export class TravelService {
     return result.data;
   }
 
-  async planTrip(text: string): Promise<Partial<TravelPreferences>> {
-    const parseFn = httpsCallable<string, Partial<TravelPreferences>>(this.functions, 'geniePlanTripFlow');
-    const result = await parseFn(text);
-    return result.data;
-  }
-
   async generateGenieItinerary(text: string, departureLocation?: string): Promise<Itinerary> {
     const genieFn = httpsCallable<{ query: string; departureLocation?: string }, Itinerary>(
       this.functions,
