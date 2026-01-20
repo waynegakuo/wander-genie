@@ -20,6 +20,28 @@ export class TravelService {
     return result.data;
   }
 
+  async generateGenieItinerary(text: string, departureLocation?: string): Promise<Itinerary> {
+    const genieFn = httpsCallable<{ query: string; departureLocation?: string }, Itinerary>(
+      this.functions,
+      'genieItineraryFlow'
+    );
+    const result = await genieFn({ query: text, departureLocation });
+    return result.data;
+  }
+
+  /**
+   * Extracts travel preferences from natural language text using pattern matching.
+   *
+   * @param text - The natural language query string to parse for travel preferences
+   * @returns A partial TravelPreferences object containing extracted information such as
+   *          destination, departure location, group size, budget, travel class, and duration
+   *
+   * @example
+   * ```typescript
+   * const prefs = extractPreferences("I want to travel from New York to Paris for 5 people on a budget");
+   * // Returns: { departureLocation: "New York", destination: "Paris", groupSize: 5, budget: "budget" }
+   * ```
+   */
   extractPreferences(text: string): Partial<TravelPreferences> {
     const preferences: Partial<TravelPreferences> = {};
 

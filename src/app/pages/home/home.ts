@@ -267,20 +267,22 @@ export class Home {
     this.isLoading.set(true);
 
     try {
-      // If we have an NLP query, let's parse it first using AI for better accuracy if it's long enough
+      let itinerary: Itinerary;
+
+      // If we have an NLP query that is long enough, use the Genie flow directly
       if (this.nlpQuery().length > 10) {
-        const parsed = await this.travelService.planTrip(this.nlpQuery());
-        this.travelForm.patchValue(parsed, { emitEvent: false });
+        const departureLocation = this.travelForm.get('departureLocation')?.value;
+        itinerary = await this.travelService.generateGenieItinerary(this.nlpQuery(), departureLocation);
+      } else {
+        // Create a preferences object from the form values
+        const formData: TravelPreferences = {
+          ...this.travelForm.value,
+          nlpQuery: this.nlpQuery()
+        };
+
+        // Call the Genkit flow via TravelService
+        itinerary = await this.travelService.generateItinerary(formData);
       }
-
-      // Create a preferences object from the form values
-      const formData: TravelPreferences = {
-        ...this.travelForm.value,
-        nlpQuery: this.nlpQuery()
-      };
-
-      // Call the Genkit flow via TravelService
-      const itinerary = await this.travelService.generateItinerary(formData);
 
       this.generatedItinerary.set(itinerary);
 

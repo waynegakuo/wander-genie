@@ -4,7 +4,7 @@ import {onCallGenkit} from 'firebase-functions/v2/https';
 import { googleAI } from '@genkit-ai/google-genai';
 import { genkit, z } from "genkit";
 
-import { SYSTEM_PROMPT } from './system-prompt';
+import { SYSTEM_PROMPT, GENIE_SYSTEM_PROMPT } from './system-prompt';
 import { PARSE_PROMPT } from './parse-prompt';
 
 const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
@@ -65,13 +65,14 @@ export const _generateItineraryLogic = ai.defineFlow({
   outputSchema: ItinerarySchema,
 },
   async (input) => {
-  const response = await ai.generate({
-    prompt: SYSTEM_PROMPT(input),
-    output: { schema: ItinerarySchema },
-    config: {
-      temperature: 0.7,
-    },
-  });
+    const today = new Date().toISOString().split('T')[0];
+    const response = await ai.generate({
+      prompt: SYSTEM_PROMPT({ ...input, today }),
+      output: { schema: ItinerarySchema },
+      config: {
+        temperature: 0.7,
+      },
+    });
 
   if (!response.output) {
     throw new Error('No output from AI');
@@ -86,11 +87,38 @@ export const _geniePlanTripLogic = ai.defineFlow({
   outputSchema: TravelPreferencesSchema.partial(),
 },
   async (input) => {
+    const today = new Date().toISOString().split('T')[0];
     const response = await ai.generate({
-      prompt: `${PARSE_PROMPT} \n\n User Query: ${input}`,
+      prompt: `${PARSE_PROMPT(today)} \n\n User Query: ${input}`,
       output: { schema: TravelPreferencesSchema.partial() },
       config: {
         temperature: 0.1,
+      },
+    });
+
+    if (!response.output) {
+      throw new Error('No output from AI');
+    }
+
+    return response.output;
+  }
+);
+
+export const _genieItineraryLogic = ai.defineFlow({
+  name: 'genieItineraryFlow',
+  inputSchema: z.object({
+    query: z.string(),
+    departureLocation: z.string().optional(),
+  }),
+  outputSchema: ItinerarySchema,
+},
+  async (input) => {
+    const today = new Date().toISOString().split('T')[0];
+    const response = await ai.generate({
+      prompt: GENIE_SYSTEM_PROMPT({ ...input, today }),
+      output: { schema: ItinerarySchema },
+      config: {
+        temperature: 0.7,
       },
     });
 
@@ -119,4 +147,13 @@ export const geniePlanTripFlow = onCallGenkit(
     cors: true
   },
   _geniePlanTripLogic
+)
+
+export const genieItineraryFlow = onCallGenkit(
+  {
+    secrets: [GEMINI_API_KEY],
+    region: 'africa-south1',
+    cors: true
+  },
+  _genieItineraryLogic
 )

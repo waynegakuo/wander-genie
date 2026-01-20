@@ -1,6 +1,6 @@
 import { TravelPreferences } from './index';
 
-export const SYSTEM_PROMPT = (input: TravelPreferences) => `
+export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => `
     Create a detailed travel itinerary for a trip from ${input.departureLocation} to ${input.destination}.
 
     Details:
@@ -10,12 +10,13 @@ export const SYSTEM_PROMPT = (input: TravelPreferences) => `
     - Budget: ${input.budget}
     - Travel Style: ${input.travelStyle}
     - Interests: ${input.interests.join(', ')}
-    - Group Size: ${input.groupSize}
+    - GroupSize: ${input.groupSize}
     - Accommodation Preference: ${input.accommodation}
     - Transportation: ${input.transportation}
     ${input.travelClass ? `- Travel Class: ${input.travelClass}` : ''}
     ${input.flexibility ? `- Date Flexibility: ${input.flexibility}` : ''}
     ${input.nlpQuery ? `- User's Natural Language Request: "${input.nlpQuery}"` : ''}
+    - Reference Date: ${input.today || new Date().toISOString().split('T')[0]}
 
     IMPORTANT: If there is a "User's Natural Language Request" provided, use it to refine the itinerary details while respecting the specific filters provided above. The natural query might contain specific destination requests, activities, or constraints not captured in the structured filters.
 
@@ -30,3 +31,29 @@ export const SYSTEM_PROMPT = (input: TravelPreferences) => `
     Format the response to match the output schema.
     Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page. Use Tailwind CSS-like classes if necessary or just semantic HTML.
   `;
+
+export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: string; today?: string }) => `
+    You are an expert travel planner. A user has provided a natural language request for a trip: "${input.query}".
+    ${input.departureLocation ? `The user is departing from: "${input.departureLocation}".` : ''}
+
+    Your task is to:
+    1. Parse the key details from the request (Departure, Destination, Dates, Budget, etc.).
+    2. Create a detailed travel itinerary based on these details.
+
+    IMPORTANT:
+    - Be careful to distinguish between the departure city (where they are coming from) and the destination (where they want to go).
+    - If the user provided a "departing from" location separately, prioritize it, but also check if they mention a different origin in their natural language query.
+    - If any critical details are missing (like departure city or specific dates), make reasonable assumptions based on today's date (${input.today || new Date().toISOString().split('T')[0]}) and provide a comprehensive plan.
+
+    The itinerary MUST include:
+    - A header with a summary of the trip.
+    - Suggested flight options with direct links to Google Flights search results.
+      Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
+      Even if the user didn't specify a departure, assume a major hub or clearly state you've used a placeholder.
+      Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
+    - A day-by-day breakdown with specific activities for morning, afternoon, and evening.
+    - Practical travel tips for the destination.
+
+    Format the response to match the output schema.
+    Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page. Use Tailwind CSS-like classes if necessary or just semantic HTML.
+`;
