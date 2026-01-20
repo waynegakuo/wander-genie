@@ -25,11 +25,23 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - Suggested flight options with direct links to Google Flights search results.
       Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
-    - A day-by-day breakdown with specific activities for morning, afternoon, and evening.
+    - A beautified "User Journey" visualization including:
+      - Flight details (outbound and return).
+      - Accommodation/Hotel recommendations if applicable.
+      - A day-by-day timeline of the trip.
+    - High-quality images for the destination and major locations/activities mentioned.
+      Use: <img src="https://source.unsplash.com/800x400/?city,landmark,[LocationName]" alt="[LocationName]">
     - Practical travel tips for ${input.destination}.
 
     Format the response to match the output schema.
-    Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page. Use Tailwind CSS-like classes if necessary or just semantic HTML.
+    Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page.
+    Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
+    - Use a 'journey-timeline' class container for the main sequence.
+    - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
+    - Use icons (e.g., via emoji or SVG) for different stages.
+    - Include large, beautiful images for each day or major city using the provided img tag format.
+    - Make it visually engaging with cards, borders, and spacing.
+    - Use 'flight-card' and 'hotel-card' classes for those specific details.
   `;
 
 export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: string; today?: string }) => `
@@ -51,9 +63,21 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
       Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
       Even if the user didn't specify a departure, assume a major hub or clearly state you've used a placeholder.
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
-    - A day-by-day breakdown with specific activities for morning, afternoon, and evening.
+    - A beautified "User Journey" visualization including:
+      - Flight details (outbound and return).
+      - Accommodation/Hotel recommendations if applicable.
+      - A day-by-day timeline of the trip.
+    - High-quality images for the destination and major locations/activities mentioned.
+      Use: <img src="https://source.unsplash.com/800x400/?city,landmark,[LocationName]" alt="[LocationName]">
     - Practical travel tips for the destination.
 
     Format the response to match the output schema.
-    Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page. Use Tailwind CSS-like classes if necessary or just semantic HTML.
+    Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page.
+    Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
+    - Use a 'journey-timeline' class container for the main sequence.
+    - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
+    - Use icons (e.g., via emoji or SVG) for different stages.
+    - Include large, beautiful images for each day or major city using the provided img tag format.
+    - Make it visually engaging with cards, borders, and spacing.
+    - Use 'flight-card' and 'hotel-card' classes for those specific details.
 `;
