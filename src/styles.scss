@@ -242,6 +242,9 @@ select.form-control {
   background-repeat: no-repeat;
   background-size: 16px;
   padding-right: 40px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 textarea.form-control {
