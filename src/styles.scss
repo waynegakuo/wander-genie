@@ -528,9 +528,9 @@ textarea.form-control {
 }
 
 /* Responsive utilities */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .container {
-    padding: 0 var(--spacing-md);
+    padding: 0 var(--spacing-sm);
   }
 
   .text-4xl {
@@ -539,6 +539,10 @@ textarea.form-control {
 
   .text-3xl {
     font-size: 1.5rem;
+  }
+
+  .card-body {
+    padding: var(--spacing-xl);
   }
 }
 
