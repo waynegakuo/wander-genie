@@ -38,10 +38,16 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
     - Use a 'journey-timeline' class container for the main sequence.
     - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
-    - Use icons (e.g., via emoji or SVG) for different stages.
+    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days). DO NOT repeat the same emoji twice in a row or within the same section.
+    - Ensure the timeline is well-structured:
+        1. Trip Summary (Header)
+        2. Flight Search Options (with links)
+        3. Day-by-Day Journey (with images)
+        4. Travel Tips
     - Include large, beautiful images for each day or major city using the provided img tag format.
     - Make it visually engaging with cards, borders, and spacing.
     - Use 'flight-card' and 'hotel-card' classes for those specific details.
+    - Use <h3> for Day titles, <h4> for activity titles.
   `;
 
 export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: string; today?: string }) => `
@@ -76,8 +82,14 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
     Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
     - Use a 'journey-timeline' class container for the main sequence.
     - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
-    - Use icons (e.g., via emoji or SVG) for different stages.
+    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days). DO NOT repeat the same emoji twice in a row or within the same section.
+    - Ensure the timeline is well-structured:
+        1. Trip Summary (Header)
+        2. Flight Search Options (with links)
+        3. Day-by-Day Journey (with images)
+        4. Travel Tips
     - Include large, beautiful images for each day or major city using the provided img tag format.
     - Make it visually engaging with cards, borders, and spacing.
     - Use 'flight-card' and 'hotel-card' classes for those specific details.
+    - Use <h3> for Day titles, <h4> for activity titles.
 `;
