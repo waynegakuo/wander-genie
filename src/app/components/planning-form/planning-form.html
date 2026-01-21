@@ -166,17 +166,17 @@
           <!-- Interests -->
           <div class="form-group mb-12">
             <label class="form-label mb-4 block font-semibold text-lg">🎭 What are you interested in? (Select all that apply)</label>
-            <div class="interests-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <div class="interests-container">
               @for (interest of interestOptions(); track interest) {
-                <label class="interest-card cursor-pointer group">
+                <label class="interest-card">
                   <input
                     type="checkbox"
                     [checked]="isInterestSelected(interest)"
                     (change)="interestChange.emit({ interest, event: $event })"
-                    class="hidden-checkbox peer"
+                    class="hidden-checkbox"
                   />
-                  <div class="p-4 rounded-2xl border-2 border-gray-100 bg-gray-50 text-center transition-all peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary group-hover:border-primary/50 group-hover:bg-white group-hover:shadow-md h-full flex items-center justify-center">
-                    <span class="interest-label font-medium">{{ interest }}</span>
+                  <div class="interest-chip">
+                    <span class="interest-label">{{ interest }}</span>
                   </div>
                 </label>
               }
@@ -184,17 +184,17 @@
           </div>
 
           <!-- Form Actions -->
-          <div class="form-actions flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
+          <div class="form-actions">
             <button
               type="button"
               (click)="resetForm.emit()"
-              class="btn-reset px-8 py-4 rounded-2xl font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all w-full sm:w-auto"
+              class="btn-reset"
               [disabled]="isLoading()"
             >
               🔄 Start Over
             </button>
 
-            <button type="submit" class="btn-generate bg-primary hover:bg-primary-dark text-white px-12 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-primary/20 hover:-translate-y-1 transition-all w-full sm:w-auto flex items-center justify-center gap-3" [disabled]="!canSubmit()">
+            <button type="submit" class="btn-generate" [disabled]="!canSubmit()">
               @if (isLoading()) {
                 <span class="loading-spinner"></span>
                 ✨ Creating Your Magic Trip...
