@@ -21,22 +21,22 @@ Experience your trip before you even leave:
 - **Visual Timelines:** A beautified, vertical "User Journey" showing every step of your trip.
 - **Smart Flight Links:** Direct links to Google Flights search results tailored to your route and dates.
 - **Day-by-Day breakdown:** Curated activities for morning, afternoon, and evening.
-- **High-Quality Imagery:** Visual inspiration with dynamic images for your destinations.
+- **Dynamic Imagery:** Visual inspiration for your destinations.
 - **Practical Travel Tips:** Insider advice for your specific destination.
 
 ## 🛠 Tech Stack
 
 - **Frontend:** [Angular](https://angular.dev/) (v20+) with Standalone Components & Signals.
+- **Backend & Hosting:** [Firebase](https://firebase.google.com/) (Functions v2, Hosting, Firestore).
 - **AI Orchestration:** [Genkit AI](https://firebase.google.com/docs/genkit) for seamless LLM integration.
 - **LLM:** Google Gemini 3 Flash.
-- **Backend:** Firebase Functions (v2).
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js & npm
-- Angular CLI
-- Firebase CLI (for backend functions)
+- Node.js & npm (v20+ recommended)
+- Angular CLI (`npm install -g @angular/cli`)
+- Firebase CLI (`npm install -g firebase-tools`)
 - A Google Gemini API Key
 
 ### Installation
@@ -54,10 +54,12 @@ Experience your trip before you even leave:
    ```
 
 3. **Environment Setup:**
-   Configure your Firebase environment and Genkit secrets:
-   ```bash
-   firebase functions:secrets:set GEMINI_API_KEY
-   ```
+   - Create a `src/environments/environment.development.ts` file (see `src/environments/environment.ts` for the structure).
+   - Configure your Firebase secrets for Genkit:
+     ```bash
+     firebase functions:secrets:set GEMINI_API_KEY
+     ```
+   - For local development, you'll also need to set the `GEMINI_API_KEY` in your shell environment or a `.env` file in the `functions` directory if running locally without the full emulator secret support.
 
 4. **Run the application:**
    ```bash
@@ -67,10 +69,33 @@ Experience your trip before you even leave:
 
 ## 🧪 Development
 
+### Local Emulator Suite
+Wander Genie is designed to be developed locally using the Firebase Emulator Suite.
+
+1. **Start the emulators:**
+   ```bash
+   firebase emulators:start
+   ```
+2. **Start the Angular app in a separate terminal:**
+   ```bash
+   ng serve
+   ```
+   *Note: See [EMULATOR_SETUP.md](documentation/EMULATOR_SETUP.md) for a detailed guide on configuring your local environment.*
+
+### Available Scripts
 - **Start Dev Server:** `ng serve`
 - **Build:** `ng build`
 - **Tests:** `ng test`
-- **Deploy Functions:** `firebase deploy --only functions`
+- **Lint:** `ng lint` (if configured)
+- **Deploy:** `firebase deploy`
+
+## 📂 Project Structure
+
+- `src/app/components`: Reusable UI components.
+- `src/app/services`: Application logic and Firebase interactions.
+- `src/styles.scss`: Global styles and design system tokens.
+- `functions/src`: Cloud Functions (Genkit AI logic).
+- `documentation/`: Additional setup and architecture guides.
 
 ---
-*Built with ❤️ for travelers everywhere.*
+*Built with ❤️ by [Wayne Gakuo](https://github.com/waynegakuo), for travelers everywhere.*
