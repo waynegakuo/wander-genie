@@ -15,6 +15,17 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  .form-title-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .form-subtitle {
+    margin: 0 0 2rem;
+  }
 }
 
 .interests-container {
