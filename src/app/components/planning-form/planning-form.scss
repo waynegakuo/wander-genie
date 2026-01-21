@@ -1,43 +1,46 @@
 .planning-section {
-  padding: var(--spacing-3xl) 0;
-  background: linear-gradient(to bottom, var(--color-gray-50), var(--color-white));
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-
-  .container {
-    width: 100%;
-  }
+  padding: 2rem 0;
+  background: transparent;
 
   .form-container {
-    margin: 0 auto;
+    background: white;
+    border-radius: 2rem;
+    overflow: hidden;
+    color: var(--color-gray-900);
+    text-align: left;
+  }
 
-    .form-title {
-      color: var(--color-primary);
-    }
+  .form-title {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 
-.interest-option {
-  padding: var(--spacing-md);
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: var(--color-accent);
-    background-color: var(--color-gray-50);
+.interest-card {
+  .hidden-checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
   }
+}
 
-  .interest-checkbox {
-    margin-right: var(--spacing-sm);
-    width: 18px;
-    height: 18px;
-    accent-color: var(--color-accent);
+.form-control {
+  &:focus {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
   }
+}
 
-  .interest-label {
-    font-size: 0.875rem;
-  }
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

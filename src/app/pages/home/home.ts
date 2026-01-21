@@ -3,11 +3,11 @@ import {
   Component,
   signal,
   computed,
-  ChangeDetectionStrategy,
   inject,
   PLATFORM_ID,
   effect,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, TitleCasePipe } from '@angular/common';
@@ -51,7 +51,7 @@ export class Home {
 
   // Signals for state management
   isLoading = signal(false);
-  showForm = signal(true); // NLP first, so show form area
+  activeTab = signal<'genie' | 'deep'>('genie');
   generatedItinerary = signal<Itinerary | null>(null);
   nlpQuery = signal('');
   loadingMessage = this.loadingMessageService.currentMessage;
@@ -116,15 +116,23 @@ export class Home {
       }
     });
 
-    // Smooth scroll to loading section
-    effect(() => {
-      const section = this.loadingSection()?.sectionRef();
-      if (section && this.isLoading() && isPlatformBrowser(this.platformId)) {
-        setTimeout(() => {
-          section.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    });
+  // Smooth scroll to results/loading
+  effect(() => {
+    const section = this.loadingSection()?.sectionRef();
+    if (section && this.isLoading() && isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        section.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  });
+
+  // Effect to handle tab changes and potential scrolling
+  effect(() => {
+    if (this.activeTab() === 'deep' && isPlatformBrowser(this.platformId)) {
+      // Small delay to ensure the DOM is updated before we might want to do something
+      // But we probably don't need to scroll anymore since it's in the hero
+    }
+  });
   }
 
   // Computed properties
@@ -176,68 +184,65 @@ export class Home {
 
   // Options for dropdowns
   budgetRanges = [
-    { value: 'budget', label: '$0 - $1,000 (Budget)' },
-    { value: 'mid-range', label: '$1,000 - $3,000 (Mid-range)' },
-    { value: 'luxury', label: '$3,000 - $10,000 (Luxury)' },
-    { value: 'ultra-luxury', label: '$10,000+ (Ultra Luxury)' },
+    { value: 'budget', label: '💰 $0 - $1,000 (Budget)' },
+    { value: 'mid-range', label: '💸 $1,000 - $3,000 (Mid-range)' },
+    { value: 'luxury', label: '💎 $3,000 - $10,000 (Luxury)' },
+    { value: 'ultra-luxury', label: '✨ $10,000+ (Ultra Luxury)' },
   ];
 
   travelStyles = [
-    { value: 'adventure', label: 'Adventure & Outdoor' },
-    { value: 'cultural', label: 'Cultural & Historical' },
-    { value: 'relaxation', label: 'Relaxation & Wellness' },
-    { value: 'food', label: 'Food & Culinary' },
-    { value: 'nightlife', label: 'Nightlife & Entertainment' },
-    { value: 'family', label: 'Family Friendly' },
-    { value: 'romantic', label: 'Romantic Getaway' },
-    { value: 'business', label: 'Business TravelService' },
+    { value: 'adventure', label: '🏔️ Adventure & Outdoor' },
+    { value: 'cultural', label: '🏛️ Cultural & Historical' },
+    { value: 'relaxation', label: '🧘 Relaxation & Wellness' },
+    { value: 'food', label: '🍳 Food & Culinary' },
+    { value: 'nightlife', label: '💃 Nightlife & Entertainment' },
+    { value: 'family', label: '👨‍👩‍👧‍👦 Family Friendly' },
+    { value: 'romantic', label: '👩‍❤️‍👨 Romantic Getaway' },
+    { value: 'business', label: '💼 Business Travel' },
   ];
 
   interestOptions = [
-    'Museums & Art',
-    'Historical Sites',
-    'Nature & Parks',
-    'Food & Restaurants',
-    'Shopping',
-    'Nightlife',
-    'Adventure Sports',
-    'Photography',
-    'Local Culture',
-    'Architecture',
-    'Music & Festivals',
-    'Beaches',
-    'Mountains',
-    'Wildlife',
+    '🖼️ Museums & Art',
+    '🏰 Historical Sites',
+    '🌳 Nature & Parks',
+    '🍕 Food & Restaurants',
+    '🛍️ Shopping',
+    '🍺 Nightlife',
+    '🏂 Adventure Sports',
+    '📸 Photography',
+    '🎎 Local Culture',
+    '🏛️ Architecture',
+    '🎶 Music & Festivals',
+    '🏖️ Beaches',
+    '🏔️ Mountains',
+    '🦒 Wildlife',
+    '🌌 Stargazing',
+    '🧘 Yoga & Wellness',
+    '🍷 Wine Tasting',
+    '🎭 Theatre & Shows',
   ];
 
   accommodationTypes = [
-    { value: 'hotel', label: 'Hotels' },
-    { value: 'hostel', label: 'Hostels' },
-    { value: 'airbnb', label: 'Vacation Rentals' },
-    { value: 'resort', label: 'Resorts' },
-    { value: 'boutique', label: 'Boutique Hotels' },
-    { value: 'luxury', label: 'Luxury Hotels' },
-    { value: 'camping', label: 'Camping' },
+    { value: 'hotel', label: '🏨 Hotels' },
+    { value: 'hostel', label: '🛌 Hostels' },
+    { value: 'airbnb', label: '🏠 Vacation Rentals' },
+    { value: 'resort', label: '🏖️ Resorts' },
+    { value: 'boutique', label: '✨ Boutique Hotels' },
+    { value: 'luxury', label: '💎 Luxury Hotels' },
+    { value: 'camping', label: '⛺ Camping' },
   ];
 
   transportationOptions = [
-    { value: 'flight', label: 'Flight' },
-    { value: 'car', label: 'Car/Road Trip' },
-    { value: 'train', label: 'Train' },
-    { value: 'bus', label: 'Bus' },
-    { value: 'mixed', label: 'Mixed Transportation' },
+    { value: 'flight', label: '✈️ Flight' },
+    { value: 'car', label: '🚗 Car/Road Trip' },
+    { value: 'train', label: '🚆 Train' },
+    { value: 'bus', label: '🚌 Bus' },
+    { value: 'mixed', label: '🔄 Mixed Transportation' },
   ];
 
   // Methods
   showPlanningForm(): void {
-    this.showForm.set(true);
-    // Smooth scroll to form
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        const formElement = document.getElementById('planning-form');
-        formElement?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
+    this.activeTab.set('deep');
   }
 
   onInterestChange(interest: string, event: Event): void {
@@ -326,7 +331,6 @@ export class Home {
       flexibility: 'flexible'
     });
     this.nlpQuery.set('');
-    this.showForm.set(true);
     this.generatedItinerary.set(null);
 
     // Scroll to top

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-nav',
@@ -7,4 +7,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './nav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavComponent {}
+export class NavComponent {
+  activeTab = input<'genie' | 'deep'>('genie');
+  tabChange = output<'genie' | 'deep'>();
+}

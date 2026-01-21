@@ -1,3 +1,5 @@
+@import './styles/animations';
+
 /* Global Styles and Design System for Wander Genie */
 
 /* CSS Custom Properties / Design Tokens */
@@ -66,6 +68,11 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-glow: 0 0 15px rgba(37, 99, 235, 0.3);
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
 }
 
 h1, h2, h3, h4, h5, h6 {

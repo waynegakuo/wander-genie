@@ -9,12 +9,19 @@
   align-items: center;
   color: var(--color-white);
   position: relative;
-  overflow: hidden;
+  overflow: auto; /* Changed from hidden to auto to allow scrolling if form is long */
   text-align: center;
+  padding: 80px 0; /* Add padding for nav and footer */
 
   .hero-content {
     position: relative;
     z-index: 1;
+    width: 100%;
+
+    .tab-content-wrapper {
+      width: 100%;
+      min-height: 200px; /* Ensure there is space for transition */
+    }
   }
 }
 

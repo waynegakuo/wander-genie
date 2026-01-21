@@ -1,0 +1,63 @@
+/* Custom Animations for Wander Genie Design System */
+
+.tab-content-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+}
+
+.tab-pane {
+  width: 100%;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  &.inactive {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+/* Base fade animation utility */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide in from bottom */
+.slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

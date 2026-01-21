@@ -1,5 +1,16 @@
 <nav class="sub-nav flex justify-center gap-8 mb-12">
-  <a href="#" class="nav-item active">✨ Genie Planner</a>
-  <a href="#" class="nav-item">Flights</a>
-  <a href="#" class="nav-item">Hotels</a>
+  <button
+    (click)="tabChange.emit('genie')"
+    class="nav-item"
+    [class.active]="activeTab() === 'genie'"
+  >
+    ✨ Genie Planner
+  </button>
+  <button
+    (click)="tabChange.emit('deep')"
+    class="nav-item"
+    [class.active]="activeTab() === 'deep'"
+  >
+    🔍 Deep Planner
+  </button>
 </nav>
