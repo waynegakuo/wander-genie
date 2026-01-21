@@ -9,7 +9,7 @@
       <div class="tab-content-wrapper">
 
         @if (activeTab() === 'genie')  {
-          <div class="tab-pane" [class.active]="activeTab() === 'genie'" [class.inactive]="activeTab() !== 'genie'">
+          <div class="tab-pane">
             <div class="genie-bar-container max-w-4xl mx-auto mt-2 relative" [formGroup]="travelForm">
               <div class="departure-container flex items-center justify-center mb-4">
                 <span class="material-icons text-white mr-2 text-sm flight-icon">flight_takeoff</span>
@@ -173,7 +173,7 @@
         }
 
         @else if (activeTab() === 'deep') {
-          <div class="tab-pane" [class.active]="activeTab() === 'deep'" [class.inactive]="activeTab() !== 'deep'">
+          <div class="tab-pane">
             <app-planning-form
               [travelForm]="travelForm"
               [isLoading]="isLoading()"
