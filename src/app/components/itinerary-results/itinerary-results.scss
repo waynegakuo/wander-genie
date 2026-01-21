@@ -126,7 +126,14 @@
       }
 
       img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 1rem;
+        margin: 1.5rem 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: block;
         transition: transform 0.3s ease;
+
         &:hover {
           transform: scale(1.02);
         }
