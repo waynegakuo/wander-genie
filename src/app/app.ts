@@ -8,5 +8,5 @@ import {Home} from './pages/home/home';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('wander-genie');
+  public readonly title = signal('Wander Genie');
 }
