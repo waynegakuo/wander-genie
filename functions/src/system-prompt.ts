@@ -30,7 +30,7 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
       - Accommodation/Hotel recommendations if applicable.
       - A day-by-day timeline of the trip.
     - High-quality images for the destination and major locations/activities mentioned.
-      Use: <img src="https://source.unsplash.com/800x400/?city,landmark,[LocationName]" alt="[LocationName]">
+      Use: <img src="https://tse3.mm.bing.net/th?q=[LocationName]%20travel%20landmark%2025&w=400&h=200&c=7&rs=1" alt="[LocationName]">
     - Practical travel tips for ${input.destination}.
 
     Format the response to match the output schema.
@@ -68,7 +68,7 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
       - Accommodation/Hotel recommendations if applicable.
       - A day-by-day timeline of the trip.
     - High-quality images for the destination and major locations/activities mentioned.
-      Use: <img src="https://source.unsplash.com/800x400/?city,landmark,[LocationName]" alt="[LocationName]">
+      Use: <img src="https://tse3.mm.bing.net/th?q=[LocationName]%20travel%20landmark%202024%202025&w=800&h=400&c=7&rs=1" alt="[LocationName]">
     - Practical travel tips for the destination.
 
     Format the response to match the output schema.
