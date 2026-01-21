@@ -3,14 +3,15 @@
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
   transform: translateY(0);
-  max-height: 500px;
-  overflow: hidden;
+  max-height: 1000px;
+  overflow: visible;
 
   &.hidden-suggestions {
     opacity: 0;
     transform: translateY(20px);
     max-height: 0;
     margin-top: 0;
+    overflow: hidden;
     pointer-events: none;
   }
 
@@ -39,6 +40,7 @@
     border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    z-index: 10;
   }
 
   .suggestion-icon {
