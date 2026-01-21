@@ -18,6 +18,9 @@ const ai = genkit({
   model: googleAI.model('gemini-3-flash-preview'), // Using a stable model name
 });
 
+// Detect if the function is running in the Firebase Emulator Suite.
+const isEmulated = process.env.FUNCTIONS_EMULATOR === 'true';
+
 // Define schemas
 const TravelPreferencesSchema = z.object({
   departureLocation: z.string().describe('The departure location of the trip'),
@@ -111,7 +114,12 @@ export const generateItineraryFlow = onCallGenkit(
   {
     secrets: [GEMINI_API_KEY],
     region: 'africa-south1', // Set your desired region
-    cors: true
+    // Allow all origins in the emulator, but restrict to your domain in production.
+    cors: isEmulated
+      ? true
+      : [
+        /^https:\/\/wandersgenie(--[a-z0-9-]+)?\.web\.app$/, // Matches live site (wandersgenie.web.app) and previews (wandersgenie--<channel>.web.app)
+      ],
   },
   _generateItineraryLogic
 )
@@ -120,7 +128,12 @@ export const genieItineraryFlow = onCallGenkit(
   {
     secrets: [GEMINI_API_KEY],
     region: 'africa-south1',
-    cors: true
+    // Allow all origins in the emulator, but restrict to your domain in production.
+    cors: isEmulated
+      ? true
+      : [
+        /^https:\/\/wandersgenie(--[a-z0-9-]+)?\.web\.app$/, // Matches live site (wandersgenie.web.app) and previews (wandersgenie--<channel>.web.app)
+      ],
   },
   _genieItineraryLogic
 )
