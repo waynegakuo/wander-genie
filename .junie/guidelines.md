@@ -85,11 +85,14 @@ Establish a comprehensive design system in `src/styles.scss` to ensure consisten
 ### Typography & Font Guidelines
 
 **Font Specifications:**
-- **Primary UI Font:** Inter - Use for all interface elements, body text, buttons, forms, and general UI components
-- **Brand Title Font:** Ubuntu - Use exclusively for the main application title to provide a distinct, warm, and contemporary feel
+- **Brand Title Font:** Ubuntu - Use exclusively for the main application title to provide a distinct, warm, and contemporary feel.
+- **UI Element Font:** DM Sans - Use for UI elements like buttons, navigation, headings (except main title), and form labels/headers.
+- **Body & Input Font:** Inter - Use for body text, form inputs, and general interface text.
 
 **Font Usage Rules:**
-- **Never** use Ubuntu font for anything other than the main title
-- **Always** use DM Sans for UI elements: buttons, forms, navigation, body text, headings (except main title)
-- Use appropriate font weights: DM Sans supports 100-1000, Ubuntu supports 300-700
-- Optimize loading with `font-display: swap` for better performance
+- **Never** use Ubuntu font for anything other than the main title.
+- **Use** `text-brand` class for the main application title.
+- **Use** `text-ui` or `text-heading` class for UI elements and headings.
+- **Use** `text-body` or default body style for content and inputs.
+- Use appropriate font weights: DM Sans (100-1000), Inter (100-900), Ubuntu (300-700).
+- Optimize loading with `font-display: swap` for better performance.

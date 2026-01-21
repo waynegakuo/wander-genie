@@ -1,0 +1,57 @@
+.loading-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-margin-top: 2rem;
+
+  .container {
+    width: 100%;
+  }
+
+  .travel-icon-container {
+    .travel-icon {
+      font-size: 4rem;
+      color: var(--color-accent);
+    }
+  }
+
+  .loading-text {
+    min-height: 1.5em;
+    transition: all 0.5s ease;
+  }
+}
+
+.animate-bounce {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

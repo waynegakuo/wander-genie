@@ -1,59 +1,76 @@
-# WanderGenie
+# Wander Genie | AI Travel Planner 🧞‍♂️✈️
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.0.
+Wander Genie is a modern, AI-powered travel planning application that transforms your travel dreams into detailed, actionable itineraries. Whether you have a specific plan in mind or just a rough idea, Wander Genie uses the power of Gemini AI to craft the perfect journey for you.
 
-## Development server
+## 🌟 Key Features
 
-To start a local development server, run:
+### 1. Magic Search (Natural Language Planning)
+Just type how you want to travel! Wander Genie uses advanced NLP to extract preferences from your queries.
+- *Example:* "I want to travel from New York to Tokyo for 10 days on a luxury budget with my family of 4."
+- Automatically detects destinations, origins, group sizes, and budgets.
 
-```bash
-ng serve
-```
+### 2. Deep Planner
+For those who like to be specific, our detailed planning form allows you to fine-tune every aspect of your trip:
+- **Travel Style:** Adventure, Relaxation, Cultural, etc.
+- **Interests:** Food, History, Nature, Shopping, and more.
+- **Logistics:** Select preferred accommodation types and transportation modes.
+- **Class & Flexibility:** Specify travel class and date flexibility.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 3. AI-Generated "User Journey"
+Experience your trip before you even leave:
+- **Visual Timelines:** A beautified, vertical "User Journey" showing every step of your trip.
+- **Smart Flight Links:** Direct links to Google Flights search results tailored to your route and dates.
+- **Day-by-Day breakdown:** Curated activities for morning, afternoon, and evening.
+- **High-Quality Imagery:** Visual inspiration with dynamic images for your destinations.
+- **Practical Travel Tips:** Insider advice for your specific destination.
 
-## Code scaffolding
+## 🛠 Tech Stack
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Frontend:** [Angular](https://angular.dev/) (v20+) with Standalone Components & Signals.
+- **AI Orchestration:** [Genkit AI](https://firebase.google.com/docs/genkit) for seamless LLM integration.
+- **LLM:** Google Gemini 3 Flash.
+- **Backend:** Firebase Functions (v2).
 
-```bash
-ng generate component component-name
-```
+## 🚀 Getting Started
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Prerequisites
+- Node.js & npm
+- Angular CLI
+- Firebase CLI (for backend functions)
+- A Google Gemini API Key
 
-```bash
-ng generate --help
-```
+### Installation
 
-## Building
+1. **Clone the repository:**
+   ```bash
+   git clone [repository-url]
+   cd wander-genie
+   ```
 
-To build the project run:
+2. **Install dependencies:**
+   ```bash
+   npm install
+   cd functions && npm install && cd ..
+   ```
 
-```bash
-ng build
-```
+3. **Environment Setup:**
+   Configure your Firebase environment and Genkit secrets:
+   ```bash
+   firebase functions:secrets:set GEMINI_API_KEY
+   ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+4. **Run the application:**
+   ```bash
+   ng serve
+   ```
+   Navigate to `http://localhost:4200/`.
 
-## Running unit tests
+## 🧪 Development
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+- **Start Dev Server:** `ng serve`
+- **Build:** `ng build`
+- **Tests:** `ng test`
+- **Deploy Functions:** `firebase deploy --only functions`
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+*Built with ❤️ for travelers everywhere.*

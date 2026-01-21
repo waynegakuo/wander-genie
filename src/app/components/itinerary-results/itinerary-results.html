@@ -1,0 +1,88 @@
+<section
+  id="itinerary-results"
+  class="results-section py-20 bg-gray-50"
+  role="region"
+  aria-labelledby="itinerary-heading"
+  aria-live="polite"
+>
+  <div class="container max-w-6xl">
+    <div class="results-grid grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <!-- Left: Top Flight Deals -->
+      <div class="flight-deals-column lg:col-span-5">
+        <div class="column-header mb-8 flex items-center justify-between">
+          <h2 class="text-ui text-2xl font-bold flex items-center gap-3">
+            <span class="material-icons text-accent">flight_takeoff</span>
+            Top Flight Deals
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          @if (itinerary()?.flightOptions; as flights) {
+            @for (flight of flights; track flight.googleFlightsUrl) {
+              <div class="flight-deal-card">
+                <div class="flight-info">
+                  <div class="airline">{{ flight.title }}</div>
+                  <div class="route">{{ flight.description }}</div>
+                  <a
+                    [href]="flight.googleFlightsUrl"
+                    target="_blank"
+                    rel="noopener"
+                    class="text-accent text-sm font-semibold mt-4 inline-flex items-center gap-1 hover:underline"
+                  >
+                    View on Google Flights
+                    <span class="material-icons text-xs">open_in_new</span>
+                  </a>
+                </div>
+                <div class="flight-price">
+                  <span class="label">From</span>
+                  <span class="price">$1,240</span>
+                </div>
+              </div>
+            } @empty {
+              <div class="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
+                <span class="material-icons text-4xl text-gray-300">flight_takeoff</span>
+                <p class="text-gray-500 mt-2 font-medium">No specific flight deals found.</p>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="price-insights mt-8 bg-blue-50 p-6 rounded-2xl border border-blue-100 shadow-sm">
+          <h4 class="font-bold text-blue-900 flex items-center gap-2 mb-2">
+            <span class="material-icons text-blue-600">insights</span>
+            Price Insights
+          </h4>
+          <p class="text-sm text-blue-800 leading-relaxed">
+            Prices are currently low for {{ destination() }}. This is a great time to book! We
+            recommend booking within the next 14 days for the best rates.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Genie's Suggested Itinerary -->
+      <div class="itinerary-column lg:col-span-7">
+        <div class="column-header mb-8">
+          <h2 class="text-ui text-2xl font-bold flex items-center gap-3">
+            <span class="material-icons text-secondary">auto_awesome</span>
+            Genie's Suggested Itinerary
+          </h2>
+        </div>
+
+        <div class="itinerary-container shadow-sm">
+          <div class="prose" [innerHTML]="itinerary()?.htmlContent"></div>
+
+          <div class="itinerary-footer mt-10 pt-8 border-t border-gray-200 flex flex-wrap gap-4">
+            <button (click)="printItinerary.emit()" class="btn btn-primary rounded-full">
+              <span class="material-icons">download</span>
+              Save Itinerary
+            </button>
+            <button class="btn btn-secondary rounded-full">
+              <span class="material-icons">share</span>
+              Share Trip
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

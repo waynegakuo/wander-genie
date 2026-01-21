@@ -1,122 +1,248 @@
 
-import { Component, signal, computed, ChangeDetectionStrategy, inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  inject,
+  PLATFORM_ID,
+  effect,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-
-interface TravelPreferences {
-  destination: string;
-  startDate: string;
-  endDate: string;
-  budget: string;
-  travelStyle: string;
-  interests: string[];
-  groupSize: number;
-  accommodation: string;
-  transportation: string;
-}
+import { TravelPreferences, Itinerary } from '../../models/travel.model';
+import { TravelService } from '../../services/travel/travel.service';
+import { LoadingMessageService } from '../../services/loading/loading-message.service';
+import { NavComponent } from '../../components/nav/nav';
+import { HeroComponent } from '../../components/hero/hero';
+import { SmartSuggestionsComponent } from '../../components/smart-suggestions/smart-suggestions';
+import { PlanningFormComponent } from '../../components/planning-form/planning-form';
+import { LoadingSectionComponent } from '../../components/loading-section/loading-section';
+import { ItineraryResultsComponent } from '../../components/itinerary-results/itinerary-results';
+import { FooterComponent } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TitleCasePipe,
+    NavComponent,
+    HeroComponent,
+    SmartSuggestionsComponent,
+    PlanningFormComponent,
+    LoadingSectionComponent,
+    ItineraryResultsComponent,
+    FooterComponent,
+  ],
   templateUrl: './home.html',
   styleUrl: './home.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
   private fb = new FormBuilder();
   private platformId = inject(PLATFORM_ID);
+  private travelService = inject(TravelService);
+  private loadingMessageService = inject(LoadingMessageService);
+  loadingSection = viewChild(LoadingSectionComponent);
 
   // Signals for state management
   isLoading = signal(false);
-  showForm = signal(false);
-  generatedItinerary = signal<string | null>(null);
+  activeTab = signal<'genie' | 'deep'>('genie');
+  generatedItinerary = signal<Itinerary | null>(null);
+  nlpQuery = signal('');
+  loadingMessage = this.loadingMessageService.currentMessage;
+
+  placeholders = [
+    'Find me a romantic weekend in Paris...',
+    'Budget beach trip for 5 friends in June...',
+    'Family of 4 to Tokyo for 10 days to see cherry blossoms...',
+    'Adventurous solo trip to Patagonia for hiking...'
+  ];
+  currentPlaceholder = signal(this.placeholders[0]);
+  nextPlaceholder = signal(this.placeholders[1]);
+  isTransitioning = signal(false);
 
   // Form setup
   travelForm: FormGroup = this.fb.group({
-    destination: ['', [Validators.required, Validators.minLength(2)]],
-    startDate: ['', Validators.required],
-    endDate: ['', Validators.required],
-    budget: ['', Validators.required],
-    travelStyle: ['', Validators.required],
-    interests: [[], Validators.required],
-    groupSize: [1, [Validators.required, Validators.min(1), Validators.max(20)]],
-    accommodation: ['', Validators.required],
-    transportation: ['', Validators.required]
+    departureLocation: [''],
+    destination: ['', [Validators.required]],
+    startDate: [''],
+    endDate: [''],
+    budget: ['mid-range'],
+    travelStyle: ['adventure'],
+    interests: [[]],
+    groupSize: [1, [Validators.min(1), Validators.max(20)]],
+    accommodation: ['hotel'],
+    transportation: ['flight'],
+    travelClass: ['economy'],
+    flexibility: ['flexible']
   });
+
+  constructor() {
+    // Cycling placeholder effect
+    if (isPlatformBrowser(this.platformId)) {
+      let index = 0;
+      setInterval(() => {
+        this.isTransitioning.set(true);
+
+        setTimeout(() => {
+          index = (index + 1) % this.placeholders.length;
+          this.currentPlaceholder.set(this.placeholders[index]);
+          this.nextPlaceholder.set(this.placeholders[(index + 1) % this.placeholders.length]);
+          this.isTransitioning.set(false);
+        }, 600); // Match SCSS transition time
+      }, 4000);
+    }
+
+    // Effect to parse NLP query
+    effect(() => {
+      const query = this.nlpQuery();
+      if (query) {
+        const parsed = this.travelService.extractPreferences(query);
+        this.travelForm.patchValue(parsed, { emitEvent: false });
+      }
+    });
+
+    // Loading messages effect
+    effect(() => {
+      if (this.isLoading()) {
+        this.loadingMessageService.startCycling();
+      } else {
+        this.loadingMessageService.stopCycling();
+      }
+    });
+
+  // Smooth scroll to results/loading
+  effect(() => {
+    const section = this.loadingSection()?.sectionRef();
+    if (section && this.isLoading() && isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        section.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  });
+
+  // Effect to handle tab changes and potential scrolling
+  effect(() => {
+    if (this.activeTab() === 'deep' && isPlatformBrowser(this.platformId)) {
+      // Small delay to ensure the DOM is updated before we might want to do something
+      // But we probably don't need to scroll anymore since it's in the hero
+    }
+  });
+  }
 
   // Computed properties
   private formStatus = toSignal(this.travelForm.statusChanges, { initialValue: this.travelForm.status });
   private formValid = computed(() => this.formStatus() === 'VALID');
-  canSubmit = computed(() => this.formValid() && !this.isLoading());
+  canSubmit = computed(() => (this.formValid() || this.nlpQuery().length > 10) && !this.isLoading());
+
+  // Options for chips
+  readonly travelClasses = [
+    { value: 'economy', label: 'Economy' },
+    { value: 'business', label: 'Business' },
+    { value: 'first', label: 'First' }
+  ];
+
+  readonly flexibilityOptions = [
+    { value: 'exact', label: 'Exact Dates' },
+    { value: 'flexible', label: 'Flexible' },
+    { value: 'anytime', label: 'Anytime' }
+  ];
 
 
+
+  activeChip = signal<string | null>(null);
+
+  toggleChip(chip: string): void {
+    if (this.activeChip() === chip) {
+      this.activeChip.set(null);
+    } else {
+      this.activeChip.set(chip);
+    }
+  }
+
+  updateQuery(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = target.value;
+    this.nlpQuery.set(value);
+
+    // If "from [City]" is in the query, we don't want to override if user manually typed in departure
+    // Actually, the effect handles patching. If we want to allow manual override to stick,
+    // we might need more complex logic, but for now, simple patching is fine.
+  }
+
+  selectSuggestion(suggestion: string): void {
+    this.nlpQuery.set(suggestion);
+    // Explicitly trigger parsing using local extraction for suggestions
+    const parsed = this.travelService.extractPreferences(suggestion);
+    this.travelForm.patchValue(parsed, { emitEvent: false });
+  }
 
   // Options for dropdowns
-  readonly budgetRanges = [
-    { value: 'budget', label: '$0 - $1,000 (Budget)' },
-    { value: 'mid-range', label: '$1,000 - $3,000 (Mid-range)' },
-    { value: 'luxury', label: '$3,000 - $10,000 (Luxury)' },
-    { value: 'ultra-luxury', label: '$10,000+ (Ultra Luxury)' }
+  budgetRanges = [
+    { value: 'budget', label: '💰 $0 - $1,000 (Budget)' },
+    { value: 'mid-range', label: '💸 $1,000 - $3,000 (Mid-range)' },
+    { value: 'luxury', label: '💎 $3,000 - $10,000 (Luxury)' },
+    { value: 'ultra-luxury', label: '✨ $10,000+ (Ultra Luxury)' },
   ];
 
-  readonly travelStyles = [
-    { value: 'adventure', label: 'Adventure & Outdoor' },
-    { value: 'cultural', label: 'Cultural & Historical' },
-    { value: 'relaxation', label: 'Relaxation & Wellness' },
-    { value: 'food', label: 'Food & Culinary' },
-    { value: 'nightlife', label: 'Nightlife & Entertainment' },
-    { value: 'family', label: 'Family Friendly' },
-    { value: 'romantic', label: 'Romantic Getaway' },
-    { value: 'business', label: 'Business Travel' }
+  travelStyles = [
+    { value: 'adventure', label: '🏔️ Adventure & Outdoor' },
+    { value: 'cultural', label: '🏛️ Cultural & Historical' },
+    { value: 'relaxation', label: '🧘 Relaxation & Wellness' },
+    { value: 'food', label: '🍳 Food & Culinary' },
+    { value: 'nightlife', label: '💃 Nightlife & Entertainment' },
+    { value: 'family', label: '👨‍👩‍👧‍👦 Family Friendly' },
+    { value: 'romantic', label: '👩‍❤️‍👨 Romantic Getaway' },
+    { value: 'business', label: '💼 Business Travel' },
   ];
 
-  readonly interestOptions = [
-    'Museums & Art',
-    'Historical Sites',
-    'Nature & Parks',
-    'Food & Restaurants',
-    'Shopping',
-    'Nightlife',
-    'Adventure Sports',
-    'Photography',
-    'Local Culture',
-    'Architecture',
-    'Music & Festivals',
-    'Beaches',
-    'Mountains',
-    'Wildlife'
+  interestOptions = [
+    '🖼️ Museums & Art',
+    '🏰 Historical Sites',
+    '🌳 Nature & Parks',
+    '🍕 Food & Restaurants',
+    '🛍️ Shopping',
+    '🍺 Nightlife',
+    '🏂 Adventure Sports',
+    '📸 Photography',
+    '🎎 Local Culture',
+    '🏛️ Architecture',
+    '🎶 Music & Festivals',
+    '🏖️ Beaches',
+    '🏔️ Mountains',
+    '🦒 Wildlife',
+    '🌌 Stargazing',
+    '🧘 Yoga & Wellness',
+    '🍷 Wine Tasting',
+    '🎭 Theatre & Shows',
   ];
 
-  readonly accommodationTypes = [
-    { value: 'hotel', label: 'Hotels' },
-    { value: 'hostel', label: 'Hostels' },
-    { value: 'airbnb', label: 'Vacation Rentals' },
-    { value: 'resort', label: 'Resorts' },
-    { value: 'boutique', label: 'Boutique Hotels' },
-    { value: 'luxury', label: 'Luxury Hotels' },
-    { value: 'camping', label: 'Camping' }
+  accommodationTypes = [
+    { value: 'hotel', label: '🏨 Hotels' },
+    { value: 'hostel', label: '🛌 Hostels' },
+    { value: 'airbnb', label: '🏠 Vacation Rentals' },
+    { value: 'resort', label: '🏖️ Resorts' },
+    { value: 'boutique', label: '✨ Boutique Hotels' },
+    { value: 'luxury', label: '💎 Luxury Hotels' },
+    { value: 'camping', label: '⛺ Camping' },
   ];
 
-  readonly transportationOptions = [
-    { value: 'flight', label: 'Flight' },
-    { value: 'car', label: 'Car/Road Trip' },
-    { value: 'train', label: 'Train' },
-    { value: 'bus', label: 'Bus' },
-    { value: 'mixed', label: 'Mixed Transportation' }
+  transportationOptions = [
+    { value: 'flight', label: '✈️ Flight' },
+    { value: 'car', label: '🚗 Car/Road Trip' },
+    { value: 'train', label: '🚆 Train' },
+    { value: 'bus', label: '🚌 Bus' },
+    { value: 'mixed', label: '🔄 Mixed Transportation' },
   ];
 
   // Methods
   showPlanningForm(): void {
-    this.showForm.set(true);
-    // Smooth scroll to form
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        const formElement = document.getElementById('planning-form');
-        formElement?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
+    this.activeTab.set('deep');
   }
 
   onInterestChange(interest: string, event: Event): void {
@@ -145,20 +271,30 @@ export class Home {
     this.isLoading.set(true);
 
     try {
-      const formData: TravelPreferences = this.travelForm.value;
+      let itinerary: Itinerary;
 
-      // TODO: Replace with actual Gemini AI service call
-      await this.simulateAIResponse();
+      // If we have an NLP query that is long enough, use the Genie flow directly
+      if (this.nlpQuery().length > 10) {
+        const departureLocation = this.travelForm.get('departureLocation')?.value;
+        itinerary = await this.travelService.generateGenieItinerary(this.nlpQuery(), departureLocation);
+      } else {
+        // Create a preferences object from the form values
+        const formData: TravelPreferences = {
+          ...this.travelForm.value,
+          nlpQuery: this.nlpQuery()
+        };
 
-      // Mock response for now
-      const mockItinerary = this.generateMockItinerary(formData);
-      this.generatedItinerary.set(mockItinerary);
+        // Call the Genkit flow via TravelService
+        itinerary = await this.travelService.generateItinerary(formData);
+      }
+
+      this.generatedItinerary.set(itinerary);
 
       // Scroll to results
       if (isPlatformBrowser(this.platformId)) {
         setTimeout(() => {
           const resultsElement = document.getElementById('itinerary-results');
-          resultsElement?.scrollIntoView({ behavior: 'smooth' });
+          resultsElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       }
 
@@ -170,52 +306,6 @@ export class Home {
     }
   }
 
-  private async simulateAIResponse(): Promise<void> {
-    // Simulate API call delay
-    return new Promise(resolve => setTimeout(resolve, 2000));
-  }
-
-  private generateMockItinerary(preferences: TravelPreferences): string {
-    const days = this.calculateDays(preferences.startDate, preferences.endDate);
-    const budgetLabel = this.budgetRanges.find(b => b.value === preferences.budget)?.label;
-    const styleLabel = this.travelStyles.find(s => s.value === preferences.travelStyle)?.label;
-
-    return `Your Personalized ${preferences.destination} Itinerary
-
-Trip Duration: ${days} days
-Budget: ${budgetLabel}
-Travel Style: ${styleLabel}
-Group Size: ${preferences.groupSize} ${preferences.groupSize === 1 ? 'person' : 'people'}
-
-Day 1: Arrival & First Impressions
-• Morning: Arrive in ${preferences.destination}
-• Afternoon: Check into your ${preferences.accommodation} accommodation
-• Evening: Welcome dinner at a local restaurant
-
-Day 2: Cultural Exploration
-• Morning: Visit top historical sites
-• Afternoon: Museum tour based on your interests: ${preferences.interests.join(', ')}
-• Evening: Traditional cultural experience
-
-Day 3: Adventure & Activities
-• Morning: Outdoor adventure activities
-• Afternoon: Local market exploration and shopping
-• Evening: Sunset viewing at the best local spot
-
-${days > 3 ? `Day 4: ${this.generateAdditionalDayContent(preferences)}` : ''}
-
-This is a sample itinerary. The actual AI-powered version will be much more detailed and personalized!`;
-  }
-
-  private generateAdditionalDayContent(preferences: TravelPreferences): string {
-    const activities = [
-      'Free day for personal exploration',
-      'Day trip to nearby attractions',
-      'Food tour and culinary experiences',
-      'Relaxation and leisure activities'
-    ];
-    return activities[Math.floor(Math.random() * activities.length)];
-  }
   private calculateDays(startDate: string, endDate: string): number {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -232,12 +322,20 @@ This is a sample itinerary. The actual AI-powered version will be much more deta
   resetForm(): void {
     this.travelForm.reset({
       groupSize: 1,
-      interests: []
+      interests: [],
+      budget: 'mid-range',
+      travelStyle: 'adventure',
+      accommodation: 'hotel',
+      transportation: 'flight',
+      travelClass: 'economy',
+      flexibility: 'flexible'
     });
-    this.showForm.set(false);
+    this.nlpQuery.set('');
     this.generatedItinerary.set(null);
 
     // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }

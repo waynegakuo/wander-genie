@@ -1,348 +1,212 @@
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="container">
-    <div class="hero-content text-center">
-      <h1 class="hero-title text-brand">
-        Wander<span class="text-secondary">Genie</span>
-      </h1>
-      <p class="hero-subtitle text-ui">
-        Your AI-powered travel companion that creates personalized itineraries tailored to your dreams
-      </p>
-      <p class="hero-description text-gray-100">
-        From bustling cities to serene beaches, let our AI craft the perfect journey based on your preferences, budget, and travel style.
-      </p>
+    <app-nav [activeTab]="activeTab()" (tabChange)="activeTab.set($event)" />
 
-      @if (!showForm()) {
-        <div class="hero-actions mt-8">
-          <button
-            (click)="showPlanningForm()"
-            class="btn btn-primary btn-large">
-            ✨ Start Planning My Trip
-          </button>
-          <p class="hero-note text-sm text-gray-300 mt-4">
-            Free • No sign-up required • Powered by Gemini AI
-          </p>
-        </div>
-      }
-    </div>
+    <div class="hero-content text-center relative">
+      <app-hero />
 
-    <!-- Feature highlights -->
-    <div class="features-grid grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-      <div class="feature-card card text-center">
-        <div class="card-body">
-          <div class="feature-icon">🎯</div>
-      <h3 class="feature-title text-ui font-semibold">Personalized</h3>
-      <p class="feature-description text-sm text-gray-600">
-          Tailored to your interests, budget, and travel style
-          </p>
-        </div>
-      </div>
+      <div class="tab-content-wrapper">
 
-      <div class="feature-card card text-center">
-        <div class="card-body">
-          <div class="feature-icon">🤖</div>
-          <h3 class="feature-title text-ui font-semibold">AI-Powered</h3>
-          <p class="feature-description text-sm text-gray-600">
-            Advanced AI creates detailed day-by-day itineraries
-          </p>
-        </div>
-      </div>
+        @if (activeTab() === 'genie')  {
+          <div class="tab-pane">
+            <div class="genie-bar-container max-w-4xl mx-auto mt-2 relative" [formGroup]="travelForm">
+              <div class="departure-container flex items-center justify-center mb-4">
+                <span class="material-icons text-white mr-2 text-sm flight-icon">flight_takeoff</span>
+                <span class="text-white text-sm departure-label">Departing from</span>
+                <div class="departure-input-wrapper relative">
+                  <input
+                    type="text"
+                    formControlName="departureLocation"
+                    placeholder="Your city"
+                    class="departure-input"
+                    #departureInput
+                  />
+                  <span class="departure-mirror" aria-hidden="true">
+                  {{ travelForm.get('departureLocation')?.value || 'Your city' }}
+                </span>
+                  <span class="material-icons edit-icon">edit</span>
+                </div>
+              </div>
 
-      <div class="feature-card card text-center">
-        <div class="card-body">
-          <div class="feature-icon">⚡</div>
-          <h3 class="feature-title text-ui font-semibold">Instant</h3>
-          <p class="feature-description text-sm text-gray-600">
-            Get your complete travel plan in seconds
-          </p>
-        </div>
+              <div class="genie-bar flex items-center bg-white rounded-full p-3 transition-all shadow-xl">
+                <span class="sparkle-icon ml-4 text-2xl">✨</span>
+                <div class="placeholder-container">
+                  @if (!nlpQuery()) {
+                    <span class="placeholder-text current" [class.exit]="isTransitioning()">
+                    {{ currentPlaceholder() }}
+                  </span>
+                    <span class="placeholder-text next" [class.enter]="isTransitioning()">
+                    {{ nextPlaceholder() }}
+                  </span>
+                  }
+                </div>
+                <input
+                  type="text"
+                  class="nlp-input flex-1 bg-transparent border-none focus:outline-none px-4 py-3 text-xl leading-normal"
+                  (input)="updateQuery($event)"
+                  [value]="nlpQuery()"
+                />
+                <button
+                  (click)="generateItinerary()"
+                  [disabled]="!canSubmit()"
+                  class="btn-search rounded-full text-white transition-all flex items-center justify-center shrink-0"
+                >
+                  @if (isLoading()) {
+                    <span class="loading-spinner"></span>
+                  } @else {
+                    <span class="material-icons text-2xl">search</span>
+                  }
+                </button>
+              </div>
+
+              <div class="refinement-chips">
+                <!-- Budget Chip -->
+                <div class="chip-container">
+                  <button
+                    (click)="toggleChip('budget')"
+                    class="chip"
+                    [class.active]="activeChip() === 'budget'"
+                  >
+                    <span class="material-icons text-sm">payments</span>
+                    {{ (travelForm.get('budget')?.value | titlecase) || 'Budget' }}
+                    <span class="material-icons text-sm">expand_more</span>
+                  </button>
+                  @if (activeChip() === 'budget') {
+                    <div class="dropdown-menu">
+                      @for (b of budgetRanges; track b.value) {
+                        <button
+                          (click)="travelForm.get('budget')?.setValue(b.value); activeChip.set(null)"
+                          class="dropdown-item"
+                        >
+                          {{ b.label }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Passengers Chip -->
+                <div class="chip-container">
+                  <button
+                    (click)="toggleChip('passengers')"
+                    class="chip"
+                    [class.active]="activeChip() === 'passengers'"
+                  >
+                    <span class="material-icons text-sm">person</span>
+                    {{ travelForm.get('groupSize')?.value }} Passengers
+                    <span class="material-icons text-sm">expand_more</span>
+                  </button>
+                  @if (activeChip() === 'passengers') {
+                    <div class="dropdown-menu p-4 w-48">
+                      <label class="text-xs uppercase font-bold text-gray-500 mb-2 block">
+                        Number of Travelers
+                      </label>
+                      <input
+                        type="number"
+                        formControlName="groupSize"
+                        class="form-control"
+                        min="1"
+                        max="20"
+                      />
+                    </div>
+                  }
+                </div>
+
+                <!-- Class Chip -->
+                <div class="chip-container">
+                  <button
+                    (click)="toggleChip('class')"
+                    class="chip"
+                    [class.active]="activeChip() === 'class'"
+                  >
+                    <span class="material-icons text-sm">flight_class</span>
+                    {{ (travelForm.get('travelClass')?.value | titlecase) || 'Class' }}
+                    <span class="material-icons text-sm">expand_more</span>
+                  </button>
+                  @if (activeChip() === 'class') {
+                    <div class="dropdown-menu">
+                      @for (c of travelClasses; track c.value) {
+                        <button
+                          (click)="travelForm.get('travelClass')?.setValue(c.value); activeChip.set(null)"
+                          class="dropdown-item"
+                        >
+                          {{ c.label }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Flexibility Chip -->
+                <div class="chip-container">
+                  <button
+                    (click)="toggleChip('flexibility')"
+                    class="chip"
+                    [class.active]="activeChip() === 'flexibility'"
+                  >
+                    <span class="material-icons text-sm">event_repeat</span>
+                    {{ (travelForm.get('flexibility')?.value | titlecase) || 'Flexibility' }}
+                    <span class="material-icons text-sm">expand_more</span>
+                  </button>
+                  @if (activeChip() === 'flexibility') {
+                    <div class="dropdown-menu">
+                      @for (f of flexibilityOptions; track f.value) {
+                        <button
+                          (click)="travelForm.get('flexibility')?.setValue(f.value); activeChip.set(null)"
+                          class="dropdown-item"
+                        >
+                          {{ f.label }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <app-smart-suggestions
+                [nlpQuery]="nlpQuery()"
+                (selectSuggestion)="selectSuggestion($event)"
+              />
+            </div>
+          </div>
+        }
+
+        @else if (activeTab() === 'deep') {
+          <div class="tab-pane">
+            <app-planning-form
+              [travelForm]="travelForm"
+              [isLoading]="isLoading()"
+              [canSubmit]="canSubmit()"
+              [budgetRanges]="budgetRanges"
+              [travelStyles]="travelStyles"
+              [interestOptions]="interestOptions"
+              [accommodationTypes]="accommodationTypes"
+              [transportationOptions]="transportationOptions"
+              (generateItinerary)="generateItinerary()"
+              (resetForm)="resetForm()"
+              (interestChange)="onInterestChange($event.interest, $event.event)"
+            />
+          </div>
+        }
+
       </div>
     </div>
   </div>
 </section>
 
-<!-- Travel Planning Form -->
-@if (showForm()) {
-  <section id="planning-form" class="planning-section">
-    <div class="container">
-      <div class="form-container card card-elevated max-w-2xl">
-        <div class="card-body">
-          <div class="form-header text-center mb-8">
-            <h2 class="form-title text-ui text-3xl font-bold text-primary">
-              Tell Us About Your Dream Trip
-            </h2>
-            <p class="form-subtitle text-gray-600 mt-4">
-              The more details you share, the better we can personalize your itinerary
-            </p>
-          </div>
-
-
-          <form [formGroup]="travelForm" (ngSubmit)="generateItinerary()" novalidate>
-            <!-- Destination -->
-            <div class="form-group">
-              <label for="destination" class="form-label">Where do you want to go?</label>
-              <input
-                type="text"
-                id="destination"
-                formControlName="destination"
-                class="form-control"
-                placeholder="e.g., Tokyo, Paris, New York..."
-                required
-                [attr.aria-invalid]="travelForm.get('destination')?.invalid && travelForm.get('destination')?.touched"
-                aria-describedby="destination-error">
-              @if (travelForm.get('destination')?.invalid && travelForm.get('destination')?.touched) {
-                <div id="destination-error" class="form-error text-error text-sm mt-2" role="alert">
-                  Please enter a destination
-                </div>
-              }
-            </div>
-
-            <!-- Dates -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="form-group">
-                <label for="startDate" class="form-label">Start Date</label>
-                <input
-                  type="date"
-                  id="startDate"
-                  formControlName="startDate"
-                  class="form-control"
-                  required
-                  [attr.aria-invalid]="travelForm.get('startDate')?.invalid && travelForm.get('startDate')?.touched"
-                  aria-describedby="startDate-error">
-                @if (travelForm.get('startDate')?.invalid && travelForm.get('startDate')?.touched) {
-                  <div id="startDate-error" class="form-error text-error text-sm mt-2" role="alert">
-                    Please select a start date
-                  </div>
-                }
-              </div>
-
-              <div class="form-group">
-                <label for="endDate" class="form-label">End Date</label>
-                <input
-                  type="date"
-                  id="endDate"
-                  formControlName="endDate"
-                  class="form-control"
-                  required
-                  [attr.aria-invalid]="travelForm.get('endDate')?.invalid && travelForm.get('endDate')?.touched"
-                  aria-describedby="endDate-error">
-                @if (travelForm.get('endDate')?.invalid && travelForm.get('endDate')?.touched) {
-                  <div id="endDate-error" class="form-error text-error text-sm mt-2" role="alert">
-                    Please select an end date
-                  </div>
-                }
-              </div>
-            </div>
-
-            <!-- Budget -->
-            <div class="form-group">
-              <label for="budget" class="form-label">What's your budget?</label>
-              <select
-                id="budget"
-                formControlName="budget"
-                class="form-control"
-                required
-                [attr.aria-invalid]="travelForm.get('budget')?.invalid && travelForm.get('budget')?.touched"
-                aria-describedby="budget-error">
-                <option value="">Select your budget range</option>
-                @for (budget of budgetRanges; track budget.value) {
-                  <option [value]="budget.value">{{ budget.label }}</option>
-                }
-              </select>
-              @if (travelForm.get('budget')?.invalid && travelForm.get('budget')?.touched) {
-                <div id="budget-error" class="form-error text-error text-sm mt-2" role="alert">
-                  Please select a budget range
-                </div>
-              }
-            </div>
-
-            <!-- Travel Style -->
-            <div class="form-group">
-              <label for="travelStyle" class="form-label">What's your travel style?</label>
-              <select
-                id="travelStyle"
-                formControlName="travelStyle"
-                class="form-control"
-                required
-                [attr.aria-invalid]="travelForm.get('travelStyle')?.invalid && travelForm.get('travelStyle')?.touched"
-                aria-describedby="travelStyle-error">
-                <option value="">Choose your travel style</option>
-                @for (style of travelStyles; track style.value) {
-                  <option [value]="style.value">{{ style.label }}</option>
-                }
-              </select>
-              @if (travelForm.get('travelStyle')?.invalid && travelForm.get('travelStyle')?.touched) {
-                <div id="travelStyle-error" class="form-error text-error text-sm mt-2" role="alert">
-                  Please select a travel style
-                </div>
-              }
-            </div>
-
-            <!-- Group Size -->
-            <div class="form-group">
-              <label for="groupSize" class="form-label">How many travelers?</label>
-              <input
-                type="number"
-                id="groupSize"
-                formControlName="groupSize"
-                class="form-control"
-                min="1"
-                max="20"
-                required
-                [attr.aria-invalid]="travelForm.get('groupSize')?.invalid && travelForm.get('groupSize')?.touched"
-                aria-describedby="groupSize-error">
-              @if (travelForm.get('groupSize')?.invalid && travelForm.get('groupSize')?.touched) {
-                <div id="groupSize-error" class="form-error text-error text-sm mt-2" role="alert">
-                  Please enter a group size between 1 and 20
-                </div>
-              }
-            </div>
-
-            <!-- Interests -->
-            <div class="form-group">
-              <label class="form-label">What are you interested in? (Select all that apply)</label>
-              <div class="interests-grid grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                @for (interest of interestOptions; track interest) {
-                  <label class="interest-option flex items-center">
-                    <input
-                      type="checkbox"
-                      [checked]="isInterestSelected(interest)"
-                      (change)="onInterestChange(interest, $event)"
-                      class="interest-checkbox">
-                    <span class="interest-label">{{ interest }}</span>
-                  </label>
-                }
-              </div>
-            </div>
-
-            <!-- Accommodation -->
-            <div class="form-group">
-              <label for="accommodation" class="form-label">Preferred accommodation</label>
-              <select
-                id="accommodation"
-                formControlName="accommodation"
-                class="form-control"
-                required
-                [attr.aria-invalid]="travelForm.get('accommodation')?.invalid && travelForm.get('accommodation')?.touched"
-                aria-describedby="accommodation-error">
-                <option value="">Choose accommodation type</option>
-                @for (acc of accommodationTypes; track acc.value) {
-                  <option [value]="acc.value">{{ acc.label }}</option>
-                }
-              </select>
-              @if (travelForm.get('accommodation')?.invalid && travelForm.get('accommodation')?.touched) {
-                <div id="accommodation-error" class="form-error text-error text-sm mt-2" role="alert">
-                  Please choose an accommodation type
-                </div>
-              }
-            </div>
-
-            <!-- Transportation -->
-            <div class="form-group">
-              <label for="transportation" class="form-label">How do you prefer to travel?</label>
-              <select
-                id="transportation"
-                formControlName="transportation"
-                class="form-control"
-                required
-                [attr.aria-invalid]="travelForm.get('transportation')?.invalid && travelForm.get('transportation')?.touched"
-                aria-describedby="transportation-error">
-                <option value="">Select transportation</option>
-                @for (transport of transportationOptions; track transport.value) {
-                  <option [value]="transport.value">{{ transport.label }}</option>
-                }
-              </select>
-              @if (travelForm.get('transportation')?.invalid && travelForm.get('transportation')?.touched) {
-                <div id="transportation-error" class="form-error text-error text-sm mt-2" role="alert">
-                  Please select a transportation option
-                </div>
-              }
-            </div>
-
-            <!-- Form Actions -->
-            <div class="form-actions flex gap-4 justify-center mt-8">
-              <button
-                type="button"
-                (click)="resetForm()"
-                class="btn btn-secondary"
-                [disabled]="isLoading()">
-                Start Over
-              </button>
-
-              <button
-                type="submit"
-                class="btn btn-primary btn-large"
-                [disabled]="!canSubmit()">
-                @if (isLoading()) {
-                  <span class="loading-spinner"></span>
-                  Creating Your Itinerary...
-                } @else {
-                  🎭 Generate My Itinerary
-                }
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- Generated Itinerary Results -->
+@if (isLoading()) {
+  <app-loading-section [loadingMessage]="loadingMessage()" />
 }
 
-<!-- Generated Itinerary Results -->
-@if (generatedItinerary()) {
-  <section id="itinerary-results" class="results-section" role="region" aria-labelledby="itinerary-heading" aria-live="polite">
-    <div class="container">
-      <div class="results-container card card-elevated max-w-2xl">
-        <div class="card-body">
-          <div class="results-header text-center mb-8">
-            <h2 id="itinerary-heading" class="results-title text-ui text-3xl font-bold text-primary">
-              🌟 Your Personalized Itinerary
-            </h2>
-            <p class="results-subtitle text-gray-600 mt-4">
-              Here's your custom travel plan created by AI
-            </p>
-          </div>
-
-          <div class="itinerary-content">
-            <div class="itinerary-text">{{ generatedItinerary() }}</div>
-          </div>
-
-          <div class="results-actions flex gap-4 justify-center mt-8">
-            <button
-              (click)="resetForm()"
-              class="btn btn-secondary">
-              Plan Another Trip
-            </button>
-
-            <button
-              type="button"
-              class="btn btn-primary"
-              (click)="printItinerary()">
-              📄 Save/Print Itinerary
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+@if (generatedItinerary() && !isLoading()) {
+  <app-itinerary-results
+    [itinerary]="generatedItinerary()"
+    [destination]="travelForm.get('destination')?.value"
+    (printItinerary)="printItinerary()"
+  />
 }
 
 <!-- Footer -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-content text-center">
-      <div class="footer-brand">
-        <h3 class="text-brand font-bold text-xl">Wander<span class="text-secondary">Genie</span></h3>
-        <p class="text-gray-600 text-sm mt-2">
-          AI-powered travel planning made simple
-        </p>
-      </div>
-
-      <div class="footer-links mt-6">
-        <p class="text-gray-500 text-sm">
-          Powered by Gemini AI • Built with ❤️ for travelers
-        </p>
-      </div>
-    </div>
-  </div>
-</footer>
+<app-footer />

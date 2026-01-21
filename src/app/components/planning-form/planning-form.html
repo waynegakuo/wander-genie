@@ -1,0 +1,213 @@
+<section id="planning-form" class="planning-section">
+  <div class="container">
+    <div class="form-container card card-elevated max-w-4xl mx-auto">
+      <div class="card-body md:p-12">
+        <div class="form-header text-center mb-12">
+          <div class="form-title-container">
+            <span class="text-4xl font-extrabold">🗺️</span>
+            <h2 class="form-title text-ui text-4xl font-extrabold">
+              Deep Planning
+            </h2>
+          </div>
+          <p class="form-subtitle text-body text-gray-600 text-lg">
+            Fine-tune every aspect of your journey for the perfect experience
+          </p>
+        </div>
+
+        <form [formGroup]="travelForm()" (ngSubmit)="generateItinerary.emit()" novalidate>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- Departure Location -->
+            <div class="form-group">
+              <label for="departureLocation" class="form-label mb-2 block font-semibold">
+                🛫 Where are you departing from?
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="departureLocation"
+                  formControlName="departureLocation"
+                  class="form-control pl-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-full"
+                  placeholder="e.g., London, SFO, Tokyo..."
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Destination -->
+            <div class="form-group">
+              <label for="destination" class="form-label mb-2 block font-semibold">
+                📍 Where do you want to go?
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="destination"
+                  formControlName="destination"
+                  class="form-control pl-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-full"
+                  placeholder="e.g., Tokyo, Paris, New York..."
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="form-group">
+              <label for="startDate" class="form-label mb-2 block font-semibold">📅 Start Date</label>
+              <input
+                type="date"
+                id="startDate"
+                formControlName="startDate"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="endDate" class="form-label mb-2 block font-semibold">📅 End Date</label>
+              <input
+                type="date"
+                id="endDate"
+                formControlName="endDate"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full"
+                required
+              />
+            </div>
+
+            <!-- Budget -->
+            <div class="form-group">
+              <label for="budget" class="form-label mb-2 block font-semibold">💰 What's your budget?</label>
+              <select
+                id="budget"
+                formControlName="budget"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full appearance-none"
+                required
+              >
+                <option value="">Select your budget range</option>
+                @for (budget of budgetRanges(); track budget.value) {
+                  <option [value]="budget.value">{{ budget.label }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Travel Style -->
+            <div class="form-group">
+              <label for="travelStyle" class="form-label mb-2 block font-semibold">✨ What's your travel style?</label>
+              <select
+                id="travelStyle"
+                formControlName="travelStyle"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full appearance-none"
+                required
+              >
+                <option value="">Choose your travel style</option>
+                @for (style of travelStyles(); track style.value) {
+                  <option [value]="style.value">{{ style.label }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Group Size -->
+            <div class="form-group">
+              <label for="groupSize" class="form-label mb-2 block font-semibold">👥 How many travelers?</label>
+              <input
+                type="number"
+                id="groupSize"
+                formControlName="groupSize"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full"
+                min="1"
+                max="20"
+                required
+              />
+            </div>
+
+            <!-- Travel Class -->
+            <div class="form-group">
+              <label for="travelClass" class="form-label mb-2 block font-semibold">🎫 Travel Class</label>
+              <select
+                id="travelClass"
+                formControlName="travelClass"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full appearance-none"
+              >
+                <option value="economy">🎫 Economy</option>
+                <option value="business">💼 Business</option>
+                <option value="first">💎 First Class</option>
+              </select>
+            </div>
+
+            <!-- Accommodation -->
+            <div class="form-group">
+              <label for="accommodation" class="form-label mb-2 block font-semibold">🏨 Preferred accommodation</label>
+              <select
+                id="accommodation"
+                formControlName="accommodation"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full appearance-none"
+                required
+              >
+                <option value="">Choose accommodation type</option>
+                @for (acc of accommodationTypes(); track acc.value) {
+                  <option [value]="acc.value">{{ acc.label }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Transportation -->
+            <div class="form-group">
+              <label for="transportation" class="form-label mb-2 block font-semibold">🚗 How do you prefer to travel?</label>
+              <select
+                id="transportation"
+                formControlName="transportation"
+                class="form-control px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-primary transition-all w-full appearance-none"
+                required
+              >
+                <option value="">Select transportation</option>
+                @for (transport of transportationOptions(); track transport.value) {
+                  <option [value]="transport.value">{{ transport.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <!-- Interests -->
+          <div class="form-group mb-12">
+            <label class="form-label mb-4 block font-semibold text-lg">🎭 What are you interested in? (Select all that apply)</label>
+            <div class="interests-container">
+              @for (interest of interestOptions(); track interest) {
+                <label class="interest-card">
+                  <input
+                    type="checkbox"
+                    [checked]="isInterestSelected(interest)"
+                    (change)="interestChange.emit({ interest, event: $event })"
+                    class="hidden-checkbox"
+                  />
+                  <div class="interest-chip">
+                    <span class="interest-label">{{ interest }}</span>
+                  </div>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button
+              type="button"
+              (click)="resetForm.emit()"
+              class="btn-reset"
+              [disabled]="isLoading()"
+            >
+              🔄 Start Over
+            </button>
+
+            <button type="submit" class="btn-generate" [disabled]="!canSubmit()">
+              @if (isLoading()) {
+                <span class="loading-spinner"></span>
+                ✨ Creating Your Magic Trip...
+              } @else {
+                🧞‍♂️ Generate My Itinerary
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
