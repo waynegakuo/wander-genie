@@ -8,5 +8,9 @@ export const environment = {
     messagingSenderId: "385772763974",
     appId: "1:385772763974:web:336161f246109996df4347",
     measurementId: "G-VRSC5ZBWWC"
+  },
+  emulator: {
+    host: 'localhost',
+    functionsPort: 5001
   }
 };
