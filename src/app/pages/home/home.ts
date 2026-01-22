@@ -161,6 +161,7 @@ export class Home {
     if (this.activeChip() === chip) {
       this.activeChip.set(null);
     } else {
+      this.travelService.logEvent('open_chip_dropdown', { chip });
       this.activeChip.set(chip);
     }
   }
@@ -176,6 +177,7 @@ export class Home {
   }
 
   selectSuggestion(suggestion: string): void {
+    this.travelService.logSelectSuggestion(suggestion);
     this.nlpQuery.set(suggestion);
     // Explicitly trigger parsing using local extraction for suggestions
     const parsed = this.travelService.extractPreferences(suggestion);
@@ -245,15 +247,22 @@ export class Home {
     this.activeTab.set('deep');
   }
 
+  onTabChange(tab: 'genie' | 'deep'): void {
+    this.travelService.logTabChange(tab);
+    this.activeTab.set(tab);
+  }
+
   onInterestChange(interest: string, event: Event): void {
     const target = event.target as HTMLInputElement;
     const currentInterests = this.travelForm.get('interests')?.value || [];
 
     if (target.checked) {
+      this.travelService.logEvent('select_interest', { interest });
       this.travelForm.patchValue({
         interests: [...currentInterests, interest]
       });
     } else {
+      this.travelService.logEvent('deselect_interest', { interest });
       this.travelForm.patchValue({
         interests: currentInterests.filter((i: string) => i !== interest)
       });
@@ -315,11 +324,14 @@ export class Home {
 
   printItinerary(): void {
     if (isPlatformBrowser(this.platformId)) {
+      const itinerary = this.generatedItinerary();
+      this.travelService.logPrintItinerary(itinerary?.destination || this.travelForm.get('destination')?.value);
       window.print();
     }
   }
 
   resetForm(): void {
+    this.travelService.logResetForm();
     this.travelForm.reset({
       groupSize: 1,
       interests: [],

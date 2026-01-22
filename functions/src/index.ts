@@ -39,6 +39,7 @@ const TravelPreferencesSchema = z.object({
 });
 
 const ItinerarySchema = z.object({
+  destination: z.string().describe('The destination of the trip'),
   tripSummary: z.string().describe('A brief summary of the trip'),
   flightOptions: z.array(z.object({
     title: z.string().describe('A descriptive title for the flight option'),

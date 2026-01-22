@@ -15,6 +15,7 @@ export interface TravelPreferences {
 }
 
 export interface Itinerary {
+  destination: string;
   tripSummary: string;
   flightOptions?: {
     title: string;

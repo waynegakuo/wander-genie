@@ -21,6 +21,7 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     IMPORTANT: If there is a "User's Natural Language Request" provided, use it to refine the itinerary details while respecting the specific filters provided above. The natural query might contain specific destination requests, activities, or constraints not captured in the structured filters.
 
     The itinerary should include:
+    - The "destination" field: Use "${input.destination}".
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
       Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
@@ -64,6 +65,7 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
     - If any critical details are missing (like departure city or specific dates), make reasonable assumptions based on today's date (${input.today || new Date().toISOString().split('T')[0]}) and provide a comprehensive plan.
 
     The itinerary MUST include:
+    - The "destination" field: The name of the primary destination city or region.
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
       Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]

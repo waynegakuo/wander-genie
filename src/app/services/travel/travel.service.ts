@@ -1,26 +1,86 @@
 import { inject, Injectable } from '@angular/core';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { TravelPreferences, Itinerary } from '../../models/travel.model';
+import { Analytics, logEvent } from '@angular/fire/analytics';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TravelService {
   private readonly functions = inject(Functions);
+  private fireAnalytics = inject(Analytics);
 
   async generateItinerary(preferences: TravelPreferences): Promise<Itinerary> {
-    const planTripFn = httpsCallable<TravelPreferences, Itinerary>(this.functions, 'generateItineraryFlow');
-    const result = await planTripFn(preferences);
-    return result.data;
+    logEvent(this.fireAnalytics, 'generate_itinerary', {
+      destination: preferences.destination,
+      budget: preferences.budget,
+      travel_class: preferences.travelClass,
+      group_size: preferences.groupSize,
+    });
+
+    try {
+      const planTripFn = httpsCallable<TravelPreferences, Itinerary>(this.functions, 'generateItineraryFlow');
+      const result = await planTripFn(preferences);
+
+      logEvent(this.fireAnalytics, 'itinerary_generated_success', {
+        destination: result.data.destination,
+      });
+
+      return result.data;
+    } catch (error: any) {
+      logEvent(this.fireAnalytics, 'itinerary_generated_error', {
+        error: error.message || 'Unknown error',
+      });
+      throw error;
+    }
   }
 
   async generateGenieItinerary(text: string, departureLocation?: string): Promise<Itinerary> {
-    const genieFn = httpsCallable<{ query: string; departureLocation?: string }, Itinerary>(
-      this.functions,
-      'genieItineraryFlow'
-    );
-    const result = await genieFn({ query: text, departureLocation });
-    return result.data;
+    logEvent(this.fireAnalytics, 'generate_genie_itinerary', {
+      query_length: text.length,
+      has_departure: !!departureLocation,
+    });
+
+    try {
+      const genieFn = httpsCallable<{ query: string; departureLocation?: string }, Itinerary>(
+        this.functions,
+        'genieItineraryFlow'
+      );
+      const result = await genieFn({ query: text, departureLocation });
+
+      logEvent(this.fireAnalytics, 'itinerary_generated_success', {
+        destination: result.data.destination,
+        flow: 'genie',
+      });
+
+      return result.data;
+    } catch (error: any) {
+      logEvent(this.fireAnalytics, 'itinerary_generated_error', {
+        error: error.message || 'Unknown error',
+        flow: 'genie',
+      });
+      throw error;
+    }
+  }
+
+  logPrintItinerary(destination?: string): void {
+    logEvent(this.fireAnalytics, 'print_itinerary', { destination });
+  }
+
+  logResetForm(): void {
+    logEvent(this.fireAnalytics, 'reset_form');
+  }
+
+  logTabChange(tab: 'genie' | 'deep'): void {
+    logEvent(this.fireAnalytics, 'tab_change', { tab });
+  }
+
+  logSelectSuggestion(suggestion: string): void {
+    logEvent(this.fireAnalytics, 'select_suggestion', { suggestion });
+  }
+
+  logEvent(eventName: string, params?: { [key: string]: any }): void {
+    logEvent(this.fireAnalytics, eventName, params);
   }
 
   /**
