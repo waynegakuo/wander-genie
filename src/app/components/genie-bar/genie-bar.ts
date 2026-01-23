@@ -1,0 +1,72 @@
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule, TitleCasePipe } from '@angular/common';
+import { SmartSuggestionsComponent } from '../smart-suggestions/smart-suggestions';
+
+@Component({
+  selector: 'app-genie-bar',
+  imports: [CommonModule, ReactiveFormsModule, TitleCasePipe, SmartSuggestionsComponent],
+  templateUrl: './genie-bar.html',
+  styleUrl: './genie-bar.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class GenieBarComponent {
+  travelForm = input.required<FormGroup>();
+  isLoading = input.required<boolean>();
+  canSubmit = input.required<boolean>();
+  nlpQuery = input.required<string>();
+  currentPlaceholder = input.required<string>();
+  nextPlaceholder = input.required<string>();
+  isTransitioning = input.required<boolean>();
+
+  // Options for chips (keeping these in component for cleaner template)
+  budgetRanges = [
+    { value: 'budget', label: '💰 $0 - $1,000 (Budget)' },
+    { value: 'mid-range', label: '💸 $1,000 - $3,000 (Mid-range)' },
+    { value: 'luxury', label: '💎 $3,000 - $10,000 (Luxury)' },
+    { value: 'ultra-luxury', label: '✨ $10,000+ (Ultra Luxury)' },
+  ];
+
+  travelClasses = [
+    { value: 'economy', label: 'Economy' },
+    { value: 'business', label: 'Business' },
+    { value: 'first', label: 'First' }
+  ];
+
+  flexibilityOptions = [
+    { value: 'exact', label: 'Exact Dates' },
+    { value: 'flexible', label: 'Flexible' },
+    { value: 'anytime', label: 'Anytime' }
+  ];
+
+  activeChip = signal<string | null>(null);
+
+  updateQuery = output<Event>();
+  generateItinerary = output<void>();
+  selectSuggestion = output<string>();
+
+  toggleChip(chip: string): void {
+    if (this.activeChip() === chip) {
+      this.activeChip.set(null);
+    } else {
+      this.activeChip.set(chip);
+    }
+  }
+
+  onUpdateQuery(event: Event): void {
+    this.updateQuery.emit(event);
+  }
+
+  onGenerateItinerary(): void {
+    this.generateItinerary.emit();
+  }
+
+  onSelectSuggestion(suggestion: string): void {
+    this.selectSuggestion.emit(suggestion);
+  }
+
+  setFormControlValue(controlName: string, value: any): void {
+    this.travelForm().get(controlName)?.setValue(value);
+    this.activeChip.set(null);
+  }
+}

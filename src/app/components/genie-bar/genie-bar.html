@@ -1,0 +1,159 @@
+<div class="genie-bar-container max-w-4xl mx-auto mt-2 relative" [formGroup]="travelForm()">
+  <div class="departure-container flex items-center justify-center mb-4">
+    <span class="material-icons text-white mr-2 text-sm flight-icon">flight_takeoff</span>
+    <span class="text-white text-sm departure-label">Departing from</span>
+    <div class="departure-input-wrapper relative">
+      <input
+        type="text"
+        formControlName="departureLocation"
+        placeholder="Your city"
+        class="departure-input"
+        #departureInput
+      />
+      <span class="departure-mirror" aria-hidden="true">
+        {{ travelForm().get('departureLocation')?.value || 'Your city' }}
+      </span>
+      <span class="material-icons edit-icon">edit</span>
+    </div>
+  </div>
+
+  <div class="genie-bar flex items-center bg-white rounded-full p-3 transition-all shadow-xl">
+    <span class="sparkle-icon ml-4 text-2xl">✨</span>
+    <div class="placeholder-container">
+      @if (!nlpQuery()) {
+        <span class="placeholder-text current" [class.exit]="isTransitioning()">
+          {{ currentPlaceholder() }}
+        </span>
+        <span class="placeholder-text next" [class.enter]="isTransitioning()">
+          {{ nextPlaceholder() }}
+        </span>
+      }
+    </div>
+    <input
+      type="text"
+      class="nlp-input flex-1 bg-transparent border-none focus:outline-none px-4 py-3 text-xl leading-normal"
+      (input)="onUpdateQuery($event)"
+      [value]="nlpQuery()"
+    />
+    <button
+      (click)="onGenerateItinerary()"
+      [disabled]="!canSubmit()"
+      class="btn-search rounded-full text-white transition-all flex items-center justify-center shrink-0"
+    >
+      @if (isLoading()) {
+        <span class="loading-spinner"></span>
+      } @else {
+        <span class="material-icons text-2xl">search</span>
+      }
+    </button>
+  </div>
+
+  <div class="refinement-chips">
+    <!-- Budget Chip -->
+    <div class="chip-container">
+      <button
+        (click)="toggleChip('budget')"
+        class="chip"
+        [class.active]="activeChip() === 'budget'"
+      >
+        <span class="material-icons text-sm">payments</span>
+        {{ (travelForm().get('budget')?.value | titlecase) || 'Budget' }}
+        <span class="material-icons text-sm">expand_more</span>
+      </button>
+      @if (activeChip() === 'budget') {
+        <div class="dropdown-menu">
+          @for (b of budgetRanges; track b.value) {
+            <button
+              (click)="setFormControlValue('budget', b.value)"
+              class="dropdown-item"
+            >
+              {{ b.label }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Passengers Chip -->
+    <div class="chip-container">
+      <button
+        (click)="toggleChip('passengers')"
+        class="chip"
+        [class.active]="activeChip() === 'passengers'"
+      >
+        <span class="material-icons text-sm">person</span>
+        {{ travelForm().get('groupSize')?.value }} Passengers
+        <span class="material-icons text-sm">expand_more</span>
+      </button>
+      @if (activeChip() === 'passengers') {
+        <div class="dropdown-menu p-4 w-48">
+          <label class="text-xs uppercase font-bold text-gray-500 mb-2 block">
+            Number of Travelers
+          </label>
+          <input
+            type="number"
+            formControlName="groupSize"
+            class="form-control"
+            min="1"
+            max="20"
+          />
+        </div>
+      }
+    </div>
+
+    <!-- Class Chip -->
+    <div class="chip-container">
+      <button
+        (click)="toggleChip('class')"
+        class="chip"
+        [class.active]="activeChip() === 'class'"
+      >
+        <span class="material-icons text-sm">flight_class</span>
+        {{ (travelForm().get('travelClass')?.value | titlecase) || 'Class' }}
+        <span class="material-icons text-sm">expand_more</span>
+      </button>
+      @if (activeChip() === 'class') {
+        <div class="dropdown-menu">
+          @for (c of travelClasses; track c.value) {
+            <button
+              (click)="setFormControlValue('travelClass', c.value)"
+              class="dropdown-item"
+            >
+              {{ c.label }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Flexibility Chip -->
+    <div class="chip-container">
+      <button
+        (click)="toggleChip('flexibility')"
+        class="chip"
+        [class.active]="activeChip() === 'flexibility'"
+      >
+        <span class="material-icons text-sm">event_repeat</span>
+        {{ (travelForm().get('flexibility')?.value | titlecase) || 'Flexibility' }}
+        <span class="material-icons text-sm">expand_more</span>
+      </button>
+      @if (activeChip() === 'flexibility') {
+        <div class="dropdown-menu">
+          @for (f of flexibilityOptions; track f.value) {
+            <button
+              (click)="setFormControlValue('flexibility', f.value)"
+              class="dropdown-item"
+            >
+              {{ f.label }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <app-smart-suggestions
+    [nlpQuery]="nlpQuery()"
+    (selectSuggestion)="onSelectSuggestion($event)"
+  />
+</div>

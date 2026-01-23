@@ -18,7 +18,7 @@ import { TravelService } from '../../services/travel/travel.service';
 import { LoadingMessageService } from '../../services/loading/loading-message.service';
 import { NavComponent } from '../../components/nav/nav';
 import { HeroComponent } from '../../components/hero/hero';
-import { SmartSuggestionsComponent } from '../../components/smart-suggestions/smart-suggestions';
+import { GenieBarComponent } from '../../components/genie-bar/genie-bar';
 import { PlanningFormComponent } from '../../components/planning-form/planning-form';
 import { LoadingSectionComponent } from '../../components/loading-section/loading-section';
 import { ItineraryResultsComponent } from '../../components/itinerary-results/itinerary-results';
@@ -29,10 +29,9 @@ import { FooterComponent } from '../../components/footer/footer';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    TitleCasePipe,
     NavComponent,
     HeroComponent,
-    SmartSuggestionsComponent,
+    GenieBarComponent,
     PlanningFormComponent,
     LoadingSectionComponent,
     ItineraryResultsComponent,
