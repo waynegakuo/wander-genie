@@ -39,7 +39,8 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
     - Use a 'journey-timeline' class container for the main sequence.
     - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
-    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days). DO NOT repeat the same emoji twice in a row or within the same section.
+    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days).
+    - Place the emoji INSIDE the header tag (e.g., <h3>🗓️ Day 1: ...</h3>). DO NOT repeat the same emoji twice in a row or within the same section.
     - Ensure the timeline is well-structured:
         1. Trip Summary (Header)
         2. Flight Search Options (with links)
@@ -84,7 +85,8 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
     Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
     - Use a 'journey-timeline' class container for the main sequence.
     - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
-    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days). DO NOT repeat the same emoji twice in a row or within the same section.
+    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days).
+    - Place the emoji INSIDE the header tag (e.g., <h3>🗓️ Day 1: ...</h3>). DO NOT repeat the same emoji twice in a row or within the same section.
     - Ensure the timeline is well-structured:
         1. Trip Summary (Header)
         2. Flight Search Options (with links)

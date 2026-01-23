@@ -53,7 +53,11 @@
   <app-loading-section [loadingMessage]="loadingMessage()" />
 }
 
-@if (generatedItinerary() && !isLoading()) {
+@if (hasError() && !isLoading()) {
+  <app-error-state (retry)="retry()" />
+}
+
+@if (generatedItinerary() && !isLoading() && !hasError()) {
   <app-itinerary-results
     [itinerary]="generatedItinerary()"
     [destination]="generatedItinerary()?.destination || travelForm.get('destination')?.value"
