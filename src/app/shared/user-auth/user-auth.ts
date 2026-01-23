@@ -1,13 +1,16 @@
-import {Component, computed, ElementRef, HostListener, inject, PLATFORM_ID, signal} from '@angular/core';
+import {Component, computed, ElementRef, inject, PLATFORM_ID, signal} from '@angular/core';
 import {AuthService} from '../../services/core/auth/auth.service';
 import {Subject, takeUntil} from 'rxjs';
-import {isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser, NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-user-auth',
-  imports: [],
+  imports: [NgOptimizedImage],
   templateUrl: './user-auth.html',
   styleUrl: './user-auth.scss',
+  host: {
+    '(document:click)': 'onDocumentClick($event)'
+  }
 })
 export class UserAuth {
   private auth = inject(AuthService);
@@ -26,13 +29,16 @@ export class UserAuth {
   // Reactive signals for user data
   readonly user = computed(() => this.auth.currentUser());
   readonly displayName = computed(() => this.auth.getUserDisplayName() ?? '');
+  readonly firstName = computed(() => {
+    const name = this.displayName();
+    return name ? name.split(' ')[0] : '';
+  });
   readonly photoUrl = computed(() => this.auth.getUserPhotoUrl());
   readonly initials = computed(() => this.computeInitials(this.displayName()));
 
   // Subject for managing subscriptions
   private destroy$ = new Subject<void>();
 
-  @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     if (isPlatformBrowser(this.platformId)) {
       const target = event.target as HTMLElement | null;
