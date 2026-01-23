@@ -8,6 +8,24 @@ import { ChangeDetectionStrategy, Component, output, input } from '@angular/core
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SmartSuggestionsComponent {
+
+  smartSuggestions = [
+    {
+      icon: '💎',
+      text: 'Hidden Gems in Europe',
+      value: 'Hidden gems in Europe for a budget summer trip'
+    },
+    {
+      icon: '🌴',
+      text: 'Cheap Tropical Getaways',
+      value: 'Cheap tropical getaways for 4 people in March'
+    },
+    {
+      icon: '🏔️',
+      text: 'Solo Adventure in Asia',
+      value: 'Best adventure trips for solo travelers in Asia'
+    }
+  ]
   nlpQuery = input.required<string>();
   selectSuggestion = output<string>();
 }

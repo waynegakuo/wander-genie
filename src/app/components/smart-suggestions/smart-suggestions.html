@@ -1,26 +1,18 @@
 <div class="smart-suggestions" [class.hidden-suggestions]="nlpQuery()">
   <h3 class="text-white text-sm uppercase font-bold tracking-wider mb-6">Need inspiration?</h3>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <button
-      (click)="selectSuggestion.emit('Hidden gems in Europe for a budget summer trip')"
-      class="suggestion-card"
-    >
-      <span class="suggestion-icon">💎</span>
-      <span class="suggestion-text">Hidden Gems in Europe</span>
-    </button>
-    <button
-      (click)="selectSuggestion.emit('Cheap tropical getaways for 4 people in March')"
-      class="suggestion-card"
-    >
-      <span class="suggestion-icon">🌴</span>
-      <span class="suggestion-text">Cheap Tropical Getaways</span>
-    </button>
-    <button
-      (click)="selectSuggestion.emit('Best adventure trips for solo travelers in Asia')"
-      class="suggestion-card"
-    >
-      <span class="suggestion-icon">🏔️</span>
-      <span class="suggestion-text">Solo Adventure in Asia</span>
-    </button>
-  </div>
+
+  @if(smartSuggestions) {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      @for (smartSuggestion of smartSuggestions; track smartSuggestion.text){
+        <button
+          (click)="selectSuggestion.emit(smartSuggestion.value)"
+          class="suggestion-card"
+        >
+          <span class="suggestion-icon">{{ smartSuggestion.icon }}</span>
+          <span class="suggestion-text">{{ smartSuggestion.text }}</span>
+        </button>
+      }
+    </div>
+  }
+
 </div>
