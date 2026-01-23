@@ -1,0 +1,188 @@
+.user-auth-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+  }
+
+  .google-signin-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-full);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.9rem;
+
+    .google-icon {
+      background: white;
+      padding: 2px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .login-mobile-icon {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      padding: 0.6rem;
+      gap: 0;
+
+      .btn-text {
+        display: none;
+      }
+
+      .login-mobile-icon {
+        display: block;
+        font-size: 1.25rem;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  .user-profile {
+    position: relative;
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+
+      @media (max-width: 640px) {
+        padding: 0.4rem;
+        gap: 0.4rem;
+
+        .user-name {
+          display: none;
+        }
+
+        .dropdown-icon {
+          font-size: 1rem;
+        }
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .avatar-container {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-accent);
+
+        .user-avatar {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .user-avatar-initials {
+          font-weight: 600;
+          font-size: 0.8rem;
+          color: white;
+        }
+      }
+
+      .user-name {
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+
+      .dropdown-icon {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+
+        &.open {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      right: 0;
+      min-width: 150px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      z-index: 100;
+      animation: fadeIn 0.2s ease-out;
+
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: none;
+        background: transparent;
+        color: white;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .material-icons {
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+
+  .loading-spinner {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem;
+
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

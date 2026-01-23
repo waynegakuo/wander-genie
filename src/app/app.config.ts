@@ -12,6 +12,7 @@ import {FirebaseApp, initializeApp, provideFirebaseApp} from '@angular/fire/app'
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
 import {environment} from '../environments/environment.development';
 import {getAnalytics, provideAnalytics} from '@angular/fire/analytics';
+import {getAuth, provideAuth} from '@angular/fire/auth';
 
 const app = initializeApp(environment.firebaseConfig);
 
@@ -30,6 +31,7 @@ export const appConfig: ApplicationConfig = {
       }
       return functions;
     }),
-    provideAnalytics(() => getAnalytics())
+    provideAnalytics(() => getAnalytics()),
+    provideAuth(() => getAuth())
   ]
 };

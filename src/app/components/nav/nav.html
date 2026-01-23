@@ -1,16 +1,20 @@
-<nav class="sub-nav flex justify-center gap-8 mb-12">
-  <button
-    (click)="tabChange.emit('genie')"
-    class="nav-item"
-    [class.active]="activeTab() === 'genie'"
-  >
-    ✨ Genie Planner
-  </button>
-  <button
-    (click)="tabChange.emit('deep')"
-    class="nav-item"
-    [class.active]="activeTab() === 'deep'"
-  >
-    🔍 Deep Planner
-  </button>
+<nav class="sub-nav flex items-center justify-between mb-12">
+  <div class="flex gap-8 tabs-container">
+    <button
+      (click)="tabChange.emit('genie')"
+      class="nav-item"
+      [class.active]="activeTab() === 'genie'"
+    >
+      ✨ Genie Planner
+    </button>
+    <button
+      (click)="tabChange.emit('deep')"
+      class="nav-item"
+      [class.active]="activeTab() === 'deep'"
+    >
+      🔍 Deep Planner
+    </button>
+  </div>
+
+  <app-user-auth />
 </nav>
