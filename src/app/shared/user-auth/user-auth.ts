@@ -1,11 +1,11 @@
 import {Component, computed, ElementRef, inject, PLATFORM_ID, signal} from '@angular/core';
 import {AuthService} from '../../services/core/auth/auth.service';
 import {Subject, takeUntil} from 'rxjs';
-import {isPlatformBrowser, NgOptimizedImage} from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 
 @Component({
   selector: 'app-user-auth',
-  imports: [NgOptimizedImage],
+  imports: [],
   templateUrl: './user-auth.html',
   styleUrl: './user-auth.scss',
   host: {
