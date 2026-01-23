@@ -1,7 +1,7 @@
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="container">
-    <app-nav [activeTab]="activeTab()" (tabChange)="onTabChange($event)" />
+    <app-nav [activeTab]="activeTab()" [showTabs]="true" (tabChange)="onTabChange($event)" />
 
     <div class="hero-content text-center relative">
       <app-hero />
@@ -57,6 +57,7 @@
   <app-itinerary-results
     [itinerary]="generatedItinerary()"
     [destination]="generatedItinerary()?.destination || travelForm.get('destination')?.value"
+    [searchMetadata]="searchMetadata()"
     (printItinerary)="printItinerary()"
   />
 }

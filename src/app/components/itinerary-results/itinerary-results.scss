@@ -184,10 +184,10 @@
       }
 
       .flight-card, .hotel-card {
-        background: #f8fafc;
+        background: var(--color-gray-50);
         border-radius: 1rem;
         padding: 1.5rem;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--color-gray-200);
         margin: 1.5rem 0;
       }
     }
@@ -196,4 +196,48 @@
 
 .itinerary-footer {
   flex-wrap: wrap;
+}
+
+.wishlist-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-white);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-gray-200);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--color-gray-500);
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  &.is-saved {
+    color: var(--color-error);
+    border-color: #fee2e2;
+    background: #fef2f2;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .material-icons {
+    font-size: 24px;
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

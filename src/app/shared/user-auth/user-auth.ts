@@ -1,11 +1,13 @@
 import {Component, computed, ElementRef, inject, PLATFORM_ID, signal} from '@angular/core';
 import {AuthService} from '../../services/core/auth/auth.service';
+import {WishlistService} from '../../services/wishlist/wishlist.service';
 import {Subject, takeUntil} from 'rxjs';
 import {isPlatformBrowser} from '@angular/common';
+import {RouterModule} from '@angular/router';
 
 @Component({
   selector: 'app-user-auth',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './user-auth.html',
   styleUrl: './user-auth.scss',
   host: {
@@ -14,6 +16,7 @@ import {isPlatformBrowser} from '@angular/common';
 })
 export class UserAuth {
   private auth = inject(AuthService);
+  private wishlistService = inject(WishlistService);
   private platformId = inject(PLATFORM_ID);
   private elementRef = inject(ElementRef);
 
@@ -25,6 +28,8 @@ export class UserAuth {
   // Expose auth service signals to the template
   readonly loading = computed(() => this.auth.isLoading());
   readonly isAuthed = computed(() => this.auth.isAuthenticated());
+
+  readonly wishlistCount = computed(() => this.wishlistService.wishlistItems().length);
 
   // Reactive signals for user data
   readonly user = computed(() => this.auth.currentUser());

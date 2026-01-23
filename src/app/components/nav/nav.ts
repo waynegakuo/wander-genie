@@ -9,6 +9,7 @@ import { UserAuth } from '../../shared/user-auth/user-auth';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavComponent {
-  activeTab = input<'genie' | 'deep'>('genie');
+  activeTab = input<'genie' | 'deep'>();
+  showTabs = input<boolean>(true);
   tabChange = output<'genie' | 'deep'>();
 }

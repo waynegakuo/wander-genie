@@ -81,6 +81,12 @@ export class Home {
     flexibility: ['flexible']
   });
 
+  searchMetadata = computed(() => ({
+    prompt: this.nlpQuery(),
+    budget: this.travelForm.get('budget')?.value || 'mid-range',
+    passengers: this.travelForm.get('groupSize')?.value || 1,
+  }));
+
   constructor() {
     // Cycling placeholder effect
     if (isPlatformBrowser(this.platformId)) {

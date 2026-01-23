@@ -1,6 +1,7 @@
 import {EnvironmentInjector, inject, Injectable, runInInjectionContext, signal} from '@angular/core';
 import {Auth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, User} from '@angular/fire/auth';
 import {from, Observable, of, switchMap} from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,8 @@ export class AuthService {
     // Initialize auth state
     this.initAuthState();
   }
+
+  user$ = toObservable(this.currentUser);
 
   /**
    * Initializes the authentication state listener
