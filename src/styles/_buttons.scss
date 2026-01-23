@@ -1,0 +1,61 @@
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.btn-primary {
+    background: var(--color-accent);
+    color: var(--color-white);
+    box-shadow: var(--shadow-md);
+    font-family: var(--font-brand);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &.btn-secondary {
+    background: var(--color-white);
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+    font-family: var(--font-brand);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    &:hover:not(:disabled) {
+      background: var(--color-accent);
+      color: var(--color-white);
+    }
+  }
+
+  &.btn-large {
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    font-size: 1.125rem;
+    min-height: 56px;
+  }
+}

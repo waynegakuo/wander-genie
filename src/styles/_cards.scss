@@ -1,0 +1,21 @@
+/* Card component */
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+
+  &.card-elevated {
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+.card-body {
+  padding: var(--spacing-2xl);
+}
+
+@media (max-width: 767.98px) {
+  .card-body {
+    padding: var(--spacing-xl);
+  }
+}

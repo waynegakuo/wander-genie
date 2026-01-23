@@ -1,0 +1,78 @@
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .results-section,
+  .results-section * {
+    visibility: visible;
+  }
+
+  .results-section {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .print-only * {
+    visibility: visible !important;
+  }
+
+  /* Typography for print */
+  .prose {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: black !important;
+    max-width: none !important;
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: black !important;
+      page-break-after: avoid;
+    }
+
+    h2 {
+      border-bottom: 2px solid #2563eb !important;
+      padding-bottom: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p,
+    li {
+      page-break-inside: avoid;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+      li::before {
+        content: '•';
+        margin-right: 0.5rem;
+      }
+    }
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}

@@ -1,0 +1,74 @@
+/* Typography utilities */
+.text-white {
+  color: var(--color-white);
+}
+
+.text-brand {
+  font-family: var(--font-brand);
+}
+
+.text-ui {
+  font-family: var(--font-ui);
+}
+
+.text-body {
+  font-family: var(--font-body);
+}
+
+.text-note {
+  font-family: var(--font-note);
+}
+
+.text-heading {
+  font-family: var(--font-heading);
+}
+
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-8xl { font-size: 6rem; }
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0.05em; }
+
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-accent { color: var(--color-accent); }
+.text-error { color: var(--color-error); }
+.text-gray-200 { color: var(--color-gray-200); }
+.text-gray-300 { color: var(--color-gray-300); }
+.text-gray-400 { color: var(--color-gray-400); }
+.text-gray-500 { color: var(--color-gray-500); }
+.text-gray-600 { color: var(--color-gray-600); }
+.text-gray-900 { color: var(--color-gray-900); }
+.text-blue-600 { color: #2563eb; }
+.text-blue-800 { color: #1e40af; }
+.text-blue-900 { color: #1e3a8a; }
+
+.leading-normal { line-height: 1.5; }
+.leading-relaxed { line-height: 1.625; }
+
+@media (max-width: 767.98px) {
+  .text-4xl {
+    font-size: 2rem;
+  }
+
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+}
