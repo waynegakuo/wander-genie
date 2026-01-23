@@ -1,4 +1,4 @@
-<section class="hero-section">
+<section class="hero-section hero-half">
   <div class="container">
     <app-nav [showTabs]="false" />
 
@@ -10,7 +10,7 @@
 
 @if (isLoading()) {
   <div class="flex items-center justify-center min-h-screen">
-    <div class="animate-spin rounded-full h-12 w-12 border"></div>
+    <div class="animate-spin rounded-full h-12 w-12 border-spinner"></div>
   </div>
 } @else if (wishlistItem(); as item) {
   <app-itinerary-results

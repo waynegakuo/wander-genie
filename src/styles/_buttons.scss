@@ -58,4 +58,40 @@
     font-size: 1.125rem;
     min-height: 56px;
   }
+
+  &.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-height: 36px;
+  }
+
+  &.btn-outline {
+    border: 1px solid var(--color-gray-200);
+    background: transparent;
+    color: var(--color-gray-700);
+
+    &:hover:not(:disabled) {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-300);
+    }
+  }
+
+  &.btn-icon-danger {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--color-gray-50);
+    color: var(--color-gray-400);
+    padding: 0;
+
+    &:hover:not(:disabled) {
+      background: #fee2e2; // red-100 (soft error)
+      color: var(--color-error);
+      transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+  }
 }

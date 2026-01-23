@@ -1,4 +1,4 @@
-<section class="hero-section">
+<section class="hero-section hero-half">
   <div class="container">
     <app-nav [showTabs]="false" />
 
@@ -18,9 +18,9 @@
     @if (wishlistItems().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @for (item of wishlistItems(); track item.id) {
-          <div class="wishlist-card bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-            <div class="card-image-wrapper relative h-48 overflow-hidden">
-              <img [src]="item.imageUrl" [alt]="item.destination" class="w-full h-full object-cover">
+          <div class="card card-hover flex flex-col">
+            <div class="card-image-wrapper h-48">
+              <img [src]="item.imageUrl" [alt]="item.destination">
               <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div class="absolute bottom-4 left-4 text-white">
                 <span class="text-xs font-semibold uppercase tracking-wider opacity-80">Estimated Cost</span>
@@ -37,7 +37,7 @@
                   </div>
                   <button
                     (click)="removeItem(item.id)"
-                    class="btn-delete flex items-center justify-center shrink-0"
+                    class="btn btn-icon-danger shrink-0"
                     title="Remove from wishlist"
                     [attr.aria-label]="'Remove ' + item.destination + ' from wishlist'"
                   >
@@ -52,11 +52,11 @@
               </div>
 
               <div class="actions mt-auto pt-6 border-t border-gray-100 grid grid-cols-2 gap-4">
-                <button class="btn btn-outline btn-sm rounded-full flex items-center justify-center gap-3">
+                <button class="btn btn-outline btn-sm rounded-full">
                   <span class="material-icons text-sm">refresh</span>
                   Check Price
                 </button>
-                <a [routerLink]="['/wishlist', item.id]" class="btn btn-primary btn-sm rounded-full flex items-center justify-center gap-3">
+                <a [routerLink]="['/wishlist', item.id]" class="btn btn-primary btn-sm rounded-full">
                   <span class="material-icons text-sm">visibility</span>
                   Open
                 </a>
@@ -66,7 +66,7 @@
         }
       </div>
     } @else {
-      <div class="empty-state text-center py-24 bg-white rounded-3xl shadow-sm border border-dashed border-gray-300">
+      <div class="empty-state bg-white rounded-3xl shadow-sm border border-dashed border-gray-300 py-24">
         <div class="max-w-md mx-auto">
           <span class="material-icons text-8xl text-gray-200 mb-6">explore</span>
           <h2 class="text-2xl font-bold text-gray-900 mb-4">Your world is waiting</h2>
