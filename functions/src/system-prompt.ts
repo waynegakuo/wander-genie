@@ -24,7 +24,7 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - The "destination" field: Use "${input.destination}".
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
-      Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
+      Use the format: https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
@@ -69,7 +69,7 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
     - The "destination" field: The name of the primary destination city or region.
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
-      Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
+      Use the format: https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]
       Even if the user didn't specify a departure, assume a major hub or clearly state you've used a placeholder.
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
     - A beautified "User Journey" visualization including:
