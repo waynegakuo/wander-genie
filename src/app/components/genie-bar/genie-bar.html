@@ -33,6 +33,7 @@
       type="text"
       class="nlp-input flex-1 bg-transparent border-none focus:outline-none px-4 py-3 text-xl leading-normal"
       (input)="onUpdateQuery($event)"
+      (keydown.enter)="canSubmit() && onGenerateItinerary()"
       [value]="nlpQuery()"
     />
     <button
