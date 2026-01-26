@@ -26,6 +26,7 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - Suggested flight options with direct links to Google Flights search results.
       Use the format: <a href="https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]" target="_blank" rel="noopener">...</a>
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
+      For each option, estimate the current market price in both KShs and USD. Assume an exchange rate of approximately 1 USD = 130 KShs if not known.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
       - Accommodation/Hotel recommendations if applicable.
@@ -73,6 +74,7 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
       Use the format: <a href="https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]" target="_blank" rel="noopener">...</a>
       Even if the user didn't specify a departure, assume a major hub or clearly state you've used a placeholder.
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
+      For each option, estimate the current market price in both KShs and USD. Assume an exchange rate of approximately 1 USD = 130 KShs if not known.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
       - Accommodation/Hotel recommendations if applicable.

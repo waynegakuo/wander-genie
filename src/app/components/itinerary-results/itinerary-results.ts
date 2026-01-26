@@ -42,16 +42,21 @@ export class ItineraryResultsComponent {
 
     this.isSaving.set(true);
     try {
+      const firstFlight = itinerary.flightOptions?.[0];
+      const priceDisplay = firstFlight?.priceKsh
+        ? `KSh ${firstFlight.priceKsh.toLocaleString()} ($${firstFlight.priceUsd})`
+        : (firstFlight?.price || 'N/A');
+
       const wishlistItem: Omit<WishlistItem, 'id' | 'createdAt'> = {
         userId: '', // Will be set by service
         destination: itinerary.destination,
         itineraryTitle: itinerary.tripSummary,
         flightData: {
-          price: itinerary.flightOptions?.[0]?.price || 'N/A',
-          airline: itinerary.flightOptions?.[0]?.title || 'Multiple Airlines',
+          price: priceDisplay,
+          airline: firstFlight?.title || 'Multiple Airlines',
           departureDate: itinerary.days[0]?.date || '',
           returnDate: itinerary.days[itinerary.days.length - 1]?.date || '',
-          googleFlightsUrl: itinerary.flightOptions?.[0]?.googleFlightsUrl,
+          googleFlightsUrl: firstFlight?.googleFlightsUrl,
         },
         itinerary: itinerary,
         searchMetadata: this.searchMetadata() || {

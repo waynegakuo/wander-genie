@@ -35,7 +35,13 @@
                 </div>
                 <div class="flight-price">
                   <span class="label">From</span>
-                  <span class="price">$1,240</span>
+                  @if (flight.priceKsh && flight.priceUsd) {
+                    <span class="price">
+                      KSh {{ flight.priceKsh | number }} ({{ flight.priceUsd | currency: 'USD':'symbol':'1.0-0' }})
+                    </span>
+                  } @else {
+                    <span class="price">$1,240</span>
+                  }
                 </div>
               </div>
             } @empty {

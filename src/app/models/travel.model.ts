@@ -23,6 +23,8 @@ export interface Itinerary {
     googleFlightsUrl: string;
     description: string;
     price?: string;
+    priceKsh?: number;
+    priceUsd?: number;
   }[];
   days: {
     day: number;
