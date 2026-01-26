@@ -19,7 +19,7 @@ const ai = genkit({
 });
 
 // Detect if the function is running in the Firebase Emulator Suite.
-const isEmulated = process.env.FUNCTIONS_EMULATOR === 'true';
+const isEmulated = process.env.FUNCTIONS_EMULATOR === 'true' || process.env.NODE_ENV === 'development';
 
 // Define schemas
 const TravelPreferencesSchema = z.object({
@@ -44,6 +44,8 @@ const ItinerarySchema = z.object({
   flightOptions: z.array(z.object({
     title: z.string().describe('A descriptive title for the flight option'),
     googleFlightsUrl: z.string().describe('A URL to Google Flights search results for this flight option'),
+    priceKsh: z.number().describe('Estimated price in Kenyan Shillings (KShs)'),
+    priceUsd: z.number().describe('Estimated price in US Dollars (USD)'),
     description: z.string().describe('A brief description of why this flight option might be good (e.g., "Fastest option", "Cheapest option")'),
   })).describe('Suggested flight search links on Google Flights').optional(),
   days: z.array(z.object({
@@ -67,7 +69,7 @@ export const _generateItineraryLogic = ai.defineFlow({
   inputSchema: TravelPreferencesSchema,
   outputSchema: ItinerarySchema,
 },
-  async (input) => {
+  async (input: any) => {
     const today = new Date().toISOString().split('T')[0];
     const response = await ai.generate({
       prompt: SYSTEM_PROMPT({ ...input, today }),
@@ -92,7 +94,7 @@ export const _genieItineraryLogic = ai.defineFlow({
   }),
   outputSchema: ItinerarySchema,
 },
-  async (input) => {
+  async (input: { query: string; departureLocation?: string; today?: string; }) => {
     const today = new Date().toISOString().split('T')[0];
     const response = await ai.generate({
       prompt: GENIE_SYSTEM_PROMPT({ ...input, today }),
@@ -119,6 +121,7 @@ export const generateItineraryFlow = onCallGenkit(
     cors: isEmulated
       ? true
       : [
+        'http://localhost:4200',
         /^https:\/\/wandersgenie(--[a-z0-9-]+)?\.web\.app$/, // Matches live site (wandersgenie.web.app) and previews (wandersgenie--<channel>.web.app)
       ],
   },
@@ -133,6 +136,7 @@ export const genieItineraryFlow = onCallGenkit(
     cors: isEmulated
       ? true
       : [
+        'http://localhost:4200',
         /^https:\/\/wandersgenie(--[a-z0-9-]+)?\.web\.app$/, // Matches live site (wandersgenie.web.app) and previews (wandersgenie--<channel>.web.app)
       ],
   },

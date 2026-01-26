@@ -22,6 +22,7 @@ import { GenieBarComponent } from '../../components/genie-bar/genie-bar';
 import { PlanningFormComponent } from '../../components/planning-form/planning-form';
 import { LoadingSectionComponent } from '../../components/loading-section/loading-section';
 import { ItineraryResultsComponent } from '../../components/itinerary-results/itinerary-results';
+import { ErrorStateComponent } from '../../components/error-state/error-state';
 import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
@@ -35,6 +36,7 @@ import { FooterComponent } from '../../shared/footer/footer';
     PlanningFormComponent,
     LoadingSectionComponent,
     ItineraryResultsComponent,
+    ErrorStateComponent,
     FooterComponent,
   ],
   templateUrl: './home.html',
@@ -50,6 +52,7 @@ export class Home {
 
   // Signals for state management
   isLoading = signal(false);
+  hasError = signal(false);
   activeTab = signal<'genie' | 'deep'>('genie');
   generatedItinerary = signal<Itinerary | null>(null);
   nlpQuery = signal('');
@@ -80,6 +83,12 @@ export class Home {
     travelClass: ['economy'],
     flexibility: ['flexible']
   });
+
+  searchMetadata = computed(() => ({
+    prompt: this.nlpQuery(),
+    budget: this.travelForm.get('budget')?.value || 'mid-range',
+    passengers: this.travelForm.get('groupSize')?.value || 1,
+  }));
 
   constructor() {
     // Cycling placeholder effect
@@ -277,6 +286,7 @@ export class Home {
     if (!this.canSubmit()) return;
 
     this.isLoading.set(true);
+    this.hasError.set(false);
 
     try {
       let itinerary: Itinerary;
@@ -308,10 +318,14 @@ export class Home {
 
     } catch (error) {
       console.error('Error generating itinerary:', error);
-      // Handle error (show notification, etc.)
+      this.hasError.set(true);
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  retry(): void {
+    this.generateItinerary();
   }
 
   private calculateDays(startDate: string, endDate: string): number {

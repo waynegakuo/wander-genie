@@ -10,7 +10,7 @@
       <!-- Left: Top Flight Deals -->
       <div class="flight-deals-column lg:col-span-5">
         <div class="column-header mb-8 flex items-center justify-between">
-          <h2 class="text-ui text-2xl font-bold flex items-center gap-3">
+          <h2 class="text-ui text-2xl font-bold flex items-center gap-4">
             <span class="material-icons text-accent">flight_takeoff</span>
             Top Flight Deals
           </h2>
@@ -27,7 +27,7 @@
                     [href]="flight.googleFlightsUrl"
                     target="_blank"
                     rel="noopener"
-                    class="text-accent text-sm font-semibold mt-4 inline-flex items-center gap-1 hover:underline"
+                    class="text-accent text-sm font-semibold mt-4 inline-flex items-center gap-2 hover:underline"
                   >
                     View on Google Flights
                     <span class="material-icons text-xs">open_in_new</span>
@@ -35,7 +35,13 @@
                 </div>
                 <div class="flight-price">
                   <span class="label">From</span>
-                  <span class="price">$1,240</span>
+                  @if (flight.priceKsh && flight.priceUsd) {
+                    <span class="price">
+                      KSh {{ flight.priceKsh | number }} ({{ flight.priceUsd | currency: 'USD':'symbol':'1.0-0' }})
+                    </span>
+                  } @else {
+                    <span class="price">$1,240</span>
+                  }
                 </div>
               </div>
             } @empty {
@@ -48,7 +54,7 @@
         </div>
 
         <div class="price-insights mt-8 bg-blue-50 p-6 rounded-2xl border border-blue-100 shadow-sm">
-          <h4 class="font-bold text-blue-900 flex items-center gap-2 mb-2">
+          <h4 class="font-bold text-blue-900 flex items-center gap-3 mb-2">
             <span class="material-icons text-blue-600">insights</span>
             Price Insights
           </h4>
@@ -61,23 +67,58 @@
 
       <!-- Right: Genie's Suggested Itinerary -->
       <div class="itinerary-column lg:col-span-7">
-        <div class="column-header mb-8 no-print">
-          <h2 class="text-ui text-2xl font-bold flex items-center gap-3">
+        <div class="column-header mb-8 no-print flex items-center justify-between">
+          <h2 class="text-ui text-2xl font-bold flex items-center gap-4">
             <span class="material-icons text-secondary">auto_awesome</span>
             Genie's Suggested Itinerary
           </h2>
+
+          <button
+            (click)="onToggleWishlist()"
+            class="wishlist-btn"
+            [class.is-saved]="isSaved()"
+            [disabled]="isSaving()"
+            [attr.aria-label]="isSaved() ? 'Remove from wishlist' : 'Save to wishlist'"
+          >
+            @if (isSaving()) {
+              <span class="material-icons animate-spin">refresh</span>
+            } @else {
+              <span class="material-icons">{{ isSaved() ? 'favorite' : 'favorite_border' }}</span>
+            }
+          </button>
         </div>
 
         <div class="itinerary-container shadow-sm no-print">
           <div class="prose" [innerHTML]="itinerary()?.htmlContent"></div>
 
-          <div class="itinerary-footer mt-10 pt-8 border-t border-gray-200 flex flex-wrap gap-4 no-print">
-            <button (click)="printItinerary.emit()" class="btn btn-primary rounded-full">
+          <div class="itinerary-footer mt-10 pt-8 border-t border-gray-100 flex flex-wrap gap-4 no-print">
+            <button (click)="printItinerary.emit()" class="btn btn-primary rounded-full flex items-center gap-2">
               <span class="material-icons">download</span>
               Save Itinerary
             </button>
+
+            <button
+              (click)="onToggleWishlist()"
+              class="btn rounded-full flex items-center gap-2 transition-all duration-300"
+              [class]="isSaved() ? 'btn-secondary' : 'btn-outline border-2 border-accent text-accent hover:bg-accent hover:text-white'"
+              [disabled]="isSaving()"
+            >
+              @if (isSaving()) {
+                <span class="material-icons animate-spin">refresh</span>
+                @if (isSaved()) {
+                  Saving to wishlist...
+                }
+                @else {
+                  Removing from wishlist...
+                }
+              } @else {
+                <span class="material-icons">{{ isSaved() ? 'favorite' : 'favorite_border' }}</span>
+                {{ isSaved() ? 'Remove from Wishlist' : 'Save to Wishlist' }}
+              }
+            </button>
+
             @if (false) {
-              <button class="btn btn-secondary rounded-full">
+              <button class="btn btn-secondary rounded-full flex items-center gap-2">
                 <span class="material-icons">share</span>
                 Share Trip
               </button>

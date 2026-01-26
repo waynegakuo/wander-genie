@@ -1,7 +1,7 @@
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section hero-full">
   <div class="container">
-    <app-nav [activeTab]="activeTab()" (tabChange)="onTabChange($event)" />
+    <app-nav [activeTab]="activeTab()" [showTabs]="true" (tabChange)="onTabChange($event)" />
 
     <div class="hero-content text-center relative">
       <app-hero />
@@ -53,10 +53,15 @@
   <app-loading-section [loadingMessage]="loadingMessage()" />
 }
 
-@if (generatedItinerary() && !isLoading()) {
+@if (hasError() && !isLoading()) {
+  <app-error-state (retry)="retry()" />
+}
+
+@if (generatedItinerary() && !isLoading() && !hasError()) {
   <app-itinerary-results
     [itinerary]="generatedItinerary()"
     [destination]="generatedItinerary()?.destination || travelForm.get('destination')?.value"
+    [searchMetadata]="searchMetadata()"
     (printItinerary)="printItinerary()"
   />
 }

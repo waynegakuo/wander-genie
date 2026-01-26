@@ -24,8 +24,9 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - The "destination" field: Use "${input.destination}".
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
-      Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
+      Use the format: <a href="https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]" target="_blank" rel="noopener">...</a>
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
+      For each option, estimate the current market price in both KShs and USD. Assume an exchange rate of approximately 1 USD = 130 KShs if not known.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
       - Accommodation/Hotel recommendations if applicable.
@@ -36,10 +37,12 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
 
     Format the response to match the output schema.
     Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page.
+    IMPORTANT: All links (<a> tags) in "htmlContent" MUST include target="_blank" and rel="noopener" to ensure they open in a new tab.
     Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
     - Use a 'journey-timeline' class container for the main sequence.
     - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
-    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days). DO NOT repeat the same emoji twice in a row or within the same section.
+    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days).
+    - Place the emoji INSIDE the header tag (e.g., <h3>🗓️ Day 1: ...</h3>). DO NOT repeat the same emoji twice in a row or within the same section.
     - Ensure the timeline is well-structured:
         1. Trip Summary (Header)
         2. Flight Search Options (with links)
@@ -68,9 +71,10 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
     - The "destination" field: The name of the primary destination city or region.
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
-      Use the format: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20through%20[ReturnDate]
+      Use the format: <a href="https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]" target="_blank" rel="noopener">...</a>
       Even if the user didn't specify a departure, assume a major hub or clearly state you've used a placeholder.
       Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
+      For each option, estimate the current market price in both KShs and USD. Assume an exchange rate of approximately 1 USD = 130 KShs if not known.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
       - Accommodation/Hotel recommendations if applicable.
@@ -81,10 +85,12 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
 
     Format the response to match the output schema.
     Provide an "htmlContent" field which is a clean HTML snippet (without <html> or <body> tags) that can be directly injected into a web page.
+    IMPORTANT: All links (<a> tags) in "htmlContent" MUST include target="_blank" and rel="noopener" to ensure they open in a new tab.
     Design the "htmlContent" to look like a modern, vertical timeline "User Journey":
     - Use a 'journey-timeline' class container for the main sequence.
     - Each major step (Flight, Hotel, Day) should be a 'journey-step' class.
-    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days). DO NOT repeat the same emoji twice in a row or within the same section.
+    - Use EXACTLY ONE unique emoji per stage (e.g., ✈️ for flights, 🏨 for hotels, 🗓️ for days).
+    - Place the emoji INSIDE the header tag (e.g., <h3>🗓️ Day 1: ...</h3>). DO NOT repeat the same emoji twice in a row or within the same section.
     - Ensure the timeline is well-structured:
         1. Trip Summary (Header)
         2. Flight Search Options (with links)

@@ -13,6 +13,7 @@ import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular
 import {environment} from '../environments/environment.development';
 import {getAnalytics, provideAnalytics} from '@angular/fire/analytics';
 import {getAuth, provideAuth} from '@angular/fire/auth';
+import {getFirestore, provideFirestore} from '@angular/fire/firestore';
 
 const app = initializeApp(environment.firebaseConfig);
 
@@ -32,6 +33,7 @@ export const appConfig: ApplicationConfig = {
       return functions;
     }),
     provideAnalytics(() => getAnalytics()),
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore())
   ]
 };

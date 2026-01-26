@@ -1,0 +1,46 @@
+/* Base Styles and Resets */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), serif;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body), serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-gray-800);
+  background-color: var(--color-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+
+  @media (min-width: 768px) {
+    padding: 0 var(--spacing-xl);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+}

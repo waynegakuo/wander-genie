@@ -1,22 +1,5 @@
 .hero-section {
-  background-color: var(--color-primary);
-  background-image: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  color: var(--color-white);
-  position: relative;
-  overflow: auto; /* Changed from hidden to auto to allow scrolling if form is long */
-  text-align: center;
-  padding: 2rem 0; /* Add padding for nav and footer */
-
   .hero-content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
     padding-bottom: 2rem;
 
     .tab-content-wrapper {
@@ -42,17 +25,3 @@
   line-height: 1.5;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .hero-section {
-    min-height: 100vh;
-    padding: var(--spacing-xl) 0;
-  }
-}
-
-/* Print styles for itinerary */
-@media print {
-  .hero-section {
-    display: none;
-  }
-}
