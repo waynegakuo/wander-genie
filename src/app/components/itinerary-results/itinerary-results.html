@@ -96,6 +96,27 @@
               <span class="material-icons">download</span>
               Save Itinerary
             </button>
+
+            <button
+              (click)="onToggleWishlist()"
+              class="btn rounded-full flex items-center gap-2 transition-all duration-300"
+              [class]="isSaved() ? 'btn-secondary' : 'btn-outline border-2 border-accent text-accent hover:bg-accent hover:text-white'"
+              [disabled]="isSaving()"
+            >
+              @if (isSaving()) {
+                <span class="material-icons animate-spin">refresh</span>
+                @if (isSaved()) {
+                  Saving to wishlist...
+                }
+                @else {
+                  Removing from wishlist...
+                }
+              } @else {
+                <span class="material-icons">{{ isSaved() ? 'favorite' : 'favorite_border' }}</span>
+                {{ isSaved() ? 'Remove from Wishlist' : 'Save to Wishlist' }}
+              }
+            </button>
+
             @if (false) {
               <button class="btn btn-secondary rounded-full flex items-center gap-2">
                 <span class="material-icons">share</span>
