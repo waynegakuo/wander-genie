@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Itinerary, WishlistItem } from '../../models/travel.model';
 import { WishlistService } from '../../services/wishlist/wishlist.service';
 import { AuthService } from '../../services/core/auth/auth.service';
+import { ToastService } from '../../services/core/toast/toast.service';
 
 @Component({
   selector: 'app-itinerary-results',
@@ -21,6 +22,7 @@ export class ItineraryResultsComponent {
 
   private wishlistService = inject(WishlistService);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
 
   isSaving = signal(false);
 
@@ -32,8 +34,7 @@ export class ItineraryResultsComponent {
 
   async onToggleWishlist() {
     if (!this.authService.isAuthenticated()) {
-      // Trigger login or show message
-      alert('Please sign in to save to your wishlist');
+      this.toastService.warning('Please sign in to save to your wishlist');
       return;
     }
 
@@ -68,8 +69,10 @@ export class ItineraryResultsComponent {
       };
 
       await this.wishlistService.toggleWishlist(wishlistItem);
+      this.toastService.success(this.isSaved() ? 'Saved to wishlist' : 'Removed from wishlist');
     } catch (error) {
       console.error('Error toggling wishlist:', error);
+      this.toastService.error('Failed to update wishlist');
     } finally {
       this.isSaving.set(false);
     }

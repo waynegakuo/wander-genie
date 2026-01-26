@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { ToastService } from '../../../services/core/toast/toast.service';
 import { NavComponent } from '../../../components/nav/nav';
 import { HeroComponent } from '../../../components/hero/hero';
 import { FooterComponent } from '../../../shared/footer/footer';
@@ -10,7 +11,6 @@ import { WishlistItem } from '../../../models/travel.model';
 
 @Component({
   selector: 'app-wishlist-detail',
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
@@ -26,6 +26,7 @@ import { WishlistItem } from '../../../models/travel.model';
 export class WishlistDetailPage {
   private route = inject(ActivatedRoute);
   private firestore = inject(Firestore);
+  private toastService = inject(ToastService);
 
   wishlistItem = signal<WishlistItem | null>(null);
   isLoading = signal(true);
@@ -44,9 +45,12 @@ export class WishlistDetailPage {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         this.wishlistItem.set({ id: docSnap.id, ...docSnap.data() } as WishlistItem);
+      } else {
+        this.toastService.error('Trip not found');
       }
     } catch (error) {
       console.error('Error fetching wishlist item:', error);
+      this.toastService.error('Failed to load trip details');
     } finally {
       this.isLoading.set(false);
     }
