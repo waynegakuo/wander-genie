@@ -97,5 +97,154 @@ Wander Genie is designed to be developed locally using the Firebase Emulator Sui
 - `functions/src`: Cloud Functions (Genkit AI logic).
 - `documentation/`: Additional setup and architecture guides.
 
+## 🏗 Key Architecture & Code Highlights
+
+Wander Genie combines the power of **Angular Signals**, **Firebase Genkit**, and **Google Gemini** to deliver a seamless travel planning experience.
+
+### 🧠 AI Orchestration (Genkit + Gemini)
+The heart of the app lies in the Firebase Functions where we use **Genkit** to define structured AI flows.
+- **Structured Output:** We use Zod schemas to ensure the AI always returns a consistent `ItinerarySchema`, including travel tips, day-by-day activities, and even pre-formatted HTML.
+- **Dual Planning Flows:** 
+  - `generateItineraryFlow`: Handles detailed, form-based planning.
+  - `genieItineraryFlow`: Processes natural language queries for "Magic Search".
+
+```typescript
+// Example: Defining the structured output schema with Zod
+const ItinerarySchema = z.object({
+  destination: z.string(),
+  tripSummary: z.string(),
+  days: z.array(z.object({
+    day: z.number(),
+    activities: z.object({
+      morning: z.string(),
+      afternoon: z.string(),
+      evening: z.string(),
+    })
+  })),
+  htmlContent: z.string(), // AI generates the visual structure directly
+});
+
+// Defining the AI flow
+export const _generateItineraryLogic = ai.defineFlow({
+  name: 'generateItineraryFlow',
+  inputSchema: TravelPreferencesSchema,
+  outputSchema: ItinerarySchema,
+}, async (input) => {
+  const response = await ai.generate({
+    prompt: SYSTEM_PROMPT(input),
+    output: { schema: ItinerarySchema },
+  });
+  return response.output;
+});
+```
+
+*See: `functions/src/index.ts`*
+
+### ⚡ Reactive Frontend (Angular Signals)
+The application leverages modern Angular features for a performant and reactive UI.
+- **Signals-based State:** Components use `input()`, `output()`, and `computed()` for efficient state management and change detection.
+- **Type-Safe Services:** `TravelService` acts as the bridge between the frontend and Firebase Functions, using `httpsCallable` for type-safe communication.
+- **Real-time Sync:** `WishlistService` uses Angular Signals and Firestore `onSnapshot` to provide real-time updates of saved itineraries across the app.
+- **Intelligent Parsing:** The `extractPreferences` logic in `TravelService` uses regex patterns to instantly extract destinations, budgets, and group sizes from natural language, providing immediate feedback as users type.
+- **Component Integration:** A clean, async implementation in the `Home` component manages the UI state (loading, errors, results) while calling the AI orchestration layer.
+
+```typescript
+// Calling the AI flow from the Home component
+async generateItinerary(): Promise<void> {
+  if (!this.canSubmit()) return;
+
+  this.isLoading.set(true);
+  this.hasError.set(false);
+
+  try {
+    const itinerary = this.nlpQuery().length > 10
+      ? await this.travelService.generateGenieItinerary(this.nlpQuery())
+      : await this.travelService.generateItinerary(this.travelForm.value);
+
+    this.generatedItinerary.set(itinerary); // Updates the UI via Signal
+  } catch (error) {
+    this.hasError.set(true);
+  } finally {
+    this.isLoading.set(false);
+  }
+}
+```
+
+```typescript
+// Real-time Firestore sync with Signals in WishlistService
+listenToWishlist(userId: string) {
+  const q = query(
+    this.wishlistCollection,
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const items = snapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    this.wishlistItems.set(items); // Updates all UI components automatically
+  });
+}
+```
+
+```typescript
+// Intelligent NLP parsing in TravelService
+extractPreferences(text: string): Partial<TravelPreferences> {
+  const preferences: Partial<TravelPreferences> = {};
+  
+  // Regex to extract "to [Destination]"
+  const toMatch = text.match(/to\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/);
+  if (toMatch) preferences.destination = toMatch[1];
+
+  // Detect group size and budget
+  const passengerMatch = text.match(/(\d+)\s*(?:people|passengers|adults)/i);
+  if (passengerMatch) preferences.groupSize = parseInt(passengerMatch[1], 10);
+  
+  if (text.toLowerCase().includes('luxury')) preferences.budget = 'luxury';
+  
+  return preferences;
+}
+```
+
+*See: `src/app/pages/home/home.ts`, `src/app/services/travel/travel.service.ts`, `src/app/services/wishlist/wishlist.service.ts`, and `src/app/services/loading/loading-message.service.ts`*
+
+### 🎨 Modern UI/UX
+- **User Journey Visualization:** A custom-built vertical timeline that visualizes the AI-generated itinerary.
+- **Design System:** A centralized SCSS-based design system using **Ubuntu** for branding, **DM Sans** for UI, and **Inter** for content.
+- **Optimized Assets:** Heavy use of `NgOptimizedImage` for performance.
+- **UX Delighters:** `LoadingMessageService` cycles through contextually relevant travel messages using Signals to keep users engaged during AI generation.
+
+```typescript
+// Engaging loading states with Signals
+startCycling() {
+  if (isPlatformBrowser(this.platformId) && !this.interval) {
+    let index = 0;
+    this.messageSignal.set(this.messages[index]);
+    this.interval = setInterval(() => {
+      index = (index + 1) % this.messages.length;
+      this.messageSignal.set(this.messages[index]);
+    }, 3000);
+  }
+}
+```
+
+```scss
+// Design System Tokens (src/styles/_variables.scss)
+:root {
+  --font-brand: 'Ubuntu', sans-serif;
+  --font-ui: 'DM Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  --color-primary: #6366f1;
+  --color-accent: #f59e0b;
+}
+
+// Reusable typography classes
+.text-brand { font-family: var(--font-brand); }
+.text-ui { font-family: var(--font-ui); }
+```
+
 ---
 *Built with ❤️ by [Wayne Gakuo](https://github.com/waynegakuo), for travelers everywhere.*
