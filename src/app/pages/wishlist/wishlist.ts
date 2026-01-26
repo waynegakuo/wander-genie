@@ -6,6 +6,7 @@ import { ToastService } from '../../services/core/toast/toast.service';
 import { NavComponent } from '../../components/nav/nav';
 import { HeroComponent } from '../../components/hero/hero';
 import { FooterComponent } from '../../shared/footer/footer';
+import { WishlistItem } from '../../models/travel.model';
 
 @Component({
   selector: 'app-wishlist',
@@ -27,6 +28,14 @@ export class WishlistPage {
     } catch (error) {
       console.error('Error removing from wishlist:', error);
       this.toastService.error('Failed to remove from wishlist');
+    }
+  }
+
+  checkPrice(item: WishlistItem) {
+    if (item.flightData?.googleFlightsUrl) {
+      window.open(item.flightData.googleFlightsUrl, '_blank');
+    } else {
+      this.toastService.info('Price details are currently unavailable for this itinerary.');
     }
   }
 
