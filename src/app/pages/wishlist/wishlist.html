@@ -22,10 +22,12 @@
             <div class="card-image-wrapper h-48">
               <img [src]="item.imageUrl" [alt]="item.destination">
               <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div class="absolute bottom-4 left-4 text-white">
-                <span class="text-xs font-semibold uppercase tracking-wider opacity-80">Estimated Cost</span>
-                <p class="text-xl font-bold">{{ item.flightData.price }}</p>
-              </div>
+              @if (item.flightData.price) {
+                <div class="absolute bottom-4 left-4 text-white">
+                  <span class="text-xs font-semibold uppercase tracking-wider opacity-80">Estimated Cost</span>
+                  <p class="text-xl font-bold">{{ item.flightData.price }}</p>
+                </div>
+              }
             </div>
 
             <div class="p-6 flex-grow flex flex-col">

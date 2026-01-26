@@ -59,7 +59,7 @@ export class ItineraryResultsComponent {
           budget: 'mid-range',
           passengers: 1,
         },
-        imageUrl: `https://source.unsplash.com/featured/?${encodeURIComponent(itinerary.destination)}`, // Fallback image logic
+        imageUrl: `https://tse3.mm.bing.net/th?q=${encodeURIComponent(itinerary.destination)}%20travel%20landmark%2025&w=600&h=300&c=7&rs=1`, // Fallback image logic
       };
 
       await this.wishlistService.toggleWishlist(wishlistItem);
