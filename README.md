@@ -95,7 +95,7 @@ Wander Genie is designed to be developed locally using the Firebase Emulator Sui
 - `src/app/services`: Application logic and Firebase interactions.
 - `src/styles.scss`: Global styles and design system tokens.
 - `functions/src`: Cloud Functions (Genkit AI logic).
-- `documentation/`: Additional setup and architecture guides.
+- `documentation/`: Additional setup, architecture guides, and technical notes.
 
 ## 🏗 Key Architecture & Code Highlights
 
