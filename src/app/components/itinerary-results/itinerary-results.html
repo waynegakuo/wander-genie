@@ -130,7 +130,7 @@
         </div>
 
         <div class="itinerary-container shadow-sm no-print">
-          <div class="prose" [innerHTML]="itinerary()?.htmlContent"></div>
+          <div class="prose" [innerHTML]="displayHtmlContent()"></div>
 
           <div class="itinerary-footer mt-10 pt-8 border-t border-gray-100 flex flex-wrap gap-4 no-print">
             <button (click)="printItinerary.emit()" class="btn btn-primary rounded-full flex items-center gap-2">
@@ -188,7 +188,7 @@
         </div>
       </div>
     </div>
-    <div class="prose max-w-none" [innerHTML]="itinerary()?.htmlContent"></div>
+    <div class="prose max-w-none" [innerHTML]="displayHtmlContent()"></div>
 
     <div class="mt-12 pt-8 border-t border-gray-100 text-center text-sm text-gray-400">
       <p>Visit wander-genie.web.app to plan your next adventure</p>

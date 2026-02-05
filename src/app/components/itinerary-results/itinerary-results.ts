@@ -71,6 +71,47 @@ export class ItineraryResultsComponent {
     });
   });
 
+  /**
+   * Computed signal that updates prices in the HTML content based on selected currency
+   */
+  displayHtmlContent = computed(() => {
+    const html = this.itinerary()?.htmlContent;
+    if (!html) return '';
+
+    const selectedCurrency = this.currencyService.selectedCurrency();
+
+    // Regular expression to match price patterns like:
+    // KShs 130,000 ($1,000)
+    // KSh 130,000 ($1,000)
+    // $1,000 (KSh 130,000)
+    // and variations with/without commas, different spacings
+    const priceRegex = /(?:KShs?|USD|\$)\s*[\d,]+(?:\s*\(\s*(?:KShs?|USD|\$)\s*[\d,]+\s*\))?/gi;
+
+    return html.replace(priceRegex, (match) => {
+      // Try to extract a USD value or KES value to use as base
+      let baseAmount: number | null = null;
+      let baseCurrency: string = 'USD';
+
+      const usdMatch = match.match(/(?:USD|\$)\s*([\d,]+)/i);
+      const kesMatch = match.match(/(?:KShs?)\s*([\d,]+)/i);
+
+      if (usdMatch) {
+        baseAmount = parseFloat(usdMatch[1].replace(/,/g, ''));
+        baseCurrency = 'USD';
+      } else if (kesMatch) {
+        baseAmount = parseFloat(kesMatch[1].replace(/,/g, ''));
+        baseCurrency = 'KES';
+      }
+
+      if (baseAmount !== null) {
+        const converted = this.currencyService.convert(baseAmount, baseCurrency, selectedCurrency);
+        return this.currencyService.formatAmount(converted, selectedCurrency);
+      }
+
+      return match;
+    });
+  });
+
   isSaved() {
     const itinerary = this.itinerary();
     if (!itinerary) return false;
@@ -88,10 +129,16 @@ export class ItineraryResultsComponent {
 
     this.isSaving.set(true);
     try {
-      const firstFlight = itinerary.flightOptions?.[0];
-      const priceDisplay = firstFlight?.priceKsh
-        ? `KSh ${firstFlight.priceKsh.toLocaleString()} ($${firstFlight.priceUsd})`
-        : (firstFlight?.price || 'N/A');
+      const flights = this.flightsWithConvertedPrices();
+      const firstFlight = flights?.[0];
+
+      let priceDisplay = 'Price not available';
+      if (firstFlight?.convertedPrice) {
+        priceDisplay = this.currencyService.formatAmount(
+          firstFlight.convertedPrice,
+          firstFlight.convertedCurrency
+        );
+      }
 
       const wishlistItem: Omit<WishlistItem, 'id' | 'createdAt'> = {
         userId: '', // Will be set by service
