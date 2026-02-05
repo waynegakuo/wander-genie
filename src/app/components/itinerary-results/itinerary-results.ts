@@ -12,6 +12,10 @@ import { CurrencyService } from '../../services/currency/currency.service';
   templateUrl: './itinerary-results.html',
   styleUrl: './itinerary-results.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:click)': 'onDocumentClick($event)',
+    '(keydown)': 'onKeydown($event)',
+  },
 })
 export class ItineraryResultsComponent {
   itinerary = input.required<Itinerary | null>();
@@ -27,6 +31,7 @@ export class ItineraryResultsComponent {
   currencyService = inject(CurrencyService);
 
   isSaving = signal(false);
+  isCurrencyMenuOpen = signal(false);
 
   // Computed signal for flights with converted prices
   flightsWithConvertedPrices = computed(() => {
@@ -119,4 +124,126 @@ export class ItineraryResultsComponent {
   }
 
   protected readonly HTMLSelectElement = HTMLSelectElement;
+
+  toggleCurrencyMenu() {
+    this.isCurrencyMenuOpen.update((v) => !v);
+  }
+
+  selectCurrency(code: string, closeMenu = true) {
+    this.currencyService.setSelectedCurrency(code);
+    if (closeMenu) {
+      this.isCurrencyMenuOpen.set(false);
+    }
+  }
+
+  getCurrencySymbol(code: string): string {
+    return this.currencyService.SUPPORTED_CURRENCIES.find((c) => c.code === code)?.symbol || '';
+  }
+
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-select-container')) {
+      this.isCurrencyMenuOpen.set(false);
+    }
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    const isCharacterKey = event.key.length === 1 && /^[a-zA-Z]$/.test(event.key);
+    if (!this.isCurrencyMenuOpen() && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && !isCharacterKey) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-select-container')) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      this.isCurrencyMenuOpen.set(false);
+      return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (!this.isCurrencyMenuOpen()) {
+        this.isCurrencyMenuOpen.set(true);
+        return;
+      }
+      this.navigateOptions(event.key === 'ArrowDown' ? 1 : -1);
+      return;
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (!this.isCurrencyMenuOpen()) {
+        this.isCurrencyMenuOpen.set(true);
+      } else {
+        this.isCurrencyMenuOpen.set(false);
+      }
+      return;
+    }
+
+    // Handle character input for searching
+    if (event.key.length === 1 && /^[a-zA-Z]$/.test(event.key)) {
+      const char = event.key.toUpperCase();
+      const currentIndex = this.currencyService.SUPPORTED_CURRENCIES.findIndex(
+        (c) => c.code === this.currencyService.selectedCurrency()
+      );
+
+      // Find all matches
+      const matches = this.currencyService.SUPPORTED_CURRENCIES.map((c, i) => ({ code: c.code, index: i }))
+        .filter(c => c.code.startsWith(char));
+
+      if (matches.length > 0) {
+        // Find the next match after the current index
+        let nextMatch = matches.find(m => m.index > currentIndex);
+        // If no more matches after current, wrap around to the first match
+        if (!nextMatch) {
+          nextMatch = matches[0];
+        }
+
+        const index = nextMatch.index;
+
+        if (!this.isCurrencyMenuOpen()) {
+          this.isCurrencyMenuOpen.set(true);
+        }
+
+        this.selectCurrency(this.currencyService.SUPPORTED_CURRENCIES[index].code, false);
+
+        // Use a small timeout to ensure the DOM is updated
+        setTimeout(() => {
+          const dropdown = document.querySelector('.currency-dropdown');
+          const options = dropdown?.querySelectorAll('.currency-option');
+          if (options && options[index]) {
+            options[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
+        }, 0);
+      }
+    }
+  }
+
+  private navigateOptions(direction: number) {
+    const currentIndex = this.currencyService.SUPPORTED_CURRENCIES.findIndex(
+      (c) => c.code === this.currencyService.selectedCurrency()
+    );
+    let nextIndex = currentIndex + direction;
+
+    if (nextIndex < 0) nextIndex = 0;
+    if (nextIndex >= this.currencyService.SUPPORTED_CURRENCIES.length) {
+      nextIndex = this.currencyService.SUPPORTED_CURRENCIES.length - 1;
+    }
+
+    if (nextIndex !== currentIndex) {
+      this.selectCurrency(this.currencyService.SUPPORTED_CURRENCIES[nextIndex].code, false);
+
+      // Scroll into view
+      setTimeout(() => {
+        const dropdown = document.querySelector('.currency-dropdown');
+        const options = dropdown?.querySelectorAll('.currency-option');
+        if (options && options[nextIndex]) {
+          options[nextIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      }, 0);
+    }
+  }
 }

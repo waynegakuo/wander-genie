@@ -16,23 +16,44 @@
           </h2>
 
           <!-- Currency Selector -->
-          <div class="currency-selector flex items-center gap-4">
+          <div class="currency-selector relative flex items-center gap-4">
             <label for="currency-select" class="sr-only">Select Currency</label>
-            <select
-              id="currency-select"
-              [value]="currencyService.selectedCurrency()"
-              (change)="currencyService.setSelectedCurrency($any($event.target).value)"
-              class="currency-select"
-            >
-              @for (currency of currencyService.SUPPORTED_CURRENCIES; track currency.code) {
-                <option
-                  [value]="currency.code"
-                  [selected]="currency.code === currencyService.selectedCurrency()"
+            <div class="relative custom-select-container">
+              <button
+                type="button"
+                id="currency-select"
+                (click)="toggleCurrencyMenu()"
+                class="currency-select glass-effect text-ui"
+                aria-haspopup="listbox"
+                [attr.aria-expanded]="isCurrencyMenuOpen()"
+                [attr.aria-controls]="isCurrencyMenuOpen() ? 'currency-listbox' : null"
+              >
+                <span class="selected-value">
+                  {{ currencyService.selectedCurrency() }} ({{ getCurrencySymbol(currencyService.selectedCurrency()) }})
+                </span>
+                <span class="material-icons dropdown-icon" [class.open]="isCurrencyMenuOpen()">expand_more</span>
+              </button>
+
+              @if (isCurrencyMenuOpen()) {
+                <ul
+                  id="currency-listbox"
+                  class="currency-dropdown glass-effect"
+                  role="listbox"
+                  aria-labelledby="currency-select"
                 >
-                  {{ currency.code }} ({{ currency.symbol }})
-                </option>
+                  @for (currency of currencyService.SUPPORTED_CURRENCIES; track currency.code) {
+                    <li
+                      class="currency-option"
+                      role="option"
+                      [attr.aria-selected]="currency.code === currencyService.selectedCurrency()"
+                      (click)="selectCurrency(currency.code)"
+                    >
+                      {{ currency.code }} ({{ currency.symbol }})
+                    </li>
+                  }
+                </ul>
               }
-            </select>
+            </div>
           </div>
         </div>
 
