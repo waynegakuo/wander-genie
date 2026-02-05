@@ -127,6 +127,24 @@ export class ItineraryResultsComponent {
 
   toggleCurrencyMenu() {
     this.isCurrencyMenuOpen.update((v) => !v);
+
+    if (this.isCurrencyMenuOpen()) {
+      // Find the index of the selected currency
+      const currentIndex = this.currencyService.SUPPORTED_CURRENCIES.findIndex(
+        (c) => c.code === this.currencyService.selectedCurrency()
+      );
+
+      if (currentIndex !== -1) {
+        // Use a small timeout to ensure the DOM is updated (the menu is rendered)
+        setTimeout(() => {
+          const dropdown = document.querySelector('.currency-dropdown');
+          const options = dropdown?.querySelectorAll('.currency-option');
+          if (options && options[currentIndex]) {
+            options[currentIndex].scrollIntoView({ block: 'nearest', behavior: 'instant' });
+          }
+        }, 0);
+      }
+    }
   }
 
   selectCurrency(code: string, closeMenu = true) {
