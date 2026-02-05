@@ -15,7 +15,7 @@ import { ToastService } from '../../services/core/toast/toast.service';
 export class ItineraryResultsComponent {
   itinerary = input.required<Itinerary | null>();
   destination = input<string | undefined>();
-  searchMetadata = input<{ prompt: string; budget: string; passengers: number }>();
+  searchMetadata = input<{ prompt: string; budget: string; passengers: number | string }>();
 
   printItinerary = output<void>();
   saveToWishlist = output<void>();
