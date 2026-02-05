@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, output, PLATFORM_ID, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { CommonModule, isPlatformBrowser, TitleCasePipe } from '@angular/common';
 import { SmartSuggestionsComponent } from '../smart-suggestions/smart-suggestions';
 import { SpeechRecognitionService } from '../../services/core/speech-recognition.service';
 
@@ -10,8 +10,14 @@ import { SpeechRecognitionService } from '../../services/core/speech-recognition
   templateUrl: './genie-bar.html',
   styleUrl: './genie-bar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:click)': 'onDocumentClick($event)'
+  }
 })
 export class GenieBarComponent {
+  private elementRef = inject(ElementRef);
+  private platformId = inject(PLATFORM_ID);
+
   travelForm = input.required<FormGroup>();
   isLoading = input.required<boolean>();
   canSubmit = input.required<boolean>();
@@ -64,6 +70,15 @@ export class GenieBarComponent {
 
   onSelectSuggestion(suggestion: string): void {
     this.selectSuggestion.emit(suggestion);
+  }
+
+  onDocumentClick(event: Event): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const target = event.target as HTMLElement | null;
+      if (target && !this.elementRef.nativeElement.contains(target)) {
+        this.activeChip.set(null);
+      }
+    }
   }
 
   setFormControlValue(controlName: string, value: any): void {
