@@ -42,6 +42,7 @@
       <button
         type="button"
         (click)="toggleSpeech()"
+        [disabled]="isLoading()"
         class="btn-mic shrink-0 mr-2"
         [class.listening]="speech.isListening()"
         [attr.aria-label]="speech.isListening() ? 'Stop listening' : 'Start listening'"
