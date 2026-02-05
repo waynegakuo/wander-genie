@@ -42,11 +42,11 @@
       <button
         type="button"
         (click)="toggleSpeech()"
-        class="btn-mic transition-all flex items-center justify-center shrink-0 mr-2"
+        class="btn-mic shrink-0 mr-2"
         [class.listening]="speech.isListening()"
         [attr.aria-label]="speech.isListening() ? 'Stop listening' : 'Start listening'"
       >
-        <span class="material-icons text-xl" [class.text-red-500]="speech.isListening()">
+        <span class="material-icons text-2xl">
           {{ speech.isListening() ? 'mic_off' : 'mic' }}
         </span>
       </button>
