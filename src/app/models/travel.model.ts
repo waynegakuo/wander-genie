@@ -6,7 +6,7 @@ export interface TravelPreferences {
   budget: string;
   travelStyle: string;
   interests: string[];
-  groupSize: number;
+  groupSize: number | string;
   accommodation: string;
   transportation: string;
   travelClass?: string;
@@ -55,7 +55,7 @@ export interface WishlistItem {
   searchMetadata: {
     prompt: string;
     budget: string;
-    passengers: number;
+    passengers: number | string;
   };
   imageUrl: string;
   createdAt: any; // Server Timestamp

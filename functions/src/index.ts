@@ -30,7 +30,7 @@ const TravelPreferencesSchema = z.object({
   budget: z.string().describe('The budget for the trip (e.g., budget, mid-range, luxury)'),
   travelStyle: z.string().describe('The preferred style of travel (e.g., adventure, relaxation, cultural)'),
   interests: z.array(z.string()).describe('A list of interests for the trip'),
-  groupSize: z.number().describe('The number of people traveling'),
+  groupSize: z.union([z.number(), z.string()]).describe('The number of people traveling'),
   accommodation: z.string().describe('The preferred type of accommodation'),
   transportation: z.string().describe('The preferred mode of transportation'),
   travelClass: z.string().describe('The travel class (e.g., economy, business, first)').optional(),
