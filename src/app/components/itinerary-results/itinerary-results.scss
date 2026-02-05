@@ -236,3 +236,150 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.currency-selector {
+  .custom-select-container {
+    min-width: 140px;
+
+    .currency-select {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 8px 16px;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-primary);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.6); // Slightly more opaque for readability on light background
+
+      .dropdown-icon {
+        font-size: 1.25rem;
+        transition: transform 0.3s ease;
+
+        &.open {
+          transform: rotate(180deg);
+        }
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    .currency-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: 100%;
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 50;
+      list-style: none;
+      padding: 6px;
+      border-radius: var(--radius-lg);
+      margin: 0;
+      animation: fadeIn 0.2s ease-out;
+
+      /* Custom scrollbar for glass effect */
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .currency-option {
+        padding: 8px 12px;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-primary);
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        &[aria-selected='true'] {
+          background: var(--color-accent);
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .results-section {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .column-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 16px;
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .flight-deal-card {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+
+    .flight-price {
+      text-align: left;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-gray-50);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .label {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .itinerary-container {
+    padding: 24px;
+
+    .prose ::ng-deep {
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+      }
+    }
+  }
+}

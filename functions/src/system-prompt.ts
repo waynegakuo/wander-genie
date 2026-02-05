@@ -25,9 +25,7 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - The "destination" field: Use "${input.destination}".
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
-      Use the format: <a href="https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]" target="_blank" rel="noopener">...</a>
-      Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
-      For each option, estimate the current market price in both KShs and USD. Assume an exchange rate of approximately 1 USD = 130 KShs if not known.
+    - Estimated market price for each flight option in USD (e.g., $1,000). Do not include prices in multiple currencies or brackets; provide only the USD amount.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
       - Accommodation/Hotel recommendations if applicable.
@@ -73,10 +71,7 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: 
     - The "destination" field: The name of the primary destination city or region.
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
-      Use the format: <a href="https://www.google.com/travel/flights/search?q=Flights%20to%20[Destination]%20from%20[Departure]%20on%20[Date]%20return%20[ReturnDate]" target="_blank" rel="noopener">...</a>
-      Even if the user didn't specify a departure, assume a major hub or clearly state you've used a placeholder.
-      Make sure to provide at least 2-3 logical flight search options (e.g., best, cheapest, fastest).
-      For each option, estimate the current market price in both KShs and USD. Assume an exchange rate of approximately 1 USD = 130 KShs if not known.
+    - Estimated market price for each flight option in USD (e.g., $1,000). Do not include prices in multiple currencies or brackets; provide only the USD amount.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
       - Accommodation/Hotel recommendations if applicable.
