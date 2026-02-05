@@ -33,6 +33,79 @@ export class ItineraryResultsComponent {
   isSaving = signal(false);
   isCurrencyMenuOpen = signal(false);
 
+  // Helper: Convert all price patterns within a given text to the selected currency (single display value)
+  private convertTextPrices(text: string): string {
+    if (!text) return text;
+
+    const selectedCurrency = this.currencyService.selectedCurrency();
+
+    // 1) Collapse comparison forms like "$1,000 / KSh 130,000" or "$1,000 or KSh 130,000" into a single converted value
+    const comparisonRegex = /((?:KShs?|KES|USD|\$|€|EUR|£|GBP)\s*[\d,]+)\s*(?:\/|or)\s*((?:KShs?|KES|USD|\$|€|EUR|£|GBP)\s*[\d,]+)/gi;
+    const collapseComparison = (segment: string) => {
+      return segment.replace(comparisonRegex, (match, left, right) => {
+        const pickBase = (part: string): { amount: number | null; currency: string | null } => {
+          const mUsd = part.match(/(?:USD|\$)\s*([\d,]+)/i);
+          const mKes = part.match(/(?:KShs?|KES)\s*([\d,]+)/i);
+          const mEur = part.match(/(?:EUR|€)\s*([\d,]+)/i);
+          const mGbp = part.match(/(?:GBP|£)\s*([\d,]+)/i);
+          if (mUsd) return { amount: parseFloat(mUsd[1].replace(/,/g, '')), currency: 'USD' };
+          if (mKes) return { amount: parseFloat(mKes[1].replace(/,/g, '')), currency: 'KES' };
+          if (mEur) return { amount: parseFloat(mEur[1].replace(/,/g, '')), currency: 'EUR' };
+          if (mGbp) return { amount: parseFloat(mGbp[1].replace(/,/g, '')), currency: 'GBP' };
+          const mNum = part.match(/[\d,]+/);
+          return { amount: mNum ? parseFloat(mNum[0].replace(/,/g, '')) : null, currency: null };
+        };
+
+        const leftBase = pickBase(left);
+        const rightBase = pickBase(right);
+
+        // Prefer USD if present, otherwise KES, then fallback to the first side with a number
+        const base = leftBase.currency === 'USD' || rightBase.currency === 'USD'
+          ? (leftBase.currency === 'USD' ? leftBase : rightBase)
+          : (leftBase.currency === 'KES' || rightBase.currency === 'KES'
+              ? (leftBase.currency === 'KES' ? leftBase : rightBase)
+              : (leftBase.amount != null ? leftBase : rightBase));
+
+        if (base.amount != null) {
+          const converted = this.currencyService.convert(base.amount, base.currency || 'USD', selectedCurrency);
+          return this.currencyService.formatAmount(converted, selectedCurrency);
+        }
+        return match;
+      });
+    };
+
+    let output = collapseComparison(text);
+
+    // 2) Replace single or parenthesized comparison like "KSh 130,000 ($1,000)" with a single converted value
+    const priceRegex = /(?:KShs?|KES|USD|\$|€|EUR|£|GBP)\s*[\d,]+(?:\s*\(\s*(?:KShs?|KES|USD|\$|€|EUR|£|GBP)\s*[\d,]+\s*\))?/gi;
+
+    output = output.replace(priceRegex, (match) => {
+      // Extract preferred base in priority: USD, then KES, then EUR/GBP, else first number
+      const pickBase = (segment: string): { amount: number | null; currency: string } => {
+        const mUsd = segment.match(/(?:USD|\$)\s*([\d,]+)/i);
+        const mKes = segment.match(/(?:KShs?|KES)\s*([\d,]+)/i);
+        const mEur = segment.match(/(?:EUR|€)\s*([\d,]+)/i);
+        const mGbp = segment.match(/(?:GBP|£)\s*([\d,]+)/i);
+        if (mUsd) return { amount: parseFloat(mUsd[1].replace(/,/g, '')), currency: 'USD' };
+        if (mKes) return { amount: parseFloat(mKes[1].replace(/,/g, '')), currency: 'KES' };
+        if (mEur) return { amount: parseFloat(mEur[1].replace(/,/g, '')), currency: 'EUR' };
+        if (mGbp) return { amount: parseFloat(mGbp[1].replace(/,/g, '')), currency: 'GBP' };
+        const mNum = segment.match(/[\d,]+/);
+        return { amount: mNum ? parseFloat(mNum[0].replace(/,/g, '')) : null, currency: 'USD' };
+      };
+
+      const base = pickBase(match);
+      if (base.amount !== null) {
+        const converted = this.currencyService.convert(base.amount, base.currency, selectedCurrency);
+        return this.currencyService.formatAmount(converted, selectedCurrency);
+      }
+
+      return match;
+    });
+
+    return output;
+  }
+
   // Computed signal for flights with converted prices
   flightsWithConvertedPrices = computed(() => {
     const itinerary = this.itinerary();
@@ -67,6 +140,8 @@ export class ItineraryResultsComponent {
         ...flight,
         convertedPrice,
         convertedCurrency: selectedCurrency,
+        convertedTitle: this.convertTextPrices(flight.title),
+        convertedDescription: this.convertTextPrices(flight.description),
       };
     });
   });
@@ -78,38 +153,7 @@ export class ItineraryResultsComponent {
     const html = this.itinerary()?.htmlContent;
     if (!html) return '';
 
-    const selectedCurrency = this.currencyService.selectedCurrency();
-
-    // Regular expression to match price patterns like:
-    // KShs 130,000 ($1,000)
-    // KSh 130,000 ($1,000)
-    // $1,000 (KSh 130,000)
-    // and variations with/without commas, different spacings
-    const priceRegex = /(?:KShs?|USD|\$)\s*[\d,]+(?:\s*\(\s*(?:KShs?|USD|\$)\s*[\d,]+\s*\))?/gi;
-
-    return html.replace(priceRegex, (match) => {
-      // Try to extract a USD value or KES value to use as base
-      let baseAmount: number | null = null;
-      let baseCurrency: string = 'USD';
-
-      const usdMatch = match.match(/(?:USD|\$)\s*([\d,]+)/i);
-      const kesMatch = match.match(/(?:KShs?)\s*([\d,]+)/i);
-
-      if (usdMatch) {
-        baseAmount = parseFloat(usdMatch[1].replace(/,/g, ''));
-        baseCurrency = 'USD';
-      } else if (kesMatch) {
-        baseAmount = parseFloat(kesMatch[1].replace(/,/g, ''));
-        baseCurrency = 'KES';
-      }
-
-      if (baseAmount !== null) {
-        const converted = this.currencyService.convert(baseAmount, baseCurrency, selectedCurrency);
-        return this.currencyService.formatAmount(converted, selectedCurrency);
-      }
-
-      return match;
-    });
+    return this.convertTextPrices(html);
   });
 
   isSaved() {

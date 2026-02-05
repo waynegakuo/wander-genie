@@ -62,8 +62,8 @@
             @for (flight of flights; track flight.title) {
               <div class="flight-deal-card">
                 <div class="flight-info">
-                  <div class="airline">{{ flight.title }}</div>
-                  <div class="route">{{ flight.description }}</div>
+                  <div class="airline">{{ flight.convertedTitle || flight.title }}</div>
+                  <div class="route">{{ flight.convertedDescription || flight.description }}</div>
                   <a
                     [href]="flight.googleFlightsUrl"
                     target="_blank"
