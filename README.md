@@ -49,8 +49,8 @@ Experience your trip before you even leave:
 
 2. **Install dependencies:**
    ```bash
-   npm install
-   cd functions && npm install && cd ..
+   npm install --force
+   cd functions && npm install --force && cd ..
    ```
 
 3. **Environment Setup:**

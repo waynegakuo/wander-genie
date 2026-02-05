@@ -188,6 +188,34 @@
     }
   }
 
+  .btn-mic {
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    background: var(--gradient-accent);
+    border-radius: 50%;
+    color: white;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(37, 99, 235, 0.5);
+    }
+    
+    &.listening {
+      background: #ef4444; // Red for listening state
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+      animation: pulse 1.5s infinite;
+    }
+  }
+
   .btn-search {
     border: none;
     cursor: pointer;
@@ -366,5 +394,17 @@
     border-color: var(--color-accent);
     outline: 0;
     box-shadow: 0 0 0 0.25rem rgba(var(--color-accent-rgb), 0.25);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
   }
 }
