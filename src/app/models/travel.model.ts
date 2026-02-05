@@ -25,6 +25,8 @@ export interface Itinerary {
     price?: string;
     priceKsh?: number;
     priceUsd?: number;
+    baseCurrency?: string; // Currency code the AI returned (e.g., 'USD', 'KES')
+    basePrice?: number; // Numeric price in base currency
   }[];
   days: {
     day: number;

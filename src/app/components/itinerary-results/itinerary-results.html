@@ -14,11 +14,31 @@
             <span class="material-icons text-accent">flight_takeoff</span>
             Top Flight Deals
           </h2>
+
+          <!-- Currency Selector -->
+          <div class="currency-selector flex items-center gap-4">
+            <label for="currency-select" class="sr-only">Select Currency</label>
+            <select
+              id="currency-select"
+              [value]="currencyService.selectedCurrency()"
+              (change)="currencyService.setSelectedCurrency($any($event.target).value)"
+              class="currency-select"
+            >
+              @for (currency of currencyService.SUPPORTED_CURRENCIES; track currency.code) {
+                <option
+                  [value]="currency.code"
+                  [selected]="currency.code === currencyService.selectedCurrency()"
+                >
+                  {{ currency.code }} ({{ currency.symbol }})
+                </option>
+              }
+            </select>
+          </div>
         </div>
 
         <div class="space-y-4">
-          @if (itinerary()?.flightOptions; as flights) {
-            @for (flight of flights; track flight.googleFlightsUrl) {
+          @if (flightsWithConvertedPrices(); as flights) {
+            @for (flight of flights; track flight.title) {
               <div class="flight-deal-card">
                 <div class="flight-info">
                   <div class="airline">{{ flight.title }}</div>
@@ -35,12 +55,12 @@
                 </div>
                 <div class="flight-price">
                   <span class="label">From</span>
-                  @if (flight.priceKsh && flight.priceUsd) {
+                  @if (flight.convertedPrice) {
                     <span class="price">
-                      KSh {{ flight.priceKsh | number }} ({{ flight.priceUsd | currency: 'USD':'symbol':'1.0-0' }})
+                      {{ currencyService.formatAmount(flight.convertedPrice, flight.convertedCurrency) }}
                     </span>
                   } @else {
-                    <span class="price">$1,240</span>
+                    <span class="price">Price not available</span>
                   }
                 </div>
               </div>

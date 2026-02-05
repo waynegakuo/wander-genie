@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Itinerary, WishlistItem } from '../../models/travel.model';
 import { WishlistService } from '../../services/wishlist/wishlist.service';
 import { AuthService } from '../../services/core/auth/auth.service';
 import { ToastService } from '../../services/core/toast/toast.service';
+import { CurrencyService } from '../../services/currency/currency.service';
 
 @Component({
   selector: 'app-itinerary-results',
@@ -23,8 +24,47 @@ export class ItineraryResultsComponent {
   private wishlistService = inject(WishlistService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  currencyService = inject(CurrencyService);
 
   isSaving = signal(false);
+
+  // Computed signal for flights with converted prices
+  flightsWithConvertedPrices = computed(() => {
+    const itinerary = this.itinerary();
+    const selectedCurrency = this.currencyService.selectedCurrency();
+
+    if (!itinerary?.flightOptions) {
+      return [];
+    }
+
+    return itinerary.flightOptions.map((flight) => {
+      // Determine base currency and price
+      let baseCurrency = flight.baseCurrency || 'USD';
+      let basePrice = flight.basePrice;
+
+      // Fallback: extract from existing fields if basePrice not set
+      if (!basePrice) {
+        if (flight.priceUsd) {
+          baseCurrency = 'USD';
+          basePrice = flight.priceUsd;
+        } else if (flight.priceKsh) {
+          baseCurrency = 'KES';
+          basePrice = flight.priceKsh;
+        }
+      }
+
+      // Convert to selected currency
+      const convertedPrice = basePrice
+        ? this.currencyService.convert(basePrice, baseCurrency, selectedCurrency)
+        : null;
+
+      return {
+        ...flight,
+        convertedPrice,
+        convertedCurrency: selectedCurrency,
+      };
+    });
+  });
 
   isSaved() {
     const itinerary = this.itinerary();
@@ -77,4 +117,6 @@ export class ItineraryResultsComponent {
       this.isSaving.set(false);
     }
   }
+
+  protected readonly HTMLSelectElement = HTMLSelectElement;
 }
