@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { ToastService } from '../../../services/core/toast/toast.service';
@@ -27,6 +27,7 @@ export class WishlistDetailPage {
   private route = inject(ActivatedRoute);
   private firestore = inject(Firestore);
   private toastService = inject(ToastService);
+  private platformId = inject(PLATFORM_ID);
 
   wishlistItem = signal<WishlistItem | null>(null);
   isLoading = signal(true);
@@ -57,6 +58,8 @@ export class WishlistDetailPage {
   }
 
   printItinerary() {
-    window.print();
+    if (isPlatformBrowser(this.platformId)) {
+      window.print();
+    }
   }
 }

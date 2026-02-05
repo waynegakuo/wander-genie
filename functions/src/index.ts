@@ -122,6 +122,7 @@ export const generateItineraryFlow = onCallGenkit(
       ? true
       : [
         'http://localhost:4200',
+        'http://localhost:5001',
         /^https:\/\/wandersgenie(--[a-z0-9-]+)?\.web\.app$/, // Matches live site (wandersgenie.web.app) and previews (wandersgenie--<channel>.web.app)
       ],
   },
@@ -137,6 +138,7 @@ export const genieItineraryFlow = onCallGenkit(
       ? true
       : [
         'http://localhost:4200',
+        'http://localhost:5001',
         /^https:\/\/wandersgenie(--[a-z0-9-]+)?\.web\.app$/, // Matches live site (wandersgenie.web.app) and previews (wandersgenie--<channel>.web.app)
       ],
   },

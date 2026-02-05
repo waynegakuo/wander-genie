@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 // Define the interface for the browser API as it's not in standard types yet
 interface IWindow extends Window {
@@ -16,9 +17,12 @@ export class SpeechRecognitionService {
   isSupported = signal<boolean>(false);
 
   private recognition: any;
+  private platformId = inject(PLATFORM_ID);
 
   constructor() {
-    this.initializeRecognition();
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeRecognition();
+    }
   }
 
   private initializeRecognition(): void {
@@ -52,7 +56,7 @@ export class SpeechRecognitionService {
             interimTranscript += event.results[i][0].transcript;
           }
         }
-        
+
         // We prefer final transcript, but show interim if that's all we have
         const currentText = finalTranscript || interimTranscript;
         if (currentText) {

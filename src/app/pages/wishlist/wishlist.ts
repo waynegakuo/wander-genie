@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { WishlistService } from '../../services/wishlist/wishlist.service';
 import { ToastService } from '../../services/core/toast/toast.service';
@@ -18,6 +18,7 @@ import { WishlistItem } from '../../models/travel.model';
 export class WishlistPage {
   wishlistService = inject(WishlistService);
   private toastService = inject(ToastService);
+  private platformId = inject(PLATFORM_ID);
   wishlistItems = this.wishlistService.wishlistItems;
 
   async removeItem(id: string | undefined) {
@@ -33,7 +34,9 @@ export class WishlistPage {
 
   checkPrice(item: WishlistItem) {
     if (item.flightData?.googleFlightsUrl) {
-      window.open(item.flightData.googleFlightsUrl, '_blank');
+      if (isPlatformBrowser(this.platformId)) {
+        window.open(item.flightData.googleFlightsUrl, '_blank');
+      }
     } else {
       this.toastService.info('Price details are currently unavailable for this itinerary.');
     }
