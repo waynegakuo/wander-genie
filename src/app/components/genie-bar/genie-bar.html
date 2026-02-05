@@ -36,6 +36,22 @@
       (keydown.enter)="canSubmit() && onGenerateItinerary()"
       [value]="nlpQuery()"
     />
+    
+    <!-- Microphone Button -->
+     @if (speech.isSupported()) {
+      <button
+        type="button"
+        (click)="toggleSpeech()"
+        class="btn-mic transition-all flex items-center justify-center shrink-0 mr-2"
+        [class.listening]="speech.isListening()"
+        [attr.aria-label]="speech.isListening() ? 'Stop listening' : 'Start listening'"
+      >
+        <span class="material-icons text-xl" [class.text-red-500]="speech.isListening()">
+          {{ speech.isListening() ? 'mic_off' : 'mic' }}
+        </span>
+      </button>
+    }
+
     <button
       (click)="onGenerateItinerary()"
       [disabled]="!canSubmit()"

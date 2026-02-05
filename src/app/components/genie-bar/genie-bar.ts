@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { SmartSuggestionsComponent } from '../smart-suggestions/smart-suggestions';
+import { SpeechRecognitionService } from '../../services/core/speech-recognition.service';
 
 @Component({
   selector: 'app-genie-bar',
@@ -68,5 +69,27 @@ export class GenieBarComponent {
   setFormControlValue(controlName: string, value: any): void {
     this.travelForm().get(controlName)?.setValue(value);
     this.activeChip.set(null);
+  }
+
+  // Speech Recognition
+  speech = inject(SpeechRecognitionService);
+
+  constructor() {
+    // Effect to update nlpQuery when transcript changes
+    effect(() => {
+      const text = this.speech.transcript();
+      // Only emit if we have text and it's a new transcript from valid speech
+      // We check isListening to ensure we are in a session, but also we might get a final result after stop?
+      // Actually usually we want to see text as it comes in.
+      if (text) {
+        // Create a mock event to be compatible with onUpdateQuery's expectation
+        const mockEvent = { target: { value: text } } as unknown as Event;
+        this.onUpdateQuery(mockEvent);
+      }
+    });
+  }
+
+  toggleSpeech(): void {
+    this.speech.toggle();
   }
 }
