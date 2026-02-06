@@ -45,7 +45,7 @@
         type="button"
         (click)="toggleSpeech()"
         [disabled]="isLoading()"
-        class="btn-mic shrink-0 mr-2"
+        class="btn-icon shrink-0 mr-2"
         [class.listening]="speech.isListening()"
         [attr.aria-label]="speech.isListening() ? 'Stop listening' : 'Start listening'"
       >
@@ -58,7 +58,7 @@
     <button
       (click)="onGenerateItinerary()"
       [disabled]="!canSubmit()"
-      class="btn-search rounded-full text-white transition-all flex items-center justify-center shrink-0"
+      class="btn-icon rounded-full text-white transition-all flex items-center justify-center shrink-0 ml-2"
     >
       @if (isLoading()) {
         <span class="loading-spinner"></span>
