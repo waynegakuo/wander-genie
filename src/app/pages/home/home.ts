@@ -74,7 +74,7 @@ export class Home {
     destination: ['', [Validators.required]],
     startDate: [''],
     endDate: [''],
-    budget: ['mid-range'],
+    budget: ['budget'],
     travelStyle: ['adventure'],
     interests: [[]],
     groupSize: [1, [Validators.min(1), Validators.max(20)]],
@@ -86,7 +86,7 @@ export class Home {
 
   searchMetadata = computed(() => ({
     prompt: this.nlpQuery(),
-    budget: this.travelForm.get('budget')?.value || 'mid-range',
+    budget: this.travelForm.get('budget')?.value || 'budget',
     passengers: this.travelForm.get('groupSize')?.value || 1,
   }));
 
@@ -105,15 +105,6 @@ export class Home {
         }, 600); // Match SCSS transition time
       }, 4000);
     }
-
-    // Effect to parse NLP query
-    effect(() => {
-      const query = this.nlpQuery();
-      if (query) {
-        const parsed = this.travelService.extractPreferences(query);
-        this.travelForm.patchValue(parsed, { emitEvent: false });
-      }
-    });
 
     // Loading messages effect
     effect(() => {
@@ -294,7 +285,14 @@ export class Home {
       // If we have an NLP query that is long enough, use the Genie flow directly
       if (this.nlpQuery().length > 10) {
         const departureLocation = this.travelForm.get('departureLocation')?.value;
-        itinerary = await this.travelService.generateGenieItinerary(this.nlpQuery(), departureLocation);
+        const preferences: Partial<TravelPreferences> = {
+          departureLocation,
+          budget: this.travelForm.get('budget')?.value,
+          groupSize: this.travelForm.get('groupSize')?.value,
+          travelClass: this.travelForm.get('travelClass')?.value,
+          flexibility: this.travelForm.get('flexibility')?.value,
+        };
+        itinerary = await this.travelService.generateGenieItinerary(this.nlpQuery(), preferences);
       } else {
         // Create a preferences object from the form values
         const formData: TravelPreferences = {
@@ -348,7 +346,7 @@ export class Home {
     this.travelForm.reset({
       groupSize: 1,
       interests: [],
-      budget: 'mid-range',
+      budget: 'budget',
       travelStyle: 'adventure',
       accommodation: 'hotel',
       transportation: 'flight',

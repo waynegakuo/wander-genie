@@ -90,11 +90,11 @@ export const _genieItineraryLogic = ai.defineFlow({
   name: 'genieItineraryFlow',
   inputSchema: z.object({
     query: z.string(),
-    departureLocation: z.string().optional(),
+    preferences: TravelPreferencesSchema.partial().optional(),
   }),
   outputSchema: ItinerarySchema,
 },
-  async (input: { query: string; departureLocation?: string; today?: string; }) => {
+  async (input: { query: string; preferences?: Partial<TravelPreferences>; today?: string; }) => {
     const today = new Date().toISOString().split('T')[0];
     const response = await ai.generate({
       prompt: GENIE_SYSTEM_PROMPT({ ...input, today }),

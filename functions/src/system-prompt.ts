@@ -53,15 +53,23 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - Use <h3> for Day titles, <h4> for activity titles.
   `;
 
-export const GENIE_SYSTEM_PROMPT = (input: { query: string; departureLocation?: string; today?: string }) => `
+export const GENIE_SYSTEM_PROMPT = (input: { query: string; preferences?: Partial<TravelPreferences>; today?: string }) => `
     You are an expert travel planner. A user has provided a natural language request for a trip: "${input.query}".
-    ${input.departureLocation ? `The user is departing from: "${input.departureLocation}".` : ''}
+    ${input.preferences?.departureLocation ? `The user is departing from: "${input.preferences.departureLocation}".` : ''}
+
+    Structured Preferences (Refinement Chips):
+    ${input.preferences?.budget ? `- Budget: ${input.preferences.budget}` : ''}
+    ${input.preferences?.groupSize ? `- Group Size: ${input.preferences.groupSize}` : ''}
+    ${input.preferences?.travelClass ? `- Travel Class: ${input.preferences.travelClass}` : ''}
+    ${input.preferences?.flexibility ? `- Date Flexibility: ${input.preferences.flexibility}` : ''}
 
     Your task is to:
     1. Parse the key details from the request (Departure, Destination, Dates, Budget, etc.).
     2. Create a detailed travel itinerary based on these details.
 
     IMPORTANT:
+    - Prioritize the "Structured Preferences" provided above as they represent explicit user choices from the UI refinement chips.
+    - If a detail (like budget or group size) is mentioned in both the natural language query and the Structured Preferences, use the one from Structured Preferences unless the natural query explicitly contradicts it with a more specific detail.
     - Be careful to distinguish between the departure city (where they are coming from) and the destination (where they want to go).
     - Correctly identify the number of passengers (Group Size) regardless of whether they are provided as digits (e.g., 5), words (e.g., "five"), or a combination (e.g., "5 people", "family of four").
     - If the user provided a "departing from" location separately, prioritize it, but also check if they mention a different origin in their natural language query.
