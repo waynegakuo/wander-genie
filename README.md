@@ -24,10 +24,32 @@ Experience your trip before you even leave:
 - **Dynamic Imagery:** Visual inspiration for your destinations.
 - **Practical Travel Tips:** Insider advice for your specific destination.
 
+### 4. Smart Wishlist
+Keep track of your dream trips:
+- **Save for Later:** Add any generated itinerary to your personal wishlist.
+- **Persistent Storage:** Wishlists are synced to Firestore and tied to your Google account.
+- **Easy Management:** View and remove saved trips at any time.
+
+### 5. Multi-Currency Flight Deals
+Global travel made easy:
+- **Real-time Conversion:** View flight prices in your preferred currency (USD, KES, EUR, GBP, etc.).
+- **Automatic Formatting:** Currency values are automatically formatted based on regional standards.
+
+### 6. Portable Itineraries
+Take your plans offline:
+- **Save to PDF/Print:** One-click export of your beautified itinerary for easy access during travel.
+
+### 7. Voice Search (Speech-to-Plan)
+Don't want to type? Use your voice:
+- **Speech Input:** Just tap the mic and say where you want to go.
+- **Real-time Transcription:** Your speech is instantly converted to text and parsed for travel preferences.
+
 ## 🛠 Tech Stack
 
 - **Frontend:** [Angular](https://angular.dev/) (v20+) with Standalone Components & Signals.
 - **Backend & Hosting:** [Firebase](https://firebase.google.com/) (Functions v2, Hosting, Firestore).
+- **Authentication:** [Firebase Auth](https://firebase.google.com/docs/auth) with Google Sign-In.
+- **Database:** [Cloud Firestore](https://firebase.google.com/docs/firestore) for user wishlists.
 - **AI Orchestration:** [Genkit AI](https://firebase.google.com/docs/genkit) for seamless LLM integration.
 - **LLM:** Google Gemini 3 Flash.
 
@@ -143,9 +165,12 @@ export const _generateItineraryLogic = ai.defineFlow({
 ### ⚡ Reactive Frontend (Angular Signals)
 The application leverages modern Angular features for a performant and reactive UI.
 - **Signals-based State:** Components use `input()`, `output()`, and `computed()` for efficient state management and change detection.
+- **Secure Authentication:** Integrated Firebase Auth for a personalized experience.
+- **Dynamic Currency Engine:** A dedicated `CurrencyService` handles real-time exchange rates and formatting.
 - **Type-Safe Services:** `TravelService` acts as the bridge between the frontend and Firebase Functions, using `httpsCallable` for type-safe communication.
 - **Real-time Sync:** `WishlistService` uses Angular Signals and Firestore `onSnapshot` to provide real-time updates of saved itineraries across the app.
 - **Intelligent Parsing:** The `extractPreferences` logic in `TravelService` uses regex patterns to instantly extract destinations, budgets, and group sizes from natural language, providing immediate feedback as users type.
+- **Speech Recognition:** Integrated Web Speech API via a dedicated `SpeechRecognitionService` for voice-controlled itinerary planning.
 - **Component Integration:** A clean, async implementation in the `Home` component manages the UI state (loading, errors, results) while calling the AI orchestration layer.
 
 ```typescript
