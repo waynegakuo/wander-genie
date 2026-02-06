@@ -74,7 +74,7 @@ export class Home {
     destination: ['', [Validators.required]],
     startDate: [''],
     endDate: [''],
-    budget: ['mid-range'],
+    budget: ['budget'],
     travelStyle: ['adventure'],
     interests: [[]],
     groupSize: [1, [Validators.min(1), Validators.max(20)]],
@@ -86,7 +86,7 @@ export class Home {
 
   searchMetadata = computed(() => ({
     prompt: this.nlpQuery(),
-    budget: this.travelForm.get('budget')?.value || 'mid-range',
+    budget: this.travelForm.get('budget')?.value || 'budget',
     passengers: this.travelForm.get('groupSize')?.value || 1,
   }));
 
@@ -346,7 +346,7 @@ export class Home {
     this.travelForm.reset({
       groupSize: 1,
       interests: [],
-      budget: 'mid-range',
+      budget: 'budget',
       travelStyle: 'adventure',
       accommodation: 'hotel',
       transportation: 'flight',
