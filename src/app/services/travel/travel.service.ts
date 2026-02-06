@@ -36,18 +36,18 @@ export class TravelService {
     }
   }
 
-  async generateGenieItinerary(text: string, departureLocation?: string): Promise<Itinerary> {
+  async generateGenieItinerary(text: string, preferences?: Partial<TravelPreferences>): Promise<Itinerary> {
     logEvent(this.fireAnalytics, 'generate_genie_itinerary', {
       query_length: text.length,
-      has_departure: !!departureLocation,
+      has_departure: !!preferences?.departureLocation,
     });
 
     try {
-      const genieFn = httpsCallable<{ query: string; departureLocation?: string }, Itinerary>(
+      const genieFn = httpsCallable<{ query: string; preferences?: Partial<TravelPreferences> }, Itinerary>(
         this.functions,
         'genieItineraryFlow'
       );
-      const result = await genieFn({ query: text, departureLocation });
+      const result = await genieFn({ query: text, preferences });
 
       logEvent(this.fireAnalytics, 'itinerary_generated_success', {
         destination: result.data.destination,

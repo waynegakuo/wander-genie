@@ -285,7 +285,14 @@ export class Home {
       // If we have an NLP query that is long enough, use the Genie flow directly
       if (this.nlpQuery().length > 10) {
         const departureLocation = this.travelForm.get('departureLocation')?.value;
-        itinerary = await this.travelService.generateGenieItinerary(this.nlpQuery(), departureLocation);
+        const preferences: Partial<TravelPreferences> = {
+          departureLocation,
+          budget: this.travelForm.get('budget')?.value,
+          groupSize: this.travelForm.get('groupSize')?.value,
+          travelClass: this.travelForm.get('travelClass')?.value,
+          flexibility: this.travelForm.get('flexibility')?.value,
+        };
+        itinerary = await this.travelService.generateGenieItinerary(this.nlpQuery(), preferences);
       } else {
         // Create a preferences object from the form values
         const formData: TravelPreferences = {
