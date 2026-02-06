@@ -106,15 +106,6 @@ export class Home {
       }, 4000);
     }
 
-    // Effect to parse NLP query
-    effect(() => {
-      const query = this.nlpQuery();
-      if (query) {
-        const parsed = this.travelService.extractPreferences(query);
-        this.travelForm.patchValue(parsed, { emitEvent: false });
-      }
-    });
-
     // Loading messages effect
     effect(() => {
       if (this.isLoading()) {
