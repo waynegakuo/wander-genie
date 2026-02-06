@@ -101,6 +101,7 @@
 }
 
 .genie-bar {
+  position: relative;
   min-height: 80px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(10px);
@@ -136,8 +137,8 @@
 
   .placeholder-container {
     position: absolute;
-    left: 4.5rem; /* After sparkle-icon */
-    right: 5rem; /* Before button */
+    left: 1rem; /* Matches nlp-input px-4 */
+    right: 1rem;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
@@ -146,6 +147,41 @@
     z-index: 1;
     display: flex;
     align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    min-height: 64px;
+    padding: 0 1rem;
+
+    .sparkle-icon {
+      margin-left: 0.5rem;
+      font-size: 1.5rem;
+    }
+
+    .nlp-input {
+      font-size: 1rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .placeholder-container {
+      left: 0.75rem;
+      right: 0.75rem;
+    }
+
+    .placeholder-text {
+      font-size: 1rem;
+    }
+
+    .btn-mic, .btn-search {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+
+      .material-icons {
+        font-size: 1.25rem;
+      }
+    }
   }
 
   .placeholder-text {
