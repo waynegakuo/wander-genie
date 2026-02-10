@@ -25,6 +25,8 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - The "destination" field: Use "${input.destination}".
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
+      Use this format for Google Flights URLs: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Origin]%20on%20[DepartureDate]%20through%20[ReturnDate]%20[TravelClass]%20[Passengers]
+      Example: https://www.google.com/travel/flights?q=Flights%20to%20Paris%20from%20New%20York%20on%202025-05-01%20through%202025-05-08%20economy%202%20adults
     - Estimated market price for each flight option in USD (e.g., $1,000). Do not include prices in multiple currencies or brackets; provide only the USD amount.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
@@ -79,6 +81,8 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; preferences?: Partia
     - The "destination" field: The name of the primary destination city or region.
     - A header with a summary of the trip.
     - Suggested flight options with direct links to Google Flights search results.
+      Use this format for Google Flights URLs: https://www.google.com/travel/flights?q=Flights%20to%20[Destination]%20from%20[Origin]%20on%20[DepartureDate]%20through%20[ReturnDate]%20[TravelClass]%20[Passengers]
+      Example: https://www.google.com/travel/flights?q=Flights%20to%20Paris%20from%20New%20York%20on%202025-05-01%20through%202025-05-08%20economy%202%20adults
     - Estimated market price for each flight option in USD (e.g., $1,000). Do not include prices in multiple currencies or brackets; provide only the USD amount.
     - A beautified "User Journey" visualization including:
       - Flight details (outbound and return).
