@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UserAuth } from '../../shared/user-auth/user-auth';
 
 @Component({
@@ -8,8 +8,4 @@ import { UserAuth } from '../../shared/user-auth/user-auth';
   styleUrl: './nav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavComponent {
-  activeTab = input<'genie' | 'deep'>();
-  showTabs = input<boolean>(true);
-  tabChange = output<'genie' | 'deep'>();
-}
+export class NavComponent {}

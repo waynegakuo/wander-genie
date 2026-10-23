@@ -125,13 +125,6 @@ export class Home {
     }
   });
 
-  // Effect to handle tab changes and potential scrolling
-  effect(() => {
-    if (this.activeTab() === 'deep' && isPlatformBrowser(this.platformId)) {
-      // Small delay to ensure the DOM is updated before we might want to do something
-      // But we probably don't need to scroll anymore since it's in the hero
-    }
-  });
   }
 
   // Computed properties
@@ -170,9 +163,6 @@ export class Home {
     const value = target.value;
     this.nlpQuery.set(value);
 
-    // If "from [City]" is in the query, we don't want to override if user manually typed in departure
-    // Actually, the effect handles patching. If we want to allow manual override to stick,
-    // we might need more complex logic, but for now, simple patching is fine.
   }
 
   selectSuggestion(suggestion: string): void {
@@ -241,11 +231,6 @@ export class Home {
     { value: 'mixed', label: '🔄 Mixed Transportation' },
   ];
 
-  // Methods
-  showPlanningForm(): void {
-    this.activeTab.set('deep');
-  }
-
   onTabChange(tab: 'genie' | 'deep'): void {
     this.travelService.logTabChange(tab);
     this.activeTab.set(tab);
@@ -284,9 +269,9 @@ export class Home {
 
       // If we have an NLP query that is long enough, use the Genie flow directly
       if (this.nlpQuery().length > 10) {
-        const departureLocation = this.travelForm.get('departureLocation')?.value;
+        const parsed = this.travelService.extractPreferences(this.nlpQuery());
         const preferences: Partial<TravelPreferences> = {
-          departureLocation,
+          departureLocation: parsed.departureLocation ?? this.travelForm.get('departureLocation')?.value ?? '',
           budget: this.travelForm.get('budget')?.value,
           groupSize: this.travelForm.get('groupSize')?.value,
           travelClass: this.travelForm.get('travelClass')?.value,

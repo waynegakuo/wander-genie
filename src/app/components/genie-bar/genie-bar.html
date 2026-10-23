@@ -1,22 +1,4 @@
-<div class="genie-bar-container max-w-4xl mx-auto mt-2 relative" [formGroup]="travelForm()">
-  <div class="departure-container glass-effect flex items-center justify-center mb-4 rounded-full">
-    <span class="material-icons text-white mr-2 text-sm flight-icon">flight_takeoff</span>
-    <span class="text-white text-sm departure-label">Departing from</span>
-    <div class="departure-input-wrapper relative">
-      <input
-        type="text"
-        formControlName="departureLocation"
-        placeholder="Your city"
-        class="departure-input"
-        #departureInput
-      />
-      <span class="departure-mirror" aria-hidden="true">
-        {{ travelForm().get('departureLocation')?.value || 'Your city' }}
-      </span>
-      <span class="material-icons edit-icon">edit</span>
-    </div>
-  </div>
-
+<div class="genie-bar-container max-w-4xl mx-auto relative" [formGroup]="travelForm()">
   <div class="genie-bar flex items-center bg-white rounded-full p-3 transition-all shadow-xl">
     <span class="sparkle-icon ml-4 text-2xl">✨</span>
     <div class="input-wrapper relative flex-1 h-full flex items-center">

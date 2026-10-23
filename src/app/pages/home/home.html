@@ -1,15 +1,52 @@
 <!-- Hero Section -->
 <section class="hero-section hero-full">
   <div class="container">
-    <app-nav [activeTab]="activeTab()" [showTabs]="true" (tabChange)="onTabChange($event)" />
+    <app-nav />
 
     <div class="hero-content text-center relative">
       <app-hero />
 
+      <div
+        class="planner-mode-tabs glass-effect"
+        role="tablist"
+        aria-label="Planner mode"
+      >
+        <button
+          type="button"
+          role="tab"
+          class="planner-mode-tab text-ui"
+          [class.active]="activeTab() === 'genie'"
+          [attr.aria-selected]="activeTab() === 'genie'"
+          (click)="onTabChange('genie')"
+        >
+          <span class="material-icons" aria-hidden="true">auto_awesome</span>
+          Genie Planner
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="planner-mode-tab text-ui"
+          [class.active]="activeTab() === 'deep'"
+          [attr.aria-selected]="activeTab() === 'deep'"
+          (click)="onTabChange('deep')"
+        >
+          <span class="material-icons" aria-hidden="true">tune</span>
+          Deep Planner
+        </button>
+      </div>
+
+      <p class="planner-mode-hint text-ui">
+        @if (activeTab() === 'genie') {
+          Describe your dream trip in your own words — Genie handles the rest.
+        } @else {
+          Set every detail yourself — dates, style, interests, and more.
+        }
+      </p>
+
       <div class="tab-content-wrapper">
 
-        @if (activeTab() === 'genie')  {
-          <div class="tab-pane">
+        @if (activeTab() === 'genie') {
+          <div class="tab-pane" role="tabpanel">
             <app-genie-bar
               [travelForm]="travelForm"
               [isLoading]="isLoading()"
@@ -26,7 +63,7 @@
         }
 
         @else if (activeTab() === 'deep') {
-          <div class="tab-pane">
+          <div class="tab-pane" role="tabpanel">
             <app-planning-form
               [travelForm]="travelForm"
               [isLoading]="isLoading()"
