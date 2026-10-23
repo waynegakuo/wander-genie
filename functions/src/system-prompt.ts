@@ -46,8 +46,8 @@ export const SYSTEM_PROMPT = (input: TravelPreferences & { today?: string }) => 
     - Place the emoji INSIDE the header tag (e.g., <h3>🗓️ Day 1: ...</h3>). DO NOT repeat the same emoji twice in a row or within the same section.
     - Ensure the timeline is well-structured:
         1. Trip Summary (Header)
-        2. Flight Search Options (with links)
-        3. Day-by-Day Journey (with images)
+        2. Day-by-Day Journey (with images)
+        3. Flight Search Options (with links)
         4. Travel Tips
     - Include large, beautiful images for each day or major city using the provided img tag format.
     - Make it visually engaging with cards, borders, and spacing.
@@ -102,8 +102,8 @@ export const GENIE_SYSTEM_PROMPT = (input: { query: string; preferences?: Partia
     - Place the emoji INSIDE the header tag (e.g., <h3>🗓️ Day 1: ...</h3>). DO NOT repeat the same emoji twice in a row or within the same section.
     - Ensure the timeline is well-structured:
         1. Trip Summary (Header)
-        2. Flight Search Options (with links)
-        3. Day-by-Day Journey (with images)
+        2. Day-by-Day Journey (with images)
+        3. Flight Search Options (with links)
         4. Travel Tips
     - Include large, beautiful images for each day or major city using the provided img tag format.
     - Make it visually engaging with cards, borders, and spacing.

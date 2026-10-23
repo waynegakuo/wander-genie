@@ -156,6 +156,142 @@ export class ItineraryResultsComponent {
     return this.convertTextPrices(html);
   });
 
+  tripDuration = computed(() => this.itinerary()?.days?.length ?? 0);
+
+  tripDateRange = computed(() => {
+    const days = this.itinerary()?.days;
+    if (!days?.length) return null;
+    const first = days[0].date?.trim();
+    const last = days[days.length - 1].date?.trim();
+    if (!first) return null;
+    if (!last || first === last) return first;
+    return `${first} – ${last}`;
+  });
+
+  cheapestFlightLabel = computed(() => {
+    const flights = this.flightsWithConvertedPrices();
+    let cheapest: (typeof flights)[number] | null = null;
+
+    for (const flight of flights) {
+      if (flight.convertedPrice == null) continue;
+      if (!cheapest || flight.convertedPrice < (cheapest.convertedPrice ?? Infinity)) {
+        cheapest = flight;
+      }
+    }
+
+    if (!cheapest?.convertedPrice) return null;
+    return this.currencyService.formatAmount(cheapest.convertedPrice, cheapest.convertedCurrency);
+  });
+
+  showStructuredTimeline = computed(() => {
+    const days = this.itinerary()?.days ?? [];
+    return days.some(
+      (day) =>
+        !!day.activities?.morning?.trim() ||
+        !!day.activities?.afternoon?.trim() ||
+        !!day.activities?.evening?.trim()
+    );
+  });
+
+  displayDays = computed(() => {
+    const days = this.itinerary()?.days ?? [];
+    return days.map((day) => ({
+      ...day,
+      activities: {
+        morning: this.convertTextPrices(day.activities?.morning ?? ''),
+        afternoon: this.convertTextPrices(day.activities?.afternoon ?? ''),
+        evening: this.convertTextPrices(day.activities?.evening ?? ''),
+      },
+    }));
+  });
+
+  journeyHtmlContent = computed(() => {
+    const html = this.displayHtmlContent();
+    if (!html) return '';
+    return this.extractHtmlSection(html, 'journey');
+  });
+
+  tipsHtmlContent = computed(() => {
+    const html = this.displayHtmlContent();
+    if (!html) return '';
+    return this.extractHtmlSection(html, 'tips');
+  });
+
+  displayTravelTips = computed(() => {
+    const tips = this.itinerary()?.travelTips ?? [];
+    return tips.filter(Boolean).map((tip) => this.convertTextPrices(tip));
+  });
+
+  destinationImageUrl(destination: string): string {
+    return `https://tse3.mm.bing.net/th?q=${encodeURIComponent(destination)}%20travel%20landmark%2025&w=800&h=360&c=7&rs=1`;
+  }
+
+  private extractHtmlSection(html: string, section: 'journey' | 'tips'): string {
+    if (typeof DOMParser === 'undefined') {
+      return section === 'journey' ? html : '';
+    }
+
+    try {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const body = doc.body;
+
+      if (section === 'journey') {
+        const timeline = body.querySelector('.journey-timeline');
+        if (timeline) {
+          return timeline.innerHTML;
+        }
+
+        const journeyKeywords = /journey|day-by-day|daily|itinerary|explore|locations?/i;
+        const flightKeywords = /flight|airfare|airline/i;
+        const tipKeywords = /tip|advice|know before|good to know/i;
+        const summaryKeywords = /summary|overview|at a glance/i;
+
+        const chunks: string[] = [];
+        const children = Array.from(body.children);
+
+        for (const node of children) {
+          const heading = node.querySelector('h2, h3');
+          const headingText = heading?.textContent?.trim() ?? '';
+
+          if (headingText && summaryKeywords.test(headingText)) continue;
+          if (headingText && flightKeywords.test(headingText)) continue;
+          if (headingText && tipKeywords.test(headingText)) continue;
+
+          if (!headingText || journeyKeywords.test(headingText) || node.classList.contains('journey-timeline')) {
+            if (!headingText || !flightKeywords.test(headingText)) {
+              chunks.push(node.outerHTML);
+            }
+          } else if (!flightKeywords.test(headingText) && !tipKeywords.test(headingText) && !summaryKeywords.test(headingText)) {
+            chunks.push(node.outerHTML);
+          }
+        }
+
+        return chunks.join('').trim();
+      }
+
+      const tipKeywords = /tip|advice|know before|good to know|practical/i;
+      const chunks: string[] = [];
+      let capture = false;
+
+      for (const node of Array.from(body.children)) {
+        const heading = node.querySelector('h2, h3');
+        const headingText = heading?.textContent?.trim() ?? '';
+
+        if (headingText && tipKeywords.test(headingText)) {
+          capture = true;
+        }
+
+        if (capture) {
+          chunks.push(node.outerHTML);
+        }
+      }
+
+      return chunks.join('').trim();
+    } catch {
+      return section === 'journey' ? html : '';
+    }
+  }
+
   isSaved() {
     const itinerary = this.itinerary();
     if (!itinerary) return false;
