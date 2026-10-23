@@ -15,7 +15,7 @@ const ai = genkit({
   plugins: [
     googleAI({ apiKey: process.env.GEMINI_API_KEY }),
   ],
-  model: googleAI.model('gemini-3-flash-preview'), // Using a stable model name
+  model: googleAI.model('gemini-3.6-flash'), // Using a stable model name
 });
 
 // Detect if the function is running in the Firebase Emulator Suite.
